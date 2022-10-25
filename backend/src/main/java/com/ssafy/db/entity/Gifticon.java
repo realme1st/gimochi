@@ -15,10 +15,10 @@ public class Gifticon{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long gifticonId;
+    private Long gifticonId;
 
     @ManyToOne(fetch=LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
 
