@@ -21,7 +21,10 @@ buildscript{
 //        classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:${querydslPluginVer}"
         //[끝]
         classpath "com.github.node-gradle:gradle-node-plugin:3.1.0"
-        implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+        // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+
+
+
     }
 }
 
@@ -125,6 +128,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation("com.googlecode.json-simple:json-simple:1.1.1")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
@@ -189,6 +193,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 test {
