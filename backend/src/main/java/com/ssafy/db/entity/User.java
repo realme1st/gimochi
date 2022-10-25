@@ -44,6 +44,26 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Gifticon> gifticonsList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<ChallengeInvite> challengeInvitesList = new ArrayList<>();
+
+    public void addGifticon(Gifticon gifticon){
+        this.gifticonsList.add(gifticon);
+
+        if(gifticon.getUser() !=this) { //무한루프 방지
+            gifticon.setUser(this);
+        }
+
+    }
+
+    public void addChallengeInvite(ChallengeInvite challengeInvite){
+        this.challengeInvitesList.add(challengeInvite);
+
+        if(challengeInvite.getUser() !=this) { //무한루프 방지
+            challengeInvite.setUser(this);
+        }
+
+    }
 
 
 
