@@ -4,7 +4,9 @@ import lombok.*;
 
 import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +30,10 @@ public class Gifticon{
     private boolean gifticonUsed;
     @Column(nullable = false)
     private String gifticonPath;
+
+    /* Session Message */
+    @OneToOne(mappedBy = "session")
+    private SessionMessage sessionMessages;
 
     public void setUser(User user){
         this.user =user;
