@@ -1,6 +1,7 @@
 package com.ssafy.db.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,15 +29,13 @@ public class Challenge {
     private String challengeDescription;
 
     @Column(nullable = false,name="challenge_participant")
-    private int challengeParticipant;
+    private Long challengeParticipant;
 
     @Column(nullable = false,name="challenge_start_time")
-    @Temporal(TemporalType.TIME)
-    private Date challengeStartTime;
+    private String challengeStartTime;
 
     @Column(nullable = false,name="challenge_end_time")
-    @Temporal(TemporalType.TIME)
-    private Date challengeEndTime;
+    private String challengeEndTime;
 
 
     @OneToMany(mappedBy = "challenge")
@@ -56,6 +55,19 @@ public class Challenge {
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
+
+    @Builder
+    public Challenge(Long challengeUserId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime) {
+        this.challengeUserId = challengeUserId;
+        this.challengeTitle = challengeTitle;
+        this.challengeDescription = challengeDescription;
+        this.challengeParticipant = challengeParticipant;
+        this.challengeStartTime = challengeStartTime;
+        this.challengeEndTime = challengeEndTime;
+    }
+
+
+
 
     public void addChallengeReward(ChallengeReward challengeReward){
         this.challengeRewardList.add(challengeReward);
