@@ -1,6 +1,5 @@
 package com.ssafy.api.service;
 
-import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
 
 /**
@@ -8,7 +7,7 @@ import com.ssafy.db.entity.User;
  */
 public interface UserService {
     //User createUser(UserRegisterPostReq userRegisterInfo);
-    User getUserByUserId(String userId);
+    User getUserByUserEmail(String userEmail);
 
 
 }

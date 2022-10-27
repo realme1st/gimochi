@@ -1,13 +1,11 @@
 package com.ssafy.api.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import com.ssafy.api.request.UserRegisterPostReq;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 /**
  *	유저 관련 비즈니스 로직 처리를 위한 서비스 구현 정의.
@@ -32,9 +30,9 @@ public class UserServiceImpl implements UserService {
 //	}
 
 	@Override
-	public User getUserByUserId(String userId) {
+	public User getUserByUserEmail(String userEmail) {
 		// 디비에 유저 정보 조회 (userId 를 통한 조회).
-		User user = userRepositorySupport.findUserByUserId(userId).get();
+		User user = userRepositorySupport.findUserByUserEmail(userEmail).get();
 		return user;
 	}
 

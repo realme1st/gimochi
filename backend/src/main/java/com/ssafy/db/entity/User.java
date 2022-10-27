@@ -1,9 +1,8 @@
 package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,25 +17,32 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //new User막음
 @ToString(callSuper=true)
 public class User{
+    @Builder
+    public User(String userNickname, String userEmail, Date userBirthday, String userSocialToken) {
+        this.userNickname = userNickname;
+        this.userEmail = userEmail;
+        this.userBirthday = userBirthday;
+        this.userSocialToken = userSocialToken;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
-
-    @Column(nullable = false)
-    private String userName;
     @Column(nullable = false)
     private String userEmail;
     @Column(nullable = true)
     private String userProfile;
     @Column(nullable = false)
     private int userPoint;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String userNickname;
-    @Column(nullable = false)
+    @Column(nullable = true)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "MMdd")
     private Date userBirthday;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userSocialToken;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userFbToken;
 
 
@@ -71,7 +77,6 @@ public class User{
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Session> sessionsList = new ArrayList<>();
-
 
 
 }

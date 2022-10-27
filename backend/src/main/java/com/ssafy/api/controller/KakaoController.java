@@ -2,13 +2,12 @@ package com.ssafy.api.controller;
 
 import com.ssafy.api.dto.OauthToken;
 import com.ssafy.api.service.KakaoService;
-import com.ssafy.common.model.response.BaseResponseBody;
+import com.ssafy.db.entity.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,18 +27,14 @@ public class KakaoController {
             @ApiResponse(code = 401, message = "발급 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<? extends BaseResponseBody> getLogin(
+    public User getLogin(
             @RequestParam("code") String code) {
-
 
         // 넘어온 인가 코드를 통해 access_token 발급 //(5)
         OauthToken oauthToken = kakaoService.getAccessToken(code);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-//        if (true) {
-//            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-//        } else {
-//            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "Fail"));
-//        }
+
+        User user = kakaoService.saveUser(oauthToken.getAccess_token());
+        return user;
     }
 
 }
