@@ -44,6 +44,7 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Gifticon> gifticonsList = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "user")
     private List<ChallengeInvite> challengeInvitesList = new ArrayList<>();
 
@@ -65,6 +66,11 @@ public class User{
 
     }
 
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Session> sessionsList = new ArrayList<>();
 
 
 
