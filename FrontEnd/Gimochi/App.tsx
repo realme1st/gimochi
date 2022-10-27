@@ -3,49 +3,23 @@ import { NavigationContainer, ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Text, TouchableHighlight, View } from 'react-native';
 import { useCallback } from 'react';
+import TabNavigation from './src/navigation/TabNavigation';
+import LoginScreen from './src/screen/LoginScreen';
 
 type RootStackParamList = {
   Home: undefined;
-  Details: undefined;
+  Login: undefined;
 };
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
-
-function HomeScreen({ navigation }: HomeScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Details');
-  }, [navigation]);
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableHighlight onPress={onClick}>
-        <Text>Home Screen</Text>
-      </TouchableHighlight>
-    </View>
-  );
-}
-
-function DetailsScreen({ navigation }: DetailsScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Home');
-  }, [navigation]);
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableHighlight onPress={onClick}>
-        <Text>Details Screen</Text>
-      </TouchableHighlight>
-    </View>
-  );
-}
+// type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+// type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Login'>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen name='Home' component={HomeScreen} options={{ title: 'Overview' }} />
-        <Stack.Screen name='Details'>{(props) => <DetailsScreen {...props} />}</Stack.Screen>
+        <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
+        <Stack.Screen name='Login' component={LoginScreen} options={{ title: '로그인' }}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
