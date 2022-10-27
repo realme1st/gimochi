@@ -31,14 +31,15 @@ public class KakaoController {
     public ResponseEntity<? extends BaseResponseBody> getLogin(
             @RequestParam("code") String code) {
 
+
         // 넘어온 인가 코드를 통해 access_token 발급 //(5)
         OauthToken oauthToken = kakaoService.getAccessToken(code);
-
-        if (true) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-        } else {
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "Fail"));
-        }
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+//        if (true) {
+//            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+//        } else {
+//            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "Fail"));
+//        }
     }
 
 }
