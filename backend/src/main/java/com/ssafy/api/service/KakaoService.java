@@ -90,18 +90,15 @@ public class KakaoService {
 
         //(3)
         if(!user.isPresent()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("MMdd");
-            try{
-                User newUser = User.builder()
-                        .userNickname(profile.getProperties().getNickname())
-                        .userEmail(profile.getKakao_account().getEmail())
-                        .userBirthday(formatter.parse(profile.getKakao_account().getBirthday()))
-                        .build();
-                userRepository.save(newUser);
-                return newUser;
-            }catch (java.text.ParseException e){
-                e.printStackTrace();
-            }
+
+            User newUser = User.builder()
+                    .userNickname(profile.getProperties().getNickname())
+                    .userEmail(profile.getKakao_account().getEmail())
+                    .userBirthday(profile.getKakao_account().getBirthday())
+                    .build();
+            userRepository.save(newUser);
+            return newUser;
+
         }
 
         return null;

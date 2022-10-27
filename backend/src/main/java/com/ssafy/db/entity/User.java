@@ -18,7 +18,7 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(String userNickname, String userEmail, Date userBirthday, String userSocialToken) {
+    public User(String userNickname, String userEmail, String userBirthday, String userSocialToken) {
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
@@ -37,9 +37,7 @@ public class User{
     @Column(nullable = false)
     private String userNickname;
     @Column(nullable = true)
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "MM-dd")
-    private Date userBirthday;
+    private String userBirthday;
     @Column(nullable = true)
     private String userSocialToken;
     @Column(nullable = true)
