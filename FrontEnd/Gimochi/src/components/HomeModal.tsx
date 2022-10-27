@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-function HomeModal({ navigation }) {
+function HomeModal({ navigation, route }) {
+  const goHome = () => {
+    navigation.goBack();
+    navigation.navigate('HomeScreen');
+  };
+
   const goAttendance = () => {
     // goBack을 하지 않으면 이동한 스택에서 뒤로가면 모달이 뜸, 그래서 스택을 뒤로 옮기고 다음 스크린으로 이동
     navigation.goBack();
@@ -38,6 +44,9 @@ function HomeModal({ navigation }) {
         style={{ width: '100%', height: '30%', position: 'absolute', bottom: 0, backgroundColor: 'white' }}
       >
         <Text style={{ textAlign: 'center' }}>Create Posts !! This is Modal</Text>
+        <TouchableOpacity onPress={() => goHome()}>
+          <Text>홈</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => goAttendance()}>
           <Text>출첵</Text>
         </TouchableOpacity>
