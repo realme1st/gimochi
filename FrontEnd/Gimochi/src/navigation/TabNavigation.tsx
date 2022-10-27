@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screen/HomeScreen';
 import MypageScreen from '../screen/MypageScreen';
@@ -53,7 +53,11 @@ function TabNavigation() {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View>
-                <FontAwesomeIcon icon={faHouse} size={30} color={'#ffa401'} />
+                <Image
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                  source={require('../assets/images/homeMochi.png')}
+                  style={{ width: 70, height: 70, marginBottom: 30 }}
+                />
               </View>
             ) : (
               <View>
