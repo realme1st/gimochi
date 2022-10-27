@@ -23,6 +23,6 @@ public class SessionType {
     private String type;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "sessionType")
     private List<Session> sessionsList = new ArrayList<>();
 }

@@ -42,13 +42,5 @@ public class SessionMessage {
         }
     }
 
-    public void setGifticon(Gifticon gifticon){
-        this.gifticon = gifticon;
-        //무한 루프 주의
-        if(!gifticon.getSessionMessagesList().contains(this)){
-            gifticon.getSessionMessagesList().add(this);
-        }
-    }
-
 
 }

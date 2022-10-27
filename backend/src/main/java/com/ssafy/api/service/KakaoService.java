@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoService {
 
     /*
-    클라이언트키, redirect uri, 시크릿키, 발급받은 AccessToken DB저장
+    추가 해야 될 것 : 발급받은 AccessToken DB저장
      */
     @Transactional
     public OauthToken getAccessToken(String code) {
@@ -30,10 +30,16 @@ public class KakaoService {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "{클라이언트 앱 키}");
-        params.add("redirect_uri", "{리다이렉트 uri}");
+        params.add("client_id", "0e3c9cecfd800e2aae8228d69a635959");
+        //로컬에서 할 때
+        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
+        //ssl 인증서 설정 전
+        //params.add("redirect_uri", "http://k7a205.p.ssafy.io/kakao/oauth");
+        
+        //ssl 인증서 설정 후
+        //params.add("redirect_uri", "https://k7a205.p.ssafy.io/kakao/oauth");
         params.add("code", code);
-        params.add("client_secret", "{시크릿 키}"); // 생략 가능!
+        params.add("client_secret", "5YBXwlymi8l1I2H57ZObnlrOQ4NNUrnS"); // 생략 가능!
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(params, headers);
@@ -47,8 +53,14 @@ public class KakaoService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         OauthToken oauthToken = null;
+
+
         try {
             oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
+            /*
+            발급 받은 토큰 디비 저장 필요
+
+             */
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
