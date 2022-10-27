@@ -1,10 +1,14 @@
 import React from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screen/HomeScreen';
 import MypageScreen from '../screen/MypageScreen';
-import ScheduleScreen from '../screen/ScheduleScreen';
+import GifticonScreen from '../screen/GifticonScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faBarcode, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
+
+// import ScheduleScreen from '../screen/ScheduleScreen';
 // import ChallengeScreen from '../Screen/ChallengeScreen';
-// import GifticonScreen from '../Screen/GifticonScreen';
 // import RollingpaperScreen from '../Screen/RollingpaperScreen';
 // import PlayScreen from '../Screen/PlayScreen';
 // import AttendanceScreen from '../Screen/AttendanceScreen';
@@ -13,19 +17,49 @@ const Tab = createBottomTabNavigator();
 
 function TabNavigation() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      initialRouteName='HomeScreen'
+      screenOptions={{
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          fontFamily: 'Regular',
+        },
+        tabBarShowLabel: false,
+      }}
+    >
       <Tab.Screen
-        name='HomeScreen'
-        component={HomeScreen}
+        name='Gifticon'
+        component={GifticonScreen}
         options={{
-          title: '홈',
+          title: '티콘모아',
+          tabBarIcon: ({ focused }) => (
+            <View>
+              <FontAwesomeIcon icon={faBarcode} size={30} color={focused ? '#ffa401' : '#686868'} />
+            </View>
+          ),
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name='Schedule'
-        component={ScheduleScreen}
+        name='HomeScreen'
+        component={HomeScreen}
+        // listeners={({ navigation }) => ({
+        //   tabPress: (e) => {
+        //     e.preventDefault();
+        //     navigation.navigate(`CreateModal${navigation.getState().index}`);
+        //   },
+        // })}
         options={{
-          title: '일정관리',
+          title: '기모치',
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <View>
+                <FontAwesomeIcon icon={faHouse} size={30} color={'#ffa401'} />
+              </View>
+            ) : (
+              <View>
+                <FontAwesomeIcon icon={faHouse} size={30} color={'#686868'} />
+              </View>
+            ),
         }}
       ></Tab.Screen>
       <Tab.Screen
@@ -33,6 +67,11 @@ function TabNavigation() {
         component={MypageScreen}
         options={{
           title: '마이페이지',
+          tabBarIcon: ({ focused }) => (
+            <View>
+              <FontAwesomeIcon icon={faUser} size={30} color={focused ? '#ffa401' : '#686868'} />
+            </View>
+          ),
         }}
       ></Tab.Screen>
     </Tab.Navigator>

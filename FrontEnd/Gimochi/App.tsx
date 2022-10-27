@@ -1,19 +1,10 @@
 import * as React from 'react';
-import { NavigationContainer, ParamListBase } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Text, TouchableHighlight, View } from 'react-native';
-import { useCallback } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from './src/navigation/TabNavigation';
 import LoginScreen from './src/screen/LoginScreen';
 
-type RootStackParamList = {
-  Home: undefined;
-  Login: undefined;
-};
-// type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-// type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Login'>;
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
