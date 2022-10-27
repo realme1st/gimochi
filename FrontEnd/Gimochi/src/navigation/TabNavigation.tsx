@@ -21,19 +21,10 @@ import { NavigationContainer } from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 
 function TabNavigation({ navigation, route }) {
+  // 화면에 보여주는 화면의 name값 받아오기
   const routeName = getFocusedRouteNameFromRoute(route);
-  // console.log(routeName);
-  const [isModal, setIsModal] = useState(false);
   const homeModal = () => {
-    if (isModal) {
-      navigation.goBack;
-      setIsModal(false);
-      console.log('close');
-    } else {
-      navigation.navigate('HomeModal');
-      setIsModal(true);
-      console.log('open');
-    }
+    navigation.navigate('HomeModal');
   };
   return (
     <Tab.Navigator
@@ -61,12 +52,15 @@ function TabNavigation({ navigation, route }) {
       <Tab.Screen
         name='Main'
         component={HomeNavigation}
-        // listeners={({ navigation }) => ({
-        //   tabPress: (e) => {
-        //     e.preventDefault();
-        //     navigation.navigate('HomeModal');
-        //   },
-        // })}
+        // 현재 위치가 홈화면이면 중앙버튼 클릭했을때 모달뜨게
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (routeName === 'Main') {
+              e.preventDefault();
+              navigation.navigate('HomeModal');
+            }
+          },
+        })}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) =>

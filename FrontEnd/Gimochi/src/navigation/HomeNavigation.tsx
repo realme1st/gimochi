@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import HomeScreen from '../screen/HomeScreen';
@@ -10,12 +10,22 @@ import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
 
 const Home = createNativeStackNavigator();
-function HomeNavigation({ route }) {
-  const routeName = getFocusedRouteNameFromRoute(route);
-  console.log(routeName);
+function HomeNavigation({ route, navigation }) {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === 'HomeModal') {
+      //MyPage이외의 화면에 대해 tabBar none을 설정한다.
+      navigation.setOptions({ tabBarStyle: { display: 'none' } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
+    }
+    console.log(routeName);
+  }, [navigation, route]);
+
+  // const routeName = getFocusedRouteNameFromRoute(route);
   return (
     <Home.Navigator
-      initialRouteName='HomeScreen'
+      // initialRouteName='HomeScreen'
       screenOptions={{
         headerTitleAlign: 'center',
         headerTitleStyle: {
@@ -52,7 +62,6 @@ function HomeNavigation({ route }) {
           presentation: 'transparentModal',
           headerShown: false,
           gestureEnabled: true,
-          tabBarStyle: { display: 'none' },
         }}
       ></Home.Screen>
     </Home.Navigator>
