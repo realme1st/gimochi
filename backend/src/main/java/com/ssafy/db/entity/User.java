@@ -38,7 +38,7 @@ public class User{
     private String userNickname;
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "MMdd")
+    @DateTimeFormat(pattern = "MM-dd")
     private Date userBirthday;
     @Column(nullable = true)
     private String userSocialToken;
