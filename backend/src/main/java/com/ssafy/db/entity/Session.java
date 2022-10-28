@@ -2,15 +2,14 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -25,9 +24,10 @@ public class Session {
     private Long sessionId;
 
     private String name;
-    private String url;
     @Column(nullable = false, name = "create_time")
     private LocalDateTime createTime;
+    @Column(nullable = false, name = "expire_time")
+    private LocalDateTime expireTime;
     @Column(nullable = false)
     private LocalDate anniversary;
 
@@ -45,6 +45,7 @@ public class Session {
     @JoinColumn(name = "sessionTypeId")
     private SessionType sessionType;
 
+
     public void setUser(User user){
         this.user =user;
         //무한 루프 주의
@@ -61,4 +62,13 @@ public class Session {
         }
     }
 
+    @Builder
+    public Session(String name, LocalDateTime createTime, LocalDateTime expireTime, LocalDate anniversary, User user, SessionType sessionType) {
+        this.name = name;
+        this.createTime = createTime;
+        this.expireTime = expireTime;
+        this.anniversary = anniversary;
+        this.user = user;
+        this.sessionType = sessionType;
+    }
 }

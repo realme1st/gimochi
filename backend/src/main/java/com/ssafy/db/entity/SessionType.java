@@ -2,6 +2,7 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,11 @@ public class SessionType {
     @JsonIgnore
     @OneToMany(mappedBy = "sessionType")
     private List<Session> sessionsList = new ArrayList<>();
+
+    @Builder
+    public SessionType(Long sessionTypeId, String type) {
+        this.sessionTypeId = sessionTypeId;
+        this.type = type;
+    }
+
 }
