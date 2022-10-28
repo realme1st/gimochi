@@ -2,11 +2,9 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +16,8 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(String userNickname, String userEmail, String userBirthday, String userSocialToken) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken) {
+        this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
@@ -28,6 +27,8 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
+    @Column(nullable = false)
+    private Long userKakaoId;
     @Column(nullable = false)
     private String userEmail;
     @Column(nullable = true)
@@ -76,5 +77,9 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Session> sessionsList = new ArrayList<>();
 
+
+    public void changeSocialTokenInfo(String userSocialToken){
+        this.userSocialToken = userSocialToken;
+    }
 
 }
