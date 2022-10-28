@@ -2,6 +2,7 @@ package com.ssafy.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.api.dto.KakaoFriends;
 import com.ssafy.api.dto.KakaoProfile;
 import com.ssafy.api.dto.OauthToken;
 import com.ssafy.db.entity.User;
@@ -17,7 +18,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @Service("kakaoService")
@@ -27,10 +27,6 @@ public class KakaoService {
     @Autowired
     UserRepository userRepository;
 
-    /*
-    추가 해야 될 것 : 발급받은 AccessToken DB저장
-     */
-    @Transactional
     public OauthToken getAccessToken(String code) {
 
         RestTemplate rt = new RestTemplate();
@@ -77,47 +73,39 @@ public class KakaoService {
 
         return oauthToken; 
     }
+    @Transactional
+    public User saveUser(OauthToken token) {
 
-    public User saveUser(String token) {
-
-        //(1)
-        KakaoProfile  profile = findProfile(token);
-
-        //(2)
-
+        KakaoProfile  profile = findProfile(token.getAccess_token());
         Optional<User> user = userRepository.findByUserEmail(profile.getKakao_account().getEmail());
 
-
-        //(3)
         if(!user.isPresent()) {
-
             User newUser = User.builder()
+                    .userKakaoId(profile.getId())
                     .userNickname(profile.getProperties().getNickname())
                     .userEmail(profile.getKakao_account().getEmail())
                     .userBirthday(profile.getKakao_account().getBirthday())
+                    .userSocialToken(token.getAccess_token())
                     .build();
             userRepository.save(newUser);
             return newUser;
 
+        }else{
+            user.get().changeSocialTokenInfo(token.getAccess_token());
+            return user.get();
         }
-
-        return null;
     }
     public KakaoProfile findProfile(String token) {
 
-        //(1-2)
         RestTemplate rt = new RestTemplate();
 
-        //(1-3)
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); //(1-4)
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        //(1-5)
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
                 new HttpEntity<>(headers);
 
-        //(1-6)
         // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
         ResponseEntity<String> kakaoProfileResponse = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
@@ -126,7 +114,72 @@ public class KakaoService {
                 String.class
         );
 
-        //(1-7)
+        ObjectMapper objectMapper = new ObjectMapper();
+        KakaoProfile kakaoProfile = null;
+        try {
+            kakaoProfile = objectMapper.readValue(kakaoProfileResponse.getBody(), KakaoProfile.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return kakaoProfile;
+
+    }
+
+    public KakaoFriends getKakaoFriends(String token) {
+
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token); //(1-4)
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<MultiValueMap<String, String>> kakaoFriendsRequest =
+                new HttpEntity<>(headers);
+
+        // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
+        ResponseEntity<String> kakaoFriendsResponse = rt.exchange(
+                "https://kapi.kakao.com/v1/api/talk/friends",
+                HttpMethod.GET,
+                kakaoFriendsRequest,
+                String.class
+        );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        KakaoFriends kakaoFriends = null;
+        try {
+            kakaoFriends = objectMapper.readValue(kakaoFriendsResponse.getBody(), KakaoFriends.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return kakaoFriends;
+
+    }
+
+    public KakaoProfile findFriend(Long userId) {
+
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + "db844548151ae781f128d34c2cf7ec73"); //(1-4)
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("target_id_type", "user_id");
+        params.add("target_id", String.valueOf(userId));
+
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
+                new HttpEntity<>(params,headers);
+
+        // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
+        ResponseEntity<String> kakaoProfileResponse = rt.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoProfileRequest,
+                String.class
+        );
+
         ObjectMapper objectMapper = new ObjectMapper();
         KakaoProfile kakaoProfile = null;
         try {
