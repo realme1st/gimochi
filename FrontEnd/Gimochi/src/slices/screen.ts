@@ -3,7 +3,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  screenName: 'home',
+  screenName: 'HomeScreen',
 };
 const screenSlice = createSlice({
   name: 'screen',
