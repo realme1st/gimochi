@@ -18,6 +18,7 @@
     "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
+    "@reduxjs/toolkit": "^1.8.6",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-flipper": "^0.171.1",
@@ -26,6 +27,7 @@
     "react-native-screens": "^3.18.2",
     "react-native-svg": "^13.4.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-redux": "^8.0.4",
     "redux-flipper": "^2.0.2",
     "rn-async-storage-flipper": "^0.0.10",
     "styled-components": "^5.3.6"
@@ -37,6 +39,7 @@
     "@types/jest": "^26.0.23",
     "@types/react-native": "^0.66.4",
     "@types/react-test-renderer": "^17.0.1",
+    "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "babel-jest": "^26.6.3",

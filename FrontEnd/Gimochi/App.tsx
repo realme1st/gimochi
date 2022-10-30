@@ -1,11 +1,19 @@
 import * as React from 'react';
+import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import store from './src/store';
 import TabNavigation from './src/navigation/TabNavigation';
 import LoginScreen from './src/screen/LoginScreen';
+import { useSelector } from 'react-redux';
+import { RootState } from './src/store/reducer';
 
 const Stack = createNativeStackNavigator();
-function App() {
+
+function AppInner() {
+  const currentScreen = useSelector((state: RootState) => !!state.screen.screenName);
+  const isLoggedIn = useSelector((state: RootState) => !!state.user.accessToken);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Home'>
@@ -13,6 +21,13 @@ function App() {
         <Stack.Screen name='Login' component={LoginScreen} options={{ title: '로그인' }}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+function App() {
+  return (
+    <Provider store={store}>
+      <AppInner />
+    </Provider>
   );
 }
 

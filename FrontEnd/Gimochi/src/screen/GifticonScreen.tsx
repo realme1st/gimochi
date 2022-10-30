@@ -1,7 +1,5 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View } from 'react-native';
 
 function GifticonScreen() {
   return (

@@ -131,7 +131,7 @@ const MenuButtonContainer = styled.TouchableOpacity`
 
 const MenuButtonText = styled.Text`
   font-family: 'Regular';
-  color: '#686868';
+  color: #686868;
   margin-top: 5%;
 `;
 
