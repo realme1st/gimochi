@@ -11,7 +11,6 @@ import { RootState } from './src/store/reducer';
 const Stack = createNativeStackNavigator();
 
 function AppInner() {
-  const currentScreen = useSelector((state: RootState) => !!state.screen.screenName);
   const isLoggedIn = useSelector((state: RootState) => !!state.user.accessToken);
 
   return (

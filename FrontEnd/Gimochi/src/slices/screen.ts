@@ -9,7 +9,7 @@ const screenSlice = createSlice({
   name: 'screen',
   initialState,
   reducers: {
-    setUser(state, action) {
+    setScreen(state, action) {
       state.screenName = action.payload.screenName;
     },
   },
