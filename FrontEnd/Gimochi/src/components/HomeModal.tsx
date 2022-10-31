@@ -24,7 +24,7 @@ import { HomeModalProps } from '../navigation/HomeNavigation';
 
 function HomeModal({ navigation }: HomeModalProps) {
   const currentScreen = useSelector((state: RootState) => state.screen.screenName);
-  console.log(currentScreen);
+  // console.log(currentScreen);
 
   const dispatch = useAppDispatch();
 
@@ -133,48 +133,11 @@ function HomeModal({ navigation }: HomeModalProps) {
           size={300}
           centerContent={
             <TouchableOpacity onPress={goHome}>
-              {currentScreen === 'HomeScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 80, height: 80 }}
-                />
-              )}
-              {currentScreen === 'AttendanceScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 70, height: 70 }}
-                />
-              )}
-              {currentScreen === 'PlayScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 60, height: 60 }}
-                />
-              )}
-              {currentScreen === 'RollingpaperScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 50, height: 50 }}
-                />
-              )}
-              {currentScreen === 'ScheduleScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 40, height: 40 }}
-                />
-              )}
-              {currentScreen === 'ChallengeScreen' && (
-                <Image
-                  source={require('../assets/images/homeMochi.png')}
-                  resizeMode='contain'
-                  style={{ width: 30, height: 30 }}
-                />
-              )}
+              <Image
+                source={require('../assets/images/homeMochi.png')}
+                resizeMode='contain'
+                style={{ width: 80, height: 80 }}
+              />
             </TouchableOpacity>
           }
           content={content}

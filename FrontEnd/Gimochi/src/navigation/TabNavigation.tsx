@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
 import { getFocusedRouteNameFromRoute, NavigatorScreenParams } from '@react-navigation/native';
@@ -9,6 +10,8 @@ import HomeNavigation from './HomeNavigation';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBarcode, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
 import { HomeStackParamList } from './HomeNavigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/reducer';
 
 type TabParamList = {
   GifticonScreen: undefined;
@@ -21,6 +24,8 @@ type HomeStackScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
 function TabNavigation({ navigation, route }: HomeStackScreenProps) {
   // 화면에 보여주는 화면의 name값 받아오기
+  const currentScreen = useSelector((state: RootState) => state.screen.screenName);
+
   const routeName = getFocusedRouteNameFromRoute(route);
   const homeModal = () => {
     navigation.navigate('HomeModal');
@@ -65,11 +70,48 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <TouchableOpacity style={{ position: 'absolute', bottom: 1 }} onPress={() => homeModal()}>
-                <Image
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  source={require('../assets/images/homeMochi.png')}
-                  style={{ width: 80, height: 80 }}
-                />
+                {currentScreen === 'HomeScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 80, height: 80 }}
+                  />
+                )}
+                {currentScreen === 'AttendanceScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 70, height: 70 }}
+                  />
+                )}
+                {currentScreen === 'PlayScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 60, height: 60 }}
+                  />
+                )}
+                {currentScreen === 'RollingpaperScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 50, height: 50 }}
+                  />
+                )}
+                {currentScreen === 'ScheduleScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 40, height: 40 }}
+                  />
+                )}
+                {currentScreen === 'ChallengeScreen' && (
+                  <Image
+                    source={require('../assets/images/homeMochi.png')}
+                    resizeMode='contain'
+                    style={{ width: 30, height: 30 }}
+                  />
+                )}
               </TouchableOpacity>
             ) : (
               <View>
