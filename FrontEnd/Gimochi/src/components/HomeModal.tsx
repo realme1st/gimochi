@@ -24,7 +24,7 @@ import { HomeModalProps } from '../navigation/HomeNavigation';
 
 function HomeModal({ navigation }: HomeModalProps) {
   const currentScreen = useSelector((state: RootState) => state.screen.screenName);
-  // console.log(currentScreen);
+  console.log(currentScreen);
 
   const dispatch = useAppDispatch();
 
