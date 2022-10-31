@@ -21,7 +21,7 @@ public class SessionController {
     SessionService sessionService;
 
     @GetMapping("/type")
-    @ApiOperation(value = "세션 타입 조회", notes = "<strong>세션 타입을 조회한다.</strong>")
+    @ApiOperation(value = "세션 타입  조회", notes = "<strong>세션 타입을 조회한다.</strong>")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
@@ -47,8 +47,8 @@ public class SessionController {
     }
 
 
-    @GetMapping("/session/{sessionId}")
-    @ApiOperation(value = "세션 조회", notes = "<strong>세션 id를 입력하여</strong> 세션을 조회한다.")
+    @GetMapping("/{sessionId}")
+    @ApiOperation(value = "sessionId 기반 세션 조회", notes = "<strong>세션 id를 입력하여</strong> 세션을 조회한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
@@ -60,7 +60,23 @@ public class SessionController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSession(sessionId)));
     }
 
-    @DeleteMapping("/session/{sessionId}")
+    @GetMapping("/user/{userId}")
+    @ApiOperation(value = "userId 기반 세션 조회", notes = "<strong>user id를 입력하여</strong> 세션을 조회한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 404, message = "해당하는 정보 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends BasicResponse> getSessionByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSessionByUserId(userId)));
+    }
+
+
+
+
+    @DeleteMapping("/{sessionId}")
     @ApiOperation(value = "세션 삭제", notes = "<strong>세션 id를 입력하여</strong> 세션을 삭제한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -72,4 +88,5 @@ public class SessionController {
     public ResponseEntity<? extends BasicResponse> deleteSession(@PathVariable Long sessionId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.deleteSession(sessionId)));
     }
+
 }
