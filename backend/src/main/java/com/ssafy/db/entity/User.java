@@ -16,12 +16,13 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken) {
         this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
         this.userSocialToken = userSocialToken;
+        this.userSocialRefreshToken = userSocialRefreshToken;
     }
 
     @Id
@@ -42,14 +43,15 @@ public class User{
     @Column(nullable = true)
     private String userSocialToken;
     @Column(nullable = true)
+    private String userSocialRefreshToken;
+    @Column(nullable = true)
     private String userFbToken;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Gifticon> gifticonsList = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<ChallengeInvite> challengeInvitesList = new ArrayList<>();
 
@@ -78,8 +80,9 @@ public class User{
     private List<Session> sessionsList = new ArrayList<>();
 
 
-    public void changeSocialTokenInfo(String userSocialToken){
+    public void changeSocialTokenInfo(String userSocialToken, String userSocialRefreshToken){
         this.userSocialToken = userSocialToken;
+        this.userSocialRefreshToken = userSocialRefreshToken;
     }
 
 }
