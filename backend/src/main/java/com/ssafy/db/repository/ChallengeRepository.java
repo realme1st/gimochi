@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
-    Challenge findChallengeByChallengeId(Long challengeId);
+    Optional<Challenge> findChallengeByChallengeId(Long challengeId);
+    //Optional<Challenge> findChallengeByChallengeUserId(Long challengeUserId);
 
 }

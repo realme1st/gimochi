@@ -26,7 +26,12 @@ public enum ErrorCode {
     /* 커스텀 예외들 */
     SESSION_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 타입입니다." ),
 
-    SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 세션 id 입니다"),;
+    SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 세션 id 입니다"),
+
+    CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 챌린지 id 입니다"),;
+
+
+
 
     private final HttpStatus httpStatus;
     private final String message;
