@@ -68,6 +68,12 @@ public class SessionService {
         return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
+    // userId를 기반으로 Session 리스트를 반환하는 메소드, 예외 처리까지
+    public List<Session> getSessionByUserId(Long userId) {
+        return sessionRepository.findAllByUserUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+    }
+
+
 
     @Transactional
     public boolean deleteSession(Long sessionId) {
@@ -78,6 +84,14 @@ public class SessionService {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    // create_time과 expire_time이 유효한지 확인
+    public boolean isValidTime(LocalDateTime createTime, LocalDateTime expireTime) {
+        if (createTime.isAfter(expireTime)) {
+            return false;
+        }
+        return true;
     }
 
 
