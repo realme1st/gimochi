@@ -1,9 +1,7 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.ChallengeReqDto;
-import com.ssafy.api.request.ChallengePostReq;
 import com.ssafy.db.entity.Challenge;
-import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,11 @@ public class ChallengeService {
     }
     public List<Challenge> getChallengeList(){
         return challengeRepository.findAll();
+    }
+
+
+    public Challenge getChallengeListByUserId(Long challengeId) {
+        return challengeRepository.findChallengeByChallengeId(challengeId);
     }
 }
 
