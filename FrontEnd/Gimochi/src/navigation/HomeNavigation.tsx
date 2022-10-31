@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import HomeScreen from '../screen/HomeScreen';
 import AttendanceScreen from '../screen/AttendanceScreen';
@@ -9,8 +9,19 @@ import RollingpaperScreen from '../screen/RollingpaperScreen';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
 
-const Home = createNativeStackNavigator();
-function HomeNavigation({ route, navigation }) {
+export type HomeStackParamList = {
+  HomeScreen: undefined;
+  AttendanceScreen: undefined;
+  ChallengeScreen: undefined;
+  PlayScreen: undefined;
+  RollingpaperScreen: undefined;
+  ScheduleScreen: undefined;
+  HomeModal: undefined;
+};
+export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeModal'>;
+
+const Home = createNativeStackNavigator<HomeStackParamList>();
+function HomeNavigation({ route, navigation }: HomeModalProps) {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === 'HomeModal') {

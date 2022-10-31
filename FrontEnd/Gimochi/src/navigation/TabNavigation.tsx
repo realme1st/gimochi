@@ -1,26 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import React from 'react';
+import { View, Image, TouchableOpacity } from 'react-native';
+import { getFocusedRouteNameFromRoute, NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screen/HomeScreen';
 import MypageScreen from '../screen/MypageScreen';
 import GifticonScreen from '../screen/GifticonScreen';
 import HomeNavigation from './HomeNavigation';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBarcode, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
-import { NavigationContainer } from '@react-navigation/native';
+import { HomeStackParamList } from './HomeNavigation';
 
-// import ScheduleScreen from '../screen/ScheduleScreen';
-// import ChallengeScreen from '../Screen/ChallengeScreen';
-// import RollingpaperScreen from '../Screen/RollingpaperScreen';
-// import PlayScreen from '../Screen/PlayScreen';
-// import AttendanceScreen from '../Screen/AttendanceScreen';
+type TabParamList = {
+  GifticonScreen: undefined;
+  MypageScreen: undefined;
+  Main: NavigatorScreenParams<HomeStackParamList>;
+};
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
+type HomeStackScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
-function TabNavigation({ navigation, route }) {
+function TabNavigation({ navigation, route }: HomeStackScreenProps) {
   // 화면에 보여주는 화면의 name값 받아오기
   const routeName = getFocusedRouteNameFromRoute(route);
   const homeModal = () => {
@@ -38,7 +37,7 @@ function TabNavigation({ navigation, route }) {
       }}
     >
       <Tab.Screen
-        name='Gifticon'
+        name='GifticonScreen'
         component={GifticonScreen}
         options={{
           title: '티콘모아',
@@ -53,7 +52,7 @@ function TabNavigation({ navigation, route }) {
         name='Main'
         component={HomeNavigation}
         // 현재 위치가 홈화면이면 중앙버튼 클릭했을때 모달뜨게
-        listeners={({ navigation }) => ({
+        listeners={({ navigation }: HomeStackScreenProps) => ({
           tabPress: (e) => {
             if (routeName === 'Main') {
               e.preventDefault();
@@ -80,7 +79,7 @@ function TabNavigation({ navigation, route }) {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name='Mypage'
+        name='MypageScreen'
         component={MypageScreen}
         options={{
           title: '마이페이지',
