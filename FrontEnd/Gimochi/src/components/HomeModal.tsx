@@ -20,10 +20,11 @@ import { useAppDispatch } from '../store';
 import { useSelector } from 'react-redux';
 import screenSlice from '../slices/screen';
 import { RootState } from '../store/reducer';
+import { HomeModalProps } from '../navigation/HomeNavigation';
 
-function HomeModal({ navigation }) {
+function HomeModal({ navigation }: HomeModalProps) {
   const currentScreen = useSelector((state: RootState) => state.screen.screenName);
-  console.log(currentScreen);
+  // console.log(currentScreen);
 
   const dispatch = useAppDispatch();
 
