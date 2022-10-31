@@ -1,11 +1,14 @@
 package com.ssafy.db.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.LocalDateTime;
+import org.springframework.web.servlet.function.ServerRequest;
 
 import javax.persistence.*;
+
+import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -23,24 +26,41 @@ public class SessionMessage {
     private String field;
     @Column(nullable = false, name = "create_time")
     private LocalDateTime createTime;
+    @Column(nullable = false, name = "expire_time")
+    private LocalDateTime expireTime;
 
 
-    @ManyToOne(fetch=LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "sessionId")
     private Session session;
 
-    @ManyToOne(fetch=LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gifticonId")
     private Gifticon gifticon;
 
-
-    public void setSession(Session session){
+    public void setSession(Session session) {
         this.session = session;
         //무한 루프 주의
-        if(!session.getSessionMessagesList().contains(this)){
+        if (!session.getSessionMessagesList().contains(this)) {
             session.getSessionMessagesList().add(this);
         }
     }
 
+    @Builder
+    public SessionMessage(String nickname, String field, LocalDateTime createTime, LocalDateTime expireTime, Session session) {
+        this.nickname = nickname;
+        this.field = field;
+        this.createTime = createTime;
+        this.session = session;
+    }
+
+    @Builder
+    public SessionMessage(String nickname, String field, LocalDateTime createTime, LocalDateTime expireTime, Session session, Gifticon gifticon) {
+        this.nickname = nickname;
+        this.field = field;
+        this.createTime = createTime;
+        this.session = session;
+        this.gifticon = gifticon;
+    }
 
 }

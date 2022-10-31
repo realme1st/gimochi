@@ -1,11 +1,14 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.SessionMessageReqDto;
 import com.ssafy.api.dto.SessionReqDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Session;
+import com.ssafy.db.entity.SessionMessage;
 import com.ssafy.db.entity.SessionType;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.repository.SessionMessageRepository;
 import com.ssafy.db.repository.SessionRepository;
 import com.ssafy.db.repository.SessionTypeRepository;
 import com.ssafy.db.repository.UserRepository;
@@ -28,7 +31,13 @@ public class SessionService {
     private SessionTypeRepository sessionTypeRepository;
 
     @Autowired
+    private SessionMessageRepository sessionMessageRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+//    @Autowired
+//    private gifticonService gifticonService;
 
     /*
      * description: 세션 생성
@@ -74,10 +83,9 @@ public class SessionService {
     }
 
 
-
     @Transactional
     public boolean deleteSession(Long sessionId) {
-        Session session = sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        Session session = findSession(sessionId);
         try {
             sessionRepository.delete(session);
             return true;
@@ -95,4 +103,36 @@ public class SessionService {
     }
 
 
+    public List<SessionMessage> getSessionMessage(Long sessionId) {
+        Session session = findSession(sessionId);
+        List<SessionMessage> sessionMessageList = session.getSessionMessagesList();
+        return sessionMessageList;
+    }
+
+    public Session findSession(Long sessionId) {
+        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+    }
+
+    public SessionMessage createSessionMessage(Long sessionId, SessionMessageReqDto sessionMessageReqDto) {
+        Session session = findSession(sessionId);
+        SessionMessage sessionMessage = null;
+        // img를 첨부하지 않은 경우
+        if (sessionMessageReqDto.getImg() == null) {
+            sessionMessageReqDto.setImg("");
+        }
+        // img가 gifticon이 아닌 경우 (판별은 gifticonService에서 구현)
+        sessionMessage = SessionMessage.builder()
+                .session(session)
+                .field(sessionMessageReqDto.getField())
+                .createTime(sessionMessageReqDto.getCreateTime())
+                .expireTime(sessionMessageReqDto.getExpireTime())
+                .build();
+        // gifticon인 경우 gifticonService에서 처리 (기프티콘 저장)
+        // gifticonService.saveGifticon(sessionMessageReqDto.getImg(),session.getUserId()); // 기프티콘 저장(미구현) -> 기프티콘정보, 선물할 유저 아이디
+
+        // sessionMessage 저장
+        sessionMessageRepository.save(sessionMessage);
+
+        return sessionMessage;
+    }
 }

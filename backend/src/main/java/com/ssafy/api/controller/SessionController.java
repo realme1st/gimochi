@@ -1,5 +1,6 @@
 package com.ssafy.api.controller;
 
+import com.ssafy.api.dto.SessionMessageReqDto;
 import com.ssafy.api.dto.SessionReqDto;
 import com.ssafy.api.service.SessionService;
 import com.ssafy.common.response.BasicResponse;
@@ -89,4 +90,31 @@ public class SessionController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.deleteSession(sessionId)));
     }
 
+    //sessionId에 해당하는 sessionMessage 조회
+    @GetMapping("/message/{sessionId}")
+    @ApiOperation(value = "sessionId 기반 세션 메세지 조회", notes = "<strong>세션 id를 입력하여</strong> 세션 메세지를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 404, message = "해당하는 정보 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends BasicResponse> getSessionMessage(@PathVariable Long sessionId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSessionMessage(sessionId)));
+    }
+
+    //sessionId에 해당하는 sessionMessage 생성
+    @PostMapping("/message/{sessionId}")
+    @ApiOperation(value = "세션 메세지 생성", notes = "<strong>세션 메세지 정보를 입력하여</strong> 세션 메세지를 만든다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 404, message = "해당하는 정보 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends BasicResponse> createSessionMessage(@PathVariable Long sessionId, @RequestBody SessionMessageReqDto sessionMessageReqDto) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.createSessionMessage(sessionId, sessionMessageReqDto)));
+    }
 }
