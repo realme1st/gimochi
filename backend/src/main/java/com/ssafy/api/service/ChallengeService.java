@@ -1,6 +1,8 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.common.exception.CustomException;
+import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.repository.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +37,19 @@ public class ChallengeService {
     }
 
 
-    public Challenge getChallengeListByUserId(Long challengeId) {
+    public Optional<Challenge> getChallengeListByUserId(Long challengeId) {
         return challengeRepository.findChallengeByChallengeId(challengeId);
+    }
+
+    @Transactional
+    public boolean deleteChallenge(Long challengeId) {
+        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        try {
+            challengeRepository.delete(challenge);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
 
