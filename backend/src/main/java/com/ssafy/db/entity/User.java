@@ -85,4 +85,8 @@ public class User{
         this.userSocialRefreshToken = userSocialRefreshToken;
     }
 
+    public void setFirebaseToken(String FirebaseToken){
+        this.userFbToken = FirebaseToken;
+    }
+
 }
