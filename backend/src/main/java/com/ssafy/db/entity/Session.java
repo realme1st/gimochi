@@ -32,32 +32,43 @@ public class Session {
     private LocalDate anniversary;
 
     /* Session Message */
+
     @OneToMany(mappedBy = "session")
     private List<SessionMessage> sessionMessagesList = new ArrayList<>();
 
+    public void addSessionMessage(SessionMessage sessionMessage) {
+        this.sessionMessagesList.add(sessionMessage);
+
+        if (sessionMessage.getSession() != this) {
+            sessionMessage.setSession(this);
+        }
+    }
+
     /* User */
-    @ManyToOne(fetch=LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
     /* Type */
-    @ManyToOne(fetch=LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "sessionTypeId")
     private SessionType sessionType;
 
 
-    public void setUser(User user){
-        this.user =user;
+    public void setUser(User user) {
+        this.user = user;
         //무한 루프 주의
-        if(!user.getSessionsList().contains(this)){
+        if (!user.getSessionsList().contains(this)) {
             user.getSessionsList().add(this);
         }
     }
 
-    public void setSessionType(SessionType sessionType){
+    public void setSessionType(SessionType sessionType) {
         this.sessionType = sessionType;
         //무한 루프 주의
-        if(!sessionType.getSessionsList().contains(this)){
+        if (!sessionType.getSessionsList().contains(this)) {
             sessionType.getSessionsList().add(this);
         }
     }

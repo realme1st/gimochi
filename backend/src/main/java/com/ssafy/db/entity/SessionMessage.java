@@ -1,5 +1,6 @@
 package com.ssafy.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +30,15 @@ public class SessionMessage {
     @Column(nullable = false, name = "expire_time")
     private LocalDateTime expireTime;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "sessionId")
     private Session session;
-
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gifticonId")
     private Gifticon gifticon;
+
 
     public void setSession(Session session) {
         this.session = session;
@@ -52,6 +54,7 @@ public class SessionMessage {
         this.field = field;
         this.createTime = createTime;
         this.session = session;
+        this.expireTime = expireTime;
     }
 
     @Builder
@@ -61,6 +64,7 @@ public class SessionMessage {
         this.createTime = createTime;
         this.session = session;
         this.gifticon = gifticon;
+        this.expireTime = expireTime;
     }
 
 }

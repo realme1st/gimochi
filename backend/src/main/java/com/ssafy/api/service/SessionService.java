@@ -102,7 +102,6 @@ public class SessionService {
         return true;
     }
 
-
     public List<SessionMessage> getSessionMessage(Long sessionId) {
         Session session = findSession(sessionId);
         List<SessionMessage> sessionMessageList = session.getSessionMessagesList();
@@ -113,8 +112,9 @@ public class SessionService {
         return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
-    public SessionMessage createSessionMessage(Long sessionId, SessionMessageReqDto sessionMessageReqDto) {
-        Session session = findSession(sessionId);
+    @Transactional
+    public SessionMessage createSessionMessage(SessionMessageReqDto sessionMessageReqDto) {
+        Session session = findSession(sessionMessageReqDto.getSessionId());
         SessionMessage sessionMessage = null;
         // img를 첨부하지 않은 경우
         if (sessionMessageReqDto.getImg() == null) {
@@ -126,6 +126,7 @@ public class SessionService {
                 .field(sessionMessageReqDto.getField())
                 .createTime(sessionMessageReqDto.getCreateTime())
                 .expireTime(sessionMessageReqDto.getExpireTime())
+                .nickname(sessionMessageReqDto.getNickname())
                 .build();
         // gifticon인 경우 gifticonService에서 처리 (기프티콘 저장)
         // gifticonService.saveGifticon(sessionMessageReqDto.getImg(),session.getUserId()); // 기프티콘 저장(미구현) -> 기프티콘정보, 선물할 유저 아이디
@@ -134,5 +135,10 @@ public class SessionService {
         sessionMessageRepository.save(sessionMessage);
 
         return sessionMessage;
+    }
+
+    public SessionMessage getSessionMessageById(Long sessionMessageId) {
+        Session session = findSession(sessionMessageId);
+        return sessionMessageRepository.findById(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
     }
 }
