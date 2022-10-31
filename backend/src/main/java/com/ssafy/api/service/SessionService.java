@@ -31,17 +31,17 @@ public class SessionService {
     private UserRepository userRepository;
 
     /*
-    * description: 세션 생성
-    * return: 생성된 세션
-    * author: 김다은
-    * */
+     * description: 세션 생성
+     * return: 생성된 세션
+     * author: 김다은
+     * */
     @Transactional
     public Session createSession(SessionReqDto reqDto) {
         SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_TYPE_NOT_FOUND));
 
         User user = userRepository.findByUserId(reqDto.getUserId()).
-                orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Session session = Session.builder()
                 .user(user)
@@ -60,8 +60,25 @@ public class SessionService {
      * return: 세션 타입 리스트 반환
      * author: 김다은
      * */
-    public List<SessionType> getSessionTypeList(){
-        return  sessionTypeRepository.findAll();
+    public List<SessionType> getSessionTypeList() {
+        return sessionTypeRepository.findAll();
     }
+
+    public Session getSession(Long sessionId) {
+        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+    }
+
+
+    @Transactional
+    public boolean deleteSession(Long sessionId) {
+        Session session = sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        try {
+            sessionRepository.delete(session);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
 
 }
