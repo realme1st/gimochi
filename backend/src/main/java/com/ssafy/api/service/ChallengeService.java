@@ -6,15 +6,18 @@ import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service("ChallengeService")
+@Transactional(readOnly = true)
 public class ChallengeService {
 
     @Autowired
     ChallengeRepository challengeRepository;
 
+    @Transactional
     public Challenge createChllenge(ChallengePostReq challengePostReq){
         Challenge challenge = Challenge.builder()
                 .challengeUserId(challengePostReq.getChallengeUserId())
