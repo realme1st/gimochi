@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.FollowReqDto;
 import com.ssafy.db.entity.User;
 
 /**
@@ -8,6 +9,7 @@ import com.ssafy.db.entity.User;
 public interface UserService {
     //User createUser(UserRegisterPostReq userRegisterInfo);
     User getUserByUserEmail(String userEmail);
+    boolean follow(FollowReqDto followReqDto);
 
 
 }
