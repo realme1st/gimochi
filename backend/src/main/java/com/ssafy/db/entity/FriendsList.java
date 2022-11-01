@@ -1,7 +1,6 @@
 package com.ssafy.db.entity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -18,15 +17,15 @@ public class FriendsList{
 
     // 팔로워 (나)
     @Column(name = "follower_id", nullable = false)
-    private Long followerUserId;
+    private Long followerId;
 
     // 팔로잉 (상대방 아이디)
     @Column(name = "following_id", nullable = false)
-    private Long followingUserId;
+    private Long followingId;
 
     @Builder
-    public FriendsList(Long followerUserId, Long followingUserId) {
-        this.followerUserId = followerUserId;
-        this.followingUserId = followingUserId;
+    public FriendsList(Long followerId, Long followingId) {
+        this.followerId = followerId;
+        this.followingId = followingId;
     }
 }
