@@ -12,37 +12,28 @@ import com.ssafy.db.repository.SessionMessageRepository;
 import com.ssafy.db.repository.SessionRepository;
 import com.ssafy.db.repository.SessionTypeRepository;
 import com.ssafy.db.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service("SessionService")
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Slf4j
 public class SessionService {
-    @Autowired
-    private SessionRepository sessionRepository;
-    @Autowired
-    private SessionTypeRepository sessionTypeRepository;
-
-    @Autowired
-    private SessionMessageRepository sessionMessageRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-//    @Autowired
-//    private gifticonService gifticonService;
+    private final SessionRepository sessionRepository;
+    private final SessionTypeRepository sessionTypeRepository;
+    private final SessionMessageRepository sessionMessageRepository;
+    private final UserRepository userRepository;
 
     /*
      * description: 세션 생성
      * return: 생성된 세션
-     * author: 김다은
      * */
     @Transactional
     public Session createSession(SessionReqDto reqDto) {
@@ -67,22 +58,32 @@ public class SessionService {
     /*
      * description: 세션 타입 조회
      * return: 세션 타입 리스트 반환
-     * author: 김다은
      * */
     public List<SessionType> getSessionTypeList() {
         return sessionTypeRepository.findAll();
     }
 
+    /*
+     * description: sessionId로 Session 조회
+     * return: Session
+     * */
+
     public Session getSession(Long sessionId) {
         return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
-    // userId를 기반으로 Session 리스트를 반환하는 메소드, 예외 처리까지
+    /*
+     * description: userId로 Session 조회
+     * return: user가 작성한 Session 목록 반환 List<Session>
+     * */
     public List<Session> getSessionByUserId(Long userId) {
         return sessionRepository.findAllByUserUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
-
+    /*
+     * description: sessionId에 해당하는 세션 삭제
+     * return: 삭제 성공여부 boolean 반환
+     * */
     @Transactional
     public boolean deleteSession(Long sessionId) {
         Session session = findSession(sessionId);
@@ -94,24 +95,20 @@ public class SessionService {
         }
     }
 
-    // create_time과 expire_time이 유효한지 확인
-    public boolean isValidTime(LocalDateTime createTime, LocalDateTime expireTime) {
-        if (createTime.isAfter(expireTime)) {
-            return false;
-        }
-        return true;
-    }
-
+    /*
+     * description: sessionId에 해당하는 세션메세지 리스트 조회
+     * return: 세션메세지 리스트 반환
+     * */
     public List<SessionMessage> getSessionMessage(Long sessionId) {
         Session session = findSession(sessionId);
         List<SessionMessage> sessionMessageList = session.getSessionMessagesList();
         return sessionMessageList;
     }
 
-    public Session findSession(Long sessionId) {
-        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
-    }
-
+    /*
+     * description: sessionMessageReqDto 로부터 얻은 정보로 세션메세지 생성
+     * return: 생성된 세션메세지 반환
+     * */
     @Transactional
     public SessionMessage createSessionMessage(SessionMessageReqDto sessionMessageReqDto) {
         Session session = findSession(sessionMessageReqDto.getSessionId());
@@ -136,9 +133,44 @@ public class SessionService {
 
         return sessionMessage;
     }
-
+    /*
+     * description: sessionMessageId에 해당하는 세션메세지 상세 조회
+     * return: 조회된 세션메세지 반환
+     * */
     public SessionMessage getSessionMessageById(Long sessionMessageId) {
         Session session = findSession(sessionMessageId);
         return sessionMessageRepository.findById(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
     }
+
+    /*
+     * description: sessionId에 해당하는 세션유효성 체크
+     * return: 세션유효성 여부 반환
+     * */
+    public Session findSession(Long sessionId) {
+        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+    }
+    /*
+     * description: Time이 유효한지 확인 (createTime < expireTime)
+     * return: 유효한지에 대한 boolean 반환
+     * */
+    public boolean isValidTime(LocalDateTime createTime, LocalDateTime expireTime) {
+        if (createTime.isAfter(expireTime)) {
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * description: 만료시간이 현재시간보다 오래됐는지 체크 (expireTime < now)
+     * return: 오래됐다면 삭제메서드 호출
+     * */
+    public void checkExpireTime(LocalDateTime expireTime) {
+        List<Session> sessionList = sessionRepository.findAll();
+        for (Session session : sessionList) {
+            if (session.getExpireTime().isBefore(LocalDateTime.now())) {
+                deleteSession(session.getSessionId());
+            }
+        }
+    }
+
 }
