@@ -2,11 +2,9 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,16 +16,20 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(String userNickname, String userEmail, String userBirthday, String userSocialToken) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken) {
+        this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
         this.userSocialToken = userSocialToken;
+        this.userSocialRefreshToken = userSocialRefreshToken;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
+    @Column(nullable = false)
+    private Long userKakaoId;
     @Column(nullable = false)
     private String userEmail;
     @Column(nullable = true)
@@ -41,22 +43,36 @@ public class User{
     @Column(nullable = true)
     private String userSocialToken;
     @Column(nullable = true)
+    private String userSocialRefreshToken;
+    @Column(nullable = true)
     private String userFbToken;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Gifticon> gifticonsList = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<ChallengeInvite> challengeInvitesList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
 
     public void addGifticon(Gifticon gifticon){
         this.gifticonsList.add(gifticon);
 
         if(gifticon.getUser() !=this) { //무한루프 방지
             gifticon.setUser(this);
+        }
+
+    }
+
+    public void addChallengeInfo(ChallengeInfo challengeInfo){
+        this.challengeInfoList.add(challengeInfo);
+
+        if(challengeInfo.getUser() !=this) { //무한루프 방지
+            challengeInfo.setUser(this);
         }
 
     }
@@ -76,5 +92,14 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Session> sessionsList = new ArrayList<>();
 
+
+    public void changeSocialTokenInfo(String userSocialToken, String userSocialRefreshToken){
+        this.userSocialToken = userSocialToken;
+        this.userSocialRefreshToken = userSocialRefreshToken;
+    }
+
+    public void setFirebaseToken(String FirebaseToken){
+        this.userFbToken = FirebaseToken;
+    }
 
 }

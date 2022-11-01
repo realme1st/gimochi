@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //new User막음
 public class Challenge {
     @Id
-    @Column(name="challenge_Id")
+    @Column(name="challenge_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long challengeId;
 

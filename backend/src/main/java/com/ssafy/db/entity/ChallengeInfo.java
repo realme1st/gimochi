@@ -38,6 +38,7 @@ public class ChallengeInfo {
     private List<ChallengeAuth> challengeAuthsList = new ArrayList<>();
 
 
+
     public void addChallengeAuth(ChallengeAuth challengeAuth){
         this.challengeAuthsList.add(challengeAuth);
 
@@ -45,6 +46,15 @@ public class ChallengeInfo {
             challengeAuth.setChallengeInfo(this);
         }
 
+    }
+
+
+    public void setUser(User user) {
+        this.user = user;
+
+        if(!user.getChallengeInfoList().contains(this)) {
+            user.getChallengeInfoList().add(this);
+        }
     }
     public void setChallenge(Challenge challenge){
         this.challenge =challenge;
