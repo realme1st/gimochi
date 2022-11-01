@@ -53,7 +53,7 @@ public class ChallengeService {
 
     @Transactional
     public boolean deleteChallenge(Long challengeId) {
-        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
         try {
             challengeRepository.delete(challenge);
             return true;
@@ -64,7 +64,7 @@ public class ChallengeService {
 
 
     public List<ChallengeInfo> getChallengeUserList(Long challengeId) {
-        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).get();
+        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
         List<ChallengeInfo> list = challenge.getChallengeInfoList();
 
         return list;
