@@ -28,17 +28,32 @@ public class UserController {
     // 팔로우
     @PostMapping("/follow")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우", notes = "팔로우")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 404, message = "해당하는 정보 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
     public ResponseEntity<? extends BasicResponse> follow(@Validated @RequestBody FollowReqDto followReqDto) {
-        return  ResponseEntity.status(HttpStatus.OK)
-                        .body(new CommonResponseEntity<>(userService.follow(followReqDto)));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.follow(followReqDto)));
     }
 
+    // userId를 기반으로 본인이 팔로우 한 목록 조회
+    @GetMapping("/following/{userId}")
+    @ApiOperation(value = "userId가 팔로우한 목록 조회", notes = "팔로우한 목록 조회")
+    public ResponseEntity<? extends BasicResponse> getFollowingList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new CommonResponseEntity<>(userService.getFollowingList(userId)));
+    }
 
+    // userId를 기반으로 본인을 팔로우 한 목록 조회
+    @GetMapping("/follower/{userId}")
+    @ApiOperation(value = "userId를 팔로우한 목록 조회", notes = "팔로우한 목록 조회")
+    public ResponseEntity<? extends BasicResponse> getFollowerList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                    .body(new CommonResponseEntity<>(userService.getFollowerList(userId)));
+    }
+
+    // 팔로우 삭제
+    @DeleteMapping("/follow")
+    @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우 취소", notes = "팔로우 취소")
+    public ResponseEntity<? extends BasicResponse> unfollow(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.unfollow(followReqDto)));
+    }
 }
