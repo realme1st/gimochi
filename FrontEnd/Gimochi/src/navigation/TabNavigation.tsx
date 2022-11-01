@@ -81,35 +81,35 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
                   <Image
                     source={require('../assets/images/homeMochi.png')}
                     resizeMode='contain'
-                    style={{ width: 70, height: 70 }}
+                    style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'PlayScreen' && (
                   <Image
-                    source={require('../assets/images/homeMochi.png')}
+                    source={require('../assets/images/playMochi.png')}
                     resizeMode='contain'
-                    style={{ width: 60, height: 60 }}
+                    style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'RollingpaperScreen' && (
                   <Image
-                    source={require('../assets/images/homeMochi.png')}
+                    source={require('../assets/images/chukapokaMochi.png')}
                     resizeMode='contain'
-                    style={{ width: 50, height: 50 }}
+                    style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'ScheduleScreen' && (
                   <Image
                     source={require('../assets/images/homeMochi.png')}
                     resizeMode='contain'
-                    style={{ width: 40, height: 40 }}
+                    style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'ChallengeScreen' && (
                   <Image
-                    source={require('../assets/images/homeMochi.png')}
+                    source={require('../assets/images/challengeMochi.png')}
                     resizeMode='contain'
-                    style={{ width: 30, height: 30 }}
+                    style={{ width: 80, height: 80 }}
                   />
                 )}
               </TouchableOpacity>
