@@ -37,7 +37,7 @@ const MypageScreen = ({ navigation: { navigate } }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text>로그인 화면</Text>
+      <Text>로그인 화면a</Text>
       <WebView
         originWhitelist={['*']}
         scalesPageToFit={false}
