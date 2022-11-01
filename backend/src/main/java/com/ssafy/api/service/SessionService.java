@@ -159,4 +159,18 @@ public class SessionService {
         }
         return true;
     }
+
+    /*
+     * description: 만료시간이 현재시간보다 오래됐는지 체크 (expireTime < now)
+     * return: 오래됐다면 삭제메서드 호출
+     * */
+    public void checkExpireTime(LocalDateTime expireTime) {
+        List<Session> sessionList = sessionRepository.findAll();
+        for (Session session : sessionList) {
+            if (session.getExpireTime().isBefore(LocalDateTime.now())) {
+                deleteSession(session.getSessionId());
+            }
+        }
+    }
+
 }
