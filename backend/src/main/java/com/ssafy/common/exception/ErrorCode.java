@@ -1,5 +1,6 @@
 package com.ssafy.common.exception;
 
+import com.google.api.Http;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,14 @@ public enum ErrorCode {
 
     /* 커스텀 예외들 */
     SESSION_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 타입입니다."),
+    SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 id 입니다"),
+    SESSION_MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 메세지 id 입니다"),
+    ALREADY_FOLLOW(HttpStatus.CONFLICT, "이미 팔로우한 사용자입니다."),
+    INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
 
-    SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 세션 id 입니다"),
-
-    CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 챌린지 id 입니다"),
-
-
-
-    SESSION_MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 메세지 id 입니다");
-//    SESSION_MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND,"세션 id에 해당하는 댓글이 없습니다.");
+    //  Challenge 관련 예외
+    CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 챌린지 id 입니다"),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "존재하지 않는 팔로워-팔로잉 관계입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
@@ -44,4 +44,4 @@ public enum ErrorCode {
     커스텀하는 경우에는 HttpStatus타입이 아닌 Integer타입으로 바꿔야 한다
     */
 
-}
+    }
