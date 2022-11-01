@@ -1,12 +1,15 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.dto.ChallengeRewardReqDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.entity.ChallengeInfo;
+import com.ssafy.db.entity.ChallengeReward;
 import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.ChallengeRepository;
+import com.ssafy.db.repository.ChallengeRewardRepository;
 import com.ssafy.db.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ public class ChallengeService {
 
     @Autowired
     private ChallengeInfoRepository challengeInfoRepository;
+
+    @Autowired
+    private ChallengeRewardRepository challengeRewardRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -68,6 +74,24 @@ public class ChallengeService {
         List<ChallengeInfo> list = challenge.getChallengeInfoList();
 
         return list;
+    }
+
+    @Transactional
+    public ChallengeReward createChallengeReward(ChallengeRewardReqDto challengeRewardReqDto) {
+
+        Challenge challenge= findChallenge(challengeRewardReqDto.getChallengeId());
+        ChallengeReward challengeReward=null;
+
+        challengeReward = ChallengeReward.builder()
+                .challenge(challenge)
+                .challengeRewardType(challengeRewardReqDto.getChallengeRewardType())
+                .build();
+
+        return challengeRewardRepository.save(challengeReward);
+    }
+
+    public Challenge findChallenge(Long challengeId) {
+        return challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
     }
 }
 

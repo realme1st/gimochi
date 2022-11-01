@@ -2,6 +2,7 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,23 +15,29 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //new User막음
 public class ChallengeReward {
     @Id
-    @Column(name="challenge_reward_id")
+    @Column(name = "challenge_reward_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long challengeRewardId;
 
     @JsonIgnore
-    @ManyToOne(fetch=LAZY)
-    @JoinColumn(name = "challenge_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "challengeId")
     private Challenge challenge;
 
-    @Column(nullable = false,name="challenge_reward_type")
+    @Column(nullable = false, name = "challenge_reward_type")
     private String challengeRewardType;
 
-    public void setChallenge(Challenge challenge){
-        this.challenge =challenge;
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
         //무한 루프 주의
-        if(!challenge.getChallengeRewardList().contains(this)){
+        if (!challenge.getChallengeRewardList().contains(this)) {
             challenge.getChallengeRewardList().add(this);
         }
+    }
+
+    @Builder
+    public ChallengeReward(Challenge challenge, String challengeRewardType) {
+        this.challenge = challenge;
+        this.challengeRewardType = challengeRewardType;
     }
 }
