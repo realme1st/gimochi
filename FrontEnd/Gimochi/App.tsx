@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,10 +7,12 @@ import TabNavigation from './src/navigation/TabNavigation';
 import LoginScreen from './src/screen/LoginScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from './src/store/reducer';
+import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createNativeStackNavigator();
 
 function AppInner() {
+  SplashScreen.hide();
   const isLoggedIn = useSelector((state: RootState) => !!state.user.accessToken);
 
   return (
