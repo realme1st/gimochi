@@ -69,6 +69,23 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallengeListByUserId(challengeId)));
     }
 
+    //챌린지 정보 테이블 생성
+
+
+    @GetMapping("/user/{userId}")
+    @ApiOperation(value = "챌린지 조회(userId기반)", notes = "<strong>유저 ID를 입력하여</strong> 챌린지를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 400, message = "잘못된 요청"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends BasicResponse> getChallengeListByUserId(@PathVariable Long userId){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallengeListByUserId(userId)));
+    }
+
+
     @DeleteMapping("/{challengeId}")
     @ApiOperation(value = "챌린지 삭제(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 챌린지를 삭제한다.")
     @ApiResponses({
@@ -95,11 +112,8 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallengeUserList(challengeId)));
     }
 
-
-
-
     @PostMapping("/reward")
-    @ApiOperation(value = "챌린지 보상 추가", notes = "<strong>챌린지 ID를 입력하여</strong> 챌린지에 보상을 추가한다.")
+    @ApiOperation(value = "챌린지 타입 설정", notes = "<strong>챌린지 ID에 해당하는</strong> 챌린지에 타입을 설정한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 400, message = "잘못된 요청"),
