@@ -6,5 +6,5 @@ import lombok.Data;
 public class ChallengeRewardReqDto {
 
     private Long challengeId;
-    private String challengeRewardType;
+    private Long challengeRewardType;
 }

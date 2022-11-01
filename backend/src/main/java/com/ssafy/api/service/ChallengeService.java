@@ -82,10 +82,18 @@ public class ChallengeService {
         Challenge challenge= findChallenge(challengeRewardReqDto.getChallengeId());
         ChallengeReward challengeReward=null;
 
-        challengeReward = ChallengeReward.builder()
-                .challenge(challenge)
-                .challengeRewardType(challengeRewardReqDto.getChallengeRewardType())
-                .build();
+
+        //challegeReward에 challengeId가 있으면 예외처리
+        if(challengeRewardRepository.findByChallengeChallengeId(challengeRewardReqDto.getChallengeId()).isPresent()){
+            throw new CustomException(ErrorCode.CHALLENEGE_REWARD_ALREADY_EXIST);
+        }
+        else{
+            challengeReward = ChallengeReward.builder()
+                    .challenge(challenge)
+                    .challengeRewardType(challengeRewardReqDto.getChallengeRewardType())
+                    .build();
+        }
+
 
         return challengeRewardRepository.save(challengeReward);
     }
