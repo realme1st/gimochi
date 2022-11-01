@@ -47,6 +47,15 @@ public class ChallengeInfo {
         }
 
     }
+
+
+    public void setUser(User user) {
+        this.user = user;
+
+        if(!user.getChallengeInfoList().contains(this)) {
+            user.getChallengeInfoList().add(this);
+        }
+    }
     public void setChallenge(Challenge challenge){
         this.challenge =challenge;
         //무한 루프 주의
