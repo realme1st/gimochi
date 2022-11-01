@@ -8,6 +8,7 @@ import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.FriendsListRepository;
 import com.ssafy.db.repository.UserRepository;
 import com.ssafy.db.repository.UserRepositorySupport;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,25 +23,13 @@ import java.util.List;
  */
 @Service("userService")
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private UserRepositorySupport userRepositorySupport;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private  FriendsListRepository friendsListRepository;
-	
-//	@Override
-//	public User createUser(UserRegisterPostReq userRegisterInfo) {
-//		User user = new User();
-//		user.setUserId(userRegisterInfo.getId());
-//
-//		return userRepository.save(user);
-//	}
+	private final UserRepository userRepository;
+	private final UserRepositorySupport userRepositorySupport;
+
+	private final PasswordEncoder passwordEncoder;
+	private final FriendsListRepository friendsListRepository;
 
 	@Override
 	public User getUserByUserEmail(String userEmail) {
@@ -48,8 +37,11 @@ public class UserServiceImpl implements UserService {
 		User user = userRepositorySupport.findUserByUserEmail(userEmail).get();
 		return user;
 	}
-
-
+	/*
+	* description : 팔로우 요청을 처리하는 메소드
+	* @param followReqDto : 팔로우 요청을 위한 Dto
+	* @return boolean : 팔로우 성공 여부
+	* */
 	@Transactional
 	public boolean follow(FollowReqDto followReqDto) {
 		// 이미 팔로우 했는지 확인

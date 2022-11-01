@@ -12,7 +12,6 @@ public interface FriendsListRepository extends JpaRepository<FriendsList, Long> 
 
     Optional<List<FriendsList>> findAllByFollowerId(Long followerId);
 
-
     Optional<List<FriendsList>> findAllByFollowingId(Long userId);
 
     void deleteByFollowerIdAndFollowingId(Long followerUserId, Long followingUserId);
