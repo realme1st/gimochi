@@ -79,7 +79,7 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
                 )}
                 {currentScreen === 'AttendanceScreen' && (
                   <Image
-                    source={require('../assets/images/homeMochi.png')}
+                    source={require('../assets/images/attendMochi1.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
