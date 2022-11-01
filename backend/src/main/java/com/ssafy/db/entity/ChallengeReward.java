@@ -25,7 +25,7 @@ public class ChallengeReward {
     private Challenge challenge;
 
     @Column(nullable = false, name = "challenge_reward_type")
-    private String challengeRewardType;
+    private Long challengeRewardType;
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
@@ -36,7 +36,7 @@ public class ChallengeReward {
     }
 
     @Builder
-    public ChallengeReward(Challenge challenge, String challengeRewardType) {
+    public ChallengeReward(Challenge challenge, Long challengeRewardType) {
         this.challenge = challenge;
         this.challengeRewardType = challengeRewardType;
     }
