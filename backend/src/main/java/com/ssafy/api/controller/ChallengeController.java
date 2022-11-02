@@ -1,11 +1,13 @@
 package com.ssafy.api.controller;
 
 
+import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
 import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 
 @Api(value = "Challenge API", tags = {"Challenges"})
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/challenge")
 public class ChallengeController {
 
-    @Autowired
-    ChallengeService challengeService;
+
+    private ChallengeService challengeService;
 
     @PostMapping()
     @ApiOperation(value = "챌린지 생성", notes = "<strong>챌린지 정보를 입력하여</strong> 챌린지를 만든다.")
@@ -66,7 +69,7 @@ public class ChallengeController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BasicResponse> getChallengeListByChallengeId(@PathVariable Long challengeId){
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeId(challengeId)));
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeByChallengeId(challengeId)));
     }
 
 

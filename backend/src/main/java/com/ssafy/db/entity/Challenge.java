@@ -18,8 +18,8 @@ public class Challenge {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long challengeId;
 
-    @Column(nullable = false,name="challenge_user_id")
-    private Long challengeUserId;
+    @Column(nullable = false,name="challenge_leader_id")
+    private Long challengeLeaderId;
 
     @Column(nullable = false,name="challenge_title")
     private String challengeTitle;
@@ -58,8 +58,8 @@ public class Challenge {
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeUserId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType) {
-        this.challengeUserId = challengeUserId;
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType) {
+        this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
         this.challengeParticipant = challengeParticipant;
