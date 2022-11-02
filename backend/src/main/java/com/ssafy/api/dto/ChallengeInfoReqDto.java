@@ -12,5 +12,5 @@ public class ChallengeInfoReqDto {
     private Long challengeId;
 
     @ApiModelProperty(name="챌린지 달성 횟수", example="1")
-    private Long successCnt;
+    private int successCnt;
 }
