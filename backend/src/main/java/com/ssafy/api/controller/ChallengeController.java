@@ -1,17 +1,11 @@
 package com.ssafy.api.controller;
 
 
-import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
-import com.ssafy.api.dto.ChallengeRewardReqDto;
 import com.ssafy.api.service.ChallengeService;
-import com.ssafy.common.model.response.BaseResponseBody;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.entity.Challenge;
-import com.ssafy.db.entity.ChallengeReward;
 import io.swagger.annotations.*;
-import com.ssafy.api.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +34,8 @@ public class ChallengeController {
 
     public ResponseEntity<? extends BasicResponse> createChallenge
             (@RequestBody @ApiParam(value = "챌린지") ChallengeReqDto challengeReqDto) {
+
+
 
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChllenge(challengeReqDto)));
     }
@@ -88,16 +84,6 @@ public class ChallengeController {
     }
 
 
-    @PostMapping("/reward")
-    @ApiOperation(value = "챌린지 타입 설정", notes = "<strong>챌린지 ID에 해당하는</strong> 챌린지에 타입을 설정한다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<? extends BasicResponse> addChallengeReward(@RequestBody ChallengeRewardReqDto challengeReward){
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeReward(challengeReward)));
-    }
+    //challengeInfo 생성
+
 }

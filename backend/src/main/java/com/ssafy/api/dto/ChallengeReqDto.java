@@ -22,4 +22,7 @@ public class ChallengeReqDto {
 
     @ApiModelProperty(name="챌린지 종료 시간", example="2022.10.30 13:00:00")
     String challengeEndTime;
+
+    @ApiModelProperty(name="챌린지 보상 타입", example="1")
+    int challengeRewardType;
 }
