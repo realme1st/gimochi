@@ -8,7 +8,7 @@ public class ChallengeReqDto {
     @ApiModelProperty(name="챌린지 제목", example="1일 1커밋")
     String challengeTitle;
     @ApiModelProperty(name="챌린지 만든 유저", example="1")
-    Long challengeUserId;
+    Long challengeLeaderId;
 
     @ApiModelProperty(name="챌린지 내용", example="매일매일 커밋하기")
     String challengeDescription;

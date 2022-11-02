@@ -35,10 +35,12 @@ public class ChallengeService {
     private UserRepository userRepository;
 
     @Transactional
-    public Challenge createChllenge(ChallengeReqDto challengeReqDto){
+    public boolean createChllenge(ChallengeReqDto challengeReqDto){
+
+        //challenge id가 없는 경우(challenge 만들면서 info도 (방장이추가)
         Challenge challenge = Challenge.builder()
                 .challengeTitle(challengeReqDto.getChallengeTitle())
-                .challengeUserId(challengeReqDto.getChallengeUserId())
+                .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
                 .challengeParticipant(challengeReqDto.getChallengeParticipant())
                 .challengeStartTime(challengeReqDto.getChallengeStartTime())
@@ -46,11 +48,11 @@ public class ChallengeService {
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .build();
 
+        challengeRepository.save(challenge);
 
+        createChallengeInfoFirst(challenge);
 
-
-
-        return challengeRepository.save(challenge);
+        return true;
     }
     public List<Challenge> getChallengeList(){
 
@@ -74,20 +76,36 @@ public class ChallengeService {
         }
     }
 
-    public Challenge findChallengeId(Long challengeId) {
+    public Challenge findChallengeByChallengeId(Long challengeId) {
         return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
     }
 
-    public User findUserId(Long userId) {
+    public User findUserByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public User findBychallengeLeaderId(Long userId){
+        return challengeRepository.findByChallengeLeaderId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public ChallengeInfo createChallengeInfoFirst(Challenge challenge) {
+
+        User user =findUserByUserId(challenge.getChallengeLeaderId());
+        ChallengeInfo challengeInfo = ChallengeInfo.builder()
+                .challenge(challenge)
+                .user(user)
+                .build();
+
+        return challengeInfoRepository.save(challengeInfo);
+    }
 
     //challengeInfo 만들기
+    //해당 challengeId에 유저들 추가
     @Transactional
-    public ChallengeInfo createChallengeInfo(ChallengeInfoReqDto challengeInfoReqDto) {
-        Challenge challenge= findChallengeId(challengeInfoReqDto.getChallengeId());
-        User user = findUserId(challengeInfoReqDto.getUserId());
+    public ChallengeInfo addUserChallengeInfo(ChallengeInfoReqDto challengeInfoReqDto) {
+        Challenge challenge= findChallengeByChallengeId(challengeInfoReqDto.getChallengeId());
+        User user =findUserByUserId(challengeInfoReqDto.getUserId());
         ChallengeInfo challengeInfo = ChallengeInfo.builder()
                 .challenge(challenge)
                 .user(user)

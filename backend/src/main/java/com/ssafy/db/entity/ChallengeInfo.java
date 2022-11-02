@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -33,6 +34,7 @@ public class ChallengeInfo {
     private Challenge challenge;
 
     @Column(name="success_cnt")
+    @ColumnDefault("0")
     private int successCnt;
 
     @OneToMany(mappedBy = "challengeInfo")

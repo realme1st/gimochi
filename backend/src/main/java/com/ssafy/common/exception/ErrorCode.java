@@ -35,7 +35,8 @@ public enum ErrorCode {
     CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 챌린지 id 입니다"),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "존재하지 않는 팔로워-팔로잉 관계입니다."),
 
-    CHALLENEGE_REWARD_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"이미 첼린지 리워드 설정을 하였습니다."),;
+    CHALLENEGE_REWARD_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"이미 첼린지 리워드 설정을 하였습니다."),
+    LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 id를 가진 챌린지 리더가 없습니다." );
 
     private final HttpStatus httpStatus;
     private final String message;
