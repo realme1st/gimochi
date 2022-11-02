@@ -29,7 +29,6 @@ public class SessionService {
     private final SessionTypeRepository sessionTypeRepository;
     private final SessionMessageRepository sessionMessageRepository;
     private final UserRepository userRepository;
-
     /*
      * description: 세션 생성
      * return: 생성된 세션
@@ -86,8 +85,7 @@ public class SessionService {
     /*
     * description : 세션 메세지 삭제를 위한 메소드
     * @param : sessionId - 메세지를 보낸 세션의 id
-    *
-    *
+    * return : 성공 여부
     * */
     @Transactional
     public boolean deleteSession(Long sessionId) {
