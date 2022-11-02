@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Long> {
 
-    //Optional<List<ChallengeInfo>> findChallengeInfoByChallengeId(Long challengeId);
+
 }

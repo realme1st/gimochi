@@ -2,6 +2,7 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -62,5 +63,12 @@ public class ChallengeInfo {
         if(!challenge.getChallengeInfoList().contains(this)){
             challenge.getChallengeInfoList().add(this);
         }
+    }
+
+    @Builder
+    public ChallengeInfo(User user, Challenge challenge, int successCnt) {
+        this.user = user;
+        this.challenge = challenge;
+        this.successCnt = successCnt;
     }
 }
