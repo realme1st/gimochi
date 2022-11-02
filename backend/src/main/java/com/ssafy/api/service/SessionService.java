@@ -14,7 +14,6 @@ import com.ssafy.db.repository.SessionTypeRepository;
 import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,16 +36,19 @@ public class SessionService {
      * */
     @Transactional
     public Session createSession(SessionReqDto reqDto) {
-        SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_TYPE_NOT_FOUND));
-
+        // 유효한 사용자인지 검증
         User user = userRepository.findByUserId(reqDto.getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 유효한 세션 타입인지 검증
+        SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SESSION_TYPE));
+
+        // Sesison 생성
         Session session = Session.builder()
                 .user(user)
                 .name(reqDto.getName())
-                .sessionType(sessionType)
+                .sessionTypeId(reqDto.getSessionTypeId())
                 .createTime(reqDto.getCreateTime())
                 .expireTime(reqDto.getExpireTime())
                 .anniversary(reqDto.getAnniversary())
@@ -73,17 +75,20 @@ public class SessionService {
     }
 
     /*
-     * description: userId로 Session 조회
-     * return: user가 작성한 Session 목록 반환 List<Session>
-     * */
+     * description : 세션 메세지 생성을 위한 메소드
+     * @param : userId - 메세지를 보낸 유저의 id
+     * @return : user가 작성한 세션 메세지 목록
+     */
     public List<Session> getSessionByUserId(Long userId) {
         return sessionRepository.findAllByUserUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
     /*
-     * description: sessionId에 해당하는 세션 삭제
-     * return: 삭제 성공여부 boolean 반환
-     * */
+    * description : 세션 메세지 삭제를 위한 메소드
+    * @param : sessionId - 메세지를 보낸 세션의 id
+    *
+    *
+    * */
     @Transactional
     public boolean deleteSession(Long sessionId) {
         Session session = findSession(sessionId);
@@ -138,8 +143,7 @@ public class SessionService {
      * return: 조회된 세션메세지 반환
      * */
     public SessionMessage getSessionMessageById(Long sessionMessageId) {
-        Session session = findSession(sessionMessageId);
-        return sessionMessageRepository.findById(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
+        return sessionMessageRepository.findBySessionMessageId(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
     }
 
     /*

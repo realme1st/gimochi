@@ -200,11 +200,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     implementation 'com.google.firebase:firebase-admin:9.1.0'
-
     // 자바 8(로컬 환경)에는 기본 포함되어 있지만 자바 11(서버 환경)에는 포함 X인 라이브러리 의존성 추가
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'javax.activation:activation:1.1.1'
+
 }
 
 //test {

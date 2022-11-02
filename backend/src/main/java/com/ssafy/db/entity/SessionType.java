@@ -23,14 +23,4 @@ public class SessionType {
     @Column(nullable = false)
     private String type;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "sessionType")
-    private List<Session> sessionsList = new ArrayList<>();
-
-    @Builder
-    public SessionType(Long sessionTypeId, String type) {
-        this.sessionTypeId = sessionTypeId;
-        this.type = type;
-    }
-
 }
