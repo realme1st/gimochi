@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import {
   KakaoOAuthToken,
   logout,
@@ -11,35 +13,54 @@ import {
   login,
   getAccessToken,
 } from '@react-native-seoul/kakao-login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import userSlice from '../slices/user';
+import { useAppDispatch } from '../store';
 
 function PlayScreen() {
   const [result, setResult] = useState<string>('');
+  const dispatch = useAppDispatch();
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login();
-
-    setResult(JSON.stringify(token));
+    await AsyncStorage.setItem('Login', 'true');
+    dispatch(
+      userSlice.actions.setLogin({
+        isLogin: 'true',
+      }),
+    );
   };
 
   const signOutWithKakao = async (): Promise<void> => {
     const message = await logout();
-
+    await AsyncStorage.setItem('Login', 'false');
     setResult(message);
+    dispatch(
+      userSlice.actions.setLogin({
+        isLogin: 'false',
+      }),
+    );
   };
 
-  const getKakaoProfile = async (): Promise<void> => {
-    const profile: KakaoProfile = await getProfile();
+  // const getKakaoProfile = async (): Promise<void> => {
+  //   const profile: KakaoProfile = await getProfile();
 
-    setResult(JSON.stringify(profile));
-  };
+  //   setResult(JSON.stringify(profile));
+  // };
+
+  // const unlinkKakao = async (): Promise<void> => {
+  //   const message = await unlink();
+
+  //   setResult(message);
+  // };
 
   const unlinkKakao = async (): Promise<void> => {
-    const message = await unlink();
+    const message = await AsyncStorage.getItem('Login');
 
-    setResult(message);
+    console.log(message);
   };
 
-  const getAccessToken = async (): Promise<void> => {
+  const getToken = async (): Promise<void> => {
     const accessToken = await getAccessToken();
 
     setResult(accessToken);
@@ -49,26 +70,26 @@ function PlayScreen() {
   return (
     <View>
       <View style={styles.container}>
-        <Pressable
+        <TouchableOpacity
           style={styles.button}
           onPress={() => {
             signInWithKakao();
           }}
         >
           <Text style={styles.text}>카카오 로그인</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => getKakaoProfile()}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => getKakaoProfile()}>
           <Text style={styles.text}>프로필 조회</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => unlinkKakao()}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => unlinkKakao()}>
           <Text style={styles.text}>링크 해제</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => signOutWithKakao()}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => signOutWithKakao()}>
           <Text style={styles.text}>카카오 로그아웃</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => getAccessToken()}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => getToken()}>
           <Text style={styles.text}>토큰받기</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
