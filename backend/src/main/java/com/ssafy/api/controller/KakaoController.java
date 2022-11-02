@@ -35,7 +35,7 @@ public class KakaoController {
         return user;
     }
 
-    @GetMapping("/oauth/token")
+    @GetMapping("/oauth/login")
     @ApiOperation(value = "AccessToken 발급 및 회원가입/로그인", notes = "인가코드로 카카오 AccessToken을 발급받고 로그인 한다. 비회원은 자동 회원가입 처리")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),

@@ -27,9 +27,6 @@ public class NotificationService {
     @Value("${fcm.key.path}")
     private String FCM_PRIVATE_KEY_PATH;
 
-    @Value("${noti.img.path}")
-    private String FCM_IMG_PATH;
-    //
     // 메시징만 권한 설정
     @Value("${fcm.key.scope}")
     private String fireBaseScope;
