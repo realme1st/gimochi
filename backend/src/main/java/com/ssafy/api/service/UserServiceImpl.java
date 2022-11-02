@@ -26,17 +26,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
+	
 	private final UserRepositorySupport userRepositorySupport;
 
-	private final PasswordEncoder passwordEncoder;
+//	private final PasswordEncoder passwordEncoder;
 	private final FriendsListRepository friendsListRepository;
 
-	@Override
-	public User getUserByUserEmail(String userEmail) {
-		// 디비에 유저 정보 조회 (userId 를 통한 조회).
-		User user = userRepositorySupport.findUserByUserEmail(userEmail).get();
-		return user;
-	}
+//	@Override
+//	public User getUserByUserEmail(String userEmail) {
+//		// 디비에 유저 정보 조회 (userId 를 통한 조회).
+//		User user = userRepositorySupport.findUserByUserEmail(userEmail).get();
+//		return user;
+//	}
 	/*
 	* description : 팔로우 요청을 처리하는 메소드
 	* @param followReqDto : 팔로우 요청을 위한 Dto
@@ -44,13 +45,13 @@ public class UserServiceImpl implements UserService {
 	* */
 	@Transactional
 	public boolean follow(FollowReqDto followReqDto) {
-		// 이미 팔로우 했는지 확인
-		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
-			throw new CustomException(ErrorCode.ALREADY_FOLLOW);
-		}
 		// 유효한 사용자들인지 확인
 		if (!userRepository.existsByUserId(followReqDto.getFollowerUserId()) || !userRepository.existsByUserId(followReqDto.getFollowingUserId())) {
 			throw new CustomException(ErrorCode.INVALID_USER);
+		}
+		// 이미 팔로우 했는지 확인
+		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+			throw new CustomException(ErrorCode.ALREADY_FOLLOW);
 		}
 		// 팔로우 추가
 		FriendsList friendsList = FriendsList.builder()

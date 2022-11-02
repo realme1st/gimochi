@@ -36,16 +36,19 @@ public class SessionService {
      * */
     @Transactional
     public Session createSession(SessionReqDto reqDto) {
-        SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_TYPE_NOT_FOUND));
-
+        // 유효한 사용자인지 검증
         User user = userRepository.findByUserId(reqDto.getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 유효한 세션 타입인지 검증
+        SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SESSION_TYPE));
+
+        // Sesison 생성
         Session session = Session.builder()
                 .user(user)
                 .name(reqDto.getName())
-                .sessionType(sessionType)
+                .sessionTypeId(reqDto.getSessionTypeId())
                 .createTime(reqDto.getCreateTime())
                 .expireTime(reqDto.getExpireTime())
                 .anniversary(reqDto.getAnniversary())
@@ -140,8 +143,7 @@ public class SessionService {
      * return: 조회된 세션메세지 반환
      * */
     public SessionMessage getSessionMessageById(Long sessionMessageId) {
-        Session session = findSession(sessionMessageId);
-        return sessionMessageRepository.findById(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
+        return sessionMessageRepository.findBySessionMessageId(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
     }
 
     /*

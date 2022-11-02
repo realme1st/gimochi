@@ -1,8 +1,7 @@
 package com.ssafy.db.repository;
 
 import com.ssafy.db.entity.Challenge;
-import com.ssafy.db.entity.ChallengeInfo;
-import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.ChallengeReward;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Long> {
-
-
+public interface ChallengeRewardRepository extends JpaRepository<ChallengeReward, Long> {
+    Optional<ChallengeReward> findByChallengeChallengeId(Long challengeId);
 }

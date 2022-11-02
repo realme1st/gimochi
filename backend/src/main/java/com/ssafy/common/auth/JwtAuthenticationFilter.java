@@ -57,33 +57,33 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Transactional(readOnly = true)
     public Authentication getAuthentication(HttpServletRequest request) throws Exception {
-        String token = request.getHeader(JwtTokenUtil.HEADER_STRING);
-        // 요청 헤더에 Authorization 키값에 jwt 토큰이 포함된 경우에만, 토큰 검증 및 인증 처리 로직 실행.
-        if (token != null) {
-            // parse the token and validate it (decode)
-            JWTVerifier verifier = JwtTokenUtil.getVerifier();
-            JwtTokenUtil.handleError(token);
-            DecodedJWT decodedJWT = verifier.verify(token.replace(JwtTokenUtil.TOKEN_PREFIX, ""));
-//            String userId = decodedJWT.getSubject();
-            String userId = decodedJWT.getClaim("id").asString();
-            System.out.println(userId);
-
-            // Search in the DB if we find the user by token subject (username)
-            // If so, then grab user details and create spring auth token using username, pass, authorities/roles
-            if (userId != null) {
-                // jwt 토큰에 포함된 계정 정보(userId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-                User user = userService.getUserByUserEmail(userId);
-                if(user != null) {
-                    // 식별된 정상 유저인 경우, 요청 context 내에서 참조 가능한 인증 정보(jwtAuthentication) 생성.
-                    SsafyUserDetails userDetails = new SsafyUserDetails(user);
-                    UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(userId,
-                            null, userDetails.getAuthorities());
-                    jwtAuthentication.setDetails(userDetails);
-                    return jwtAuthentication;
-                }
-            }
-            return null;
-        }
+//        String token = request.getHeader(JwtTokenUtil.HEADER_STRING);
+//        // 요청 헤더에 Authorization 키값에 jwt 토큰이 포함된 경우에만, 토큰 검증 및 인증 처리 로직 실행.
+//        if (token != null) {
+//            // parse the token and validate it (decode)
+//            JWTVerifier verifier = JwtTokenUtil.getVerifier();
+//            JwtTokenUtil.handleError(token);
+//            DecodedJWT decodedJWT = verifier.verify(token.replace(JwtTokenUtil.TOKEN_PREFIX, ""));
+////            String userId = decodedJWT.getSubject();
+//            String userId = decodedJWT.getClaim("id").asString();
+//            System.out.println(userId);
+//
+//            // Search in the DB if we find the user by token subject (username)
+//            // If so, then grab user details and create spring auth token using username, pass, authorities/roles
+//            if (userId != null) {
+//                // jwt 토큰에 포함된 계정 정보(userId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
+//                User user = userService.getUserByUserEmail(userId);
+//                if(user != null) {
+//                    // 식별된 정상 유저인 경우, 요청 context 내에서 참조 가능한 인증 정보(jwtAuthentication) 생성.
+//                    SsafyUserDetails userDetails = new SsafyUserDetails(user);
+//                    UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(userId,
+//                            null, userDetails.getAuthorities());
+//                    jwtAuthentication.setDetails(userDetails);
+//                    return jwtAuthentication;
+//                }
+//            }
+//            return null;
+//        }
         return null;
     }
 }

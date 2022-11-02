@@ -14,24 +14,24 @@ import java.time.LocalDateTime;
 @Data
 public class SessionReqDto {
 
-    @ApiModelProperty(name="세션명", example="session_example")
+    @ApiModelProperty(name = "세션명", example = "session_example")
     String name;
 
-    @ApiModelProperty(name="세션 생성 시간", example="2022-01-01T00:00:00")
+    @ApiModelProperty(name = "세션 생성 시간", example = "2022-01-01T00:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     LocalDateTime createTime;
 
-    @ApiModelProperty(name="세션 만료 시간", example="2022-01-02T00:00:00")
+    @ApiModelProperty(name = "세션 만료 시간", example = "2022-01-02T00:00:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     LocalDateTime expireTime;
 
-    @ApiModelProperty(name="세션 생성 시간", example="2022-01-01T00:00:00")
+    @ApiModelProperty(name = "세션 생성 시간", example = "2022-01-01")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     LocalDate anniversary;
 
-    @ApiModelProperty(name="유저 id", example="1")
+    @ApiModelProperty(name = "유저 id", example = "1")
     Long userId;
 
-    @ApiModelProperty(name="세션 타입 id", example="1")
+    @ApiModelProperty(name = "세션 타입 id", example = "1")
     Long sessionTypeId;
 }

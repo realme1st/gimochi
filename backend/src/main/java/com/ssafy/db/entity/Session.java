@@ -31,6 +31,9 @@ public class Session {
     @Column(nullable = false)
     private LocalDate anniversary;
 
+    @Column(nullable = false, name = "session_type_id")
+    private Long sessionTypeId;
+
     /* Session Message */
 
     @OneToMany(mappedBy = "session")
@@ -51,10 +54,10 @@ public class Session {
     private User user;
 
     /* Type */
-    @JsonIgnore
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "sessionTypeId")
-    private SessionType sessionType;
+//    @JsonIgnore
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "sessionTypeId")
+//    private SessionType sessionType;
 
 
     public void setUser(User user) {
@@ -65,21 +68,13 @@ public class Session {
         }
     }
 
-    public void setSessionType(SessionType sessionType) {
-        this.sessionType = sessionType;
-        //무한 루프 주의
-        if (!sessionType.getSessionsList().contains(this)) {
-            sessionType.getSessionsList().add(this);
-        }
-    }
-
     @Builder
-    public Session(String name, LocalDateTime createTime, LocalDateTime expireTime, LocalDate anniversary, User user, SessionType sessionType) {
+    public Session(String name, LocalDateTime createTime, LocalDateTime expireTime, LocalDate anniversary, User user, Long sessionTypeId) {
         this.name = name;
         this.createTime = createTime;
         this.expireTime = expireTime;
         this.anniversary = anniversary;
         this.user = user;
-        this.sessionType = sessionType;
+        this.sessionTypeId = sessionTypeId;
     }
 }

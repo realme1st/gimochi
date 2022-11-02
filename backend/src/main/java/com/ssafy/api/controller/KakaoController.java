@@ -24,7 +24,7 @@ public class KakaoController {
             @ApiResponse(code = 401, message = "발급 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public User getLogin(
+    public User getAccessToken(
             @RequestHeader(value = "code") String code) {
         // 넘어온 인가 코드를 통해 access_token 발급
         OauthToken oauthToken = kakaoService.getAccessToken(code);
@@ -32,6 +32,21 @@ public class KakaoController {
         //db에 없다면 회원 가입처리
         //있다면 그냥 진행하기
         User user = kakaoService.saveUser(oauthToken);
+        return user;
+    }
+
+    @GetMapping("/oauth/login")
+    @ApiOperation(value = "AccessToken 발급 및 회원가입/로그인", notes = "인가코드로 카카오 AccessToken을 발급받고 로그인 한다. 비회원은 자동 회원가입 처리")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "발급 실패"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public User getLogin(
+            @RequestHeader(value = "AccessToken") String accessToken, @RequestHeader(value = "RefreshToken") String refreshToken ) {
+        //db에 없다면 회원 가입처리
+        //있다면 그냥 진행하기
+        User user = kakaoService.saveUser(accessToken, refreshToken);
         return user;
     }
 

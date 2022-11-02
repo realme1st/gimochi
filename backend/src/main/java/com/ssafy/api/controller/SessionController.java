@@ -56,7 +56,6 @@ public class SessionController {
     }
 
 
-
     /*      Session Message      */
     //sessionId에 해당하는 sessionMessage 생성
     @PostMapping("/message")
