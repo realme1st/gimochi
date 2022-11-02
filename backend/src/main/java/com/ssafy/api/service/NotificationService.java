@@ -27,6 +27,8 @@ public class NotificationService {
     @Value("${fcm.key.path}")
     private String FCM_PRIVATE_KEY_PATH;
 
+    @Value("${noti.img.path}")
+    private String FCM_IMG_PATH;
     //
     // 메시징만 권한 설정
     @Value("${fcm.key.scope}")
@@ -66,6 +68,13 @@ public class NotificationService {
         MulticastMessage message = MulticastMessage.builder()
                 .putData("time", LocalDateTime.now().toString())
                 .setNotification(Notification.builder().setTitle("제목").setBody("내용").build())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setTtl(3600 * 1000)
+                        .setNotification(AndroidNotification.builder()
+                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로?
+                                .setColor("#f45342")
+                                .build())
+                        .build())
                 .addAllTokens(registrationTokens)
                 .build();
         try {
