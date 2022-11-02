@@ -22,22 +22,14 @@ import java.util.List;
  *	유저 관련 비즈니스 로직 처리를 위한 서비스 구현 정의.
  */
 @Service("userService")
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	
 	private final UserRepositorySupport userRepositorySupport;
-
-//	private final PasswordEncoder passwordEncoder;
 	private final FriendsListRepository friendsListRepository;
 
-//	@Override
-//	public User getUserByUserEmail(String userEmail) {
-//		// 디비에 유저 정보 조회 (userId 를 통한 조회).
-//		User user = userRepositorySupport.findUserByUserEmail(userEmail).get();
-//		return user;
-//	}
 	/*
 	* description : 팔로우 요청을 처리하는 메소드
 	* @param followReqDto : 팔로우 요청을 위한 Dto
