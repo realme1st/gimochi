@@ -91,6 +91,31 @@ public class KakaoService {
         }
     }
 
+    //saveUser 오버로드 메소드
+    @Transactional
+    public User saveUser(String accessToken, String refreshToken) {
+
+        KakaoProfile profile = findProfile(accessToken);
+        Optional<User> user = userRepository.findByUserEmail(profile.getKakao_account().getEmail());
+
+        if (!user.isPresent()) {
+            User newUser = User.builder()
+                    .userKakaoId(profile.getId())
+                    .userNickname(profile.getProperties().getNickname())
+                    .userEmail(profile.getKakao_account().getEmail())
+                    .userBirthday(profile.getKakao_account().getBirthday())
+                    .userSocialToken(accessToken)
+                    .userSocialRefreshToken(refreshToken)
+                    .build();
+            userRepository.save(newUser);
+            return newUser;
+
+        } else {
+            user.get().changeSocialTokenInfo(accessToken,refreshToken);
+            return user.get();
+        }
+    }
+
     public KakaoProfile findProfile(String token) {
 
         RestTemplate rt = new RestTemplate();
