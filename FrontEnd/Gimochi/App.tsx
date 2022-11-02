@@ -41,7 +41,7 @@ function AppInner() {
         {isLoggedIn === 'true' ? (
           <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
         ) : (
-          <Stack.Screen name='Login' component={LoginScreen} options={{ title: '로그인' }}></Stack.Screen>
+          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>
         )}
         {/* <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name='Login' component={LoginScreen} options={{ title: '로그인' }}></Stack.Screen> */}
