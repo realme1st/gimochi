@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,6 +36,8 @@ public class Challenge {
     @Column(nullable = false,name="challenge_end_time")
     private String challengeEndTime;
 
+    @Column(nullable = false,name="challenge_reward_type")
+    private int challengeRewardType;
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
@@ -51,29 +52,30 @@ public class Challenge {
     }
 
     @OneToMany(mappedBy = "challenge")
-    private List<ChallengeReward> challengeRewardList = new ArrayList<>();
+    private List<RewardInfo> rewardInfoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeUserId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime) {
+    public Challenge(Long challengeUserId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType) {
         this.challengeUserId = challengeUserId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
         this.challengeParticipant = challengeParticipant;
         this.challengeStartTime = challengeStartTime;
         this.challengeEndTime = challengeEndTime;
+        this.challengeRewardType = challengeRewardType;
     }
 
 
 
 
-    public void addChallengeReward(ChallengeReward challengeReward){
-        this.challengeRewardList.add(challengeReward);
+    public void addChallengeReward(RewardInfo rewardInfo){
+        this.rewardInfoList.add(rewardInfo);
 
-        if(challengeReward.getChallenge() !=this) { //무한루프 방지
-            challengeReward.setChallenge(this);
+        if(rewardInfo.getChallenge() !=this) { //무한루프 방지
+            rewardInfo.setChallenge(this);
         }
 
     }

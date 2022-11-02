@@ -2,14 +2,13 @@ package com.ssafy.api.service;
 
 import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
-import com.ssafy.api.dto.ChallengeRewardReqDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.entity.ChallengeInfo;
-import com.ssafy.db.entity.ChallengeReward;
 import com.ssafy.db.entity.User;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
+import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.ChallengeRepository;
 import com.ssafy.db.repository.ChallengeRewardRepository;
 import com.ssafy.db.repository.UserRepository;
@@ -27,7 +26,8 @@ public class ChallengeService {
     @Autowired
     private ChallengeRepository challengeRepository;
 
-
+    @Autowired
+    private ChallengeInfoRepository challengeInfoRepository;
     @Autowired
     private ChallengeRewardRepository challengeRewardRepository;
 
@@ -43,7 +43,12 @@ public class ChallengeService {
                 .challengeParticipant(challengeReqDto.getChallengeParticipant())
                 .challengeStartTime(challengeReqDto.getChallengeStartTime())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
+                .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .build();
+
+
+
+
 
         return challengeRepository.save(challenge);
     }
@@ -69,32 +74,29 @@ public class ChallengeService {
         }
     }
 
-
-    @Transactional
-    public ChallengeReward createChallengeReward(ChallengeRewardReqDto challengeRewardReqDto) {
-
-        Challenge challenge= findChallengeId(challengeRewardReqDto.getChallengeId());
-        ChallengeReward challengeReward=null;
-
-
-        //challegeReward에 challengeId가 있으면 예외처리
-        if(challengeRewardRepository.findByChallengeChallengeId(challengeRewardReqDto.getChallengeId()).isPresent()){
-            throw new CustomException(ErrorCode.CHALLENEGE_REWARD_ALREADY_EXIST);
-        }
-        else{
-            challengeReward = ChallengeReward.builder()
-                    .challenge(challenge)
-                    .challengeRewardType(challengeRewardReqDto.getChallengeRewardType())
-                    .build();
-        }
-
-
-        return challengeRewardRepository.save(challengeReward);
-    }
-
     public Challenge findChallengeId(Long challengeId) {
         return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
     }
+
+    public User findUserId(Long userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+
+    //challengeInfo 만들기
+    @Transactional
+    public ChallengeInfo createChallengeInfo(ChallengeInfoReqDto challengeInfoReqDto) {
+        Challenge challenge= findChallengeId(challengeInfoReqDto.getChallengeId());
+        User user = findUserId(challengeInfoReqDto.getUserId());
+        ChallengeInfo challengeInfo = ChallengeInfo.builder()
+                .challenge(challenge)
+                .user(user)
+                .successCnt(challengeInfoReqDto.getSuccessCnt())
+                .build();
+
+        return challengeInfoRepository.save(challengeInfo);
+    }
+
 
 }
 
