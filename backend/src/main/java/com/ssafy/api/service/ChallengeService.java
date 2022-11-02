@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
 import com.ssafy.api.dto.ChallengeRewardReqDto;
 import com.ssafy.common.exception.CustomException;
@@ -7,7 +8,8 @@ import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.entity.ChallengeInfo;
 import com.ssafy.db.entity.ChallengeReward;
-import com.ssafy.db.repository.ChallengeInfoRepository;
+import com.ssafy.db.entity.User;
+//import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.ChallengeRepository;
 import com.ssafy.db.repository.ChallengeRewardRepository;
 import com.ssafy.db.repository.UserRepository;
@@ -25,8 +27,6 @@ public class ChallengeService {
     @Autowired
     private ChallengeRepository challengeRepository;
 
-    @Autowired
-    private ChallengeInfoRepository challengeInfoRepository;
 
     @Autowired
     private ChallengeRewardRepository challengeRewardRepository;
@@ -53,13 +53,14 @@ public class ChallengeService {
     }
 
 
-    public Optional<Challenge> getChallengeListByUserId(Long challengeId) {
-        return challengeRepository.findChallengeByChallengeId(challengeId);
+    public Optional<Challenge> getChallengeListByChallengeId(Long challengeId) {
+        return challengeRepository.findByChallengeId(challengeId);
     }
 
+    //challengeInfo를 먼저 찾아서 삭제하고 해야됨
     @Transactional
     public boolean deleteChallenge(Long challengeId) {
-        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
         try {
             challengeRepository.delete(challenge);
             return true;
@@ -69,17 +70,10 @@ public class ChallengeService {
     }
 
 
-    public List<ChallengeInfo> getChallengeUserList(Long challengeId) {
-        Challenge challenge = challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
-        List<ChallengeInfo> list = challenge.getChallengeInfoList();
-
-        return list;
-    }
-
     @Transactional
     public ChallengeReward createChallengeReward(ChallengeRewardReqDto challengeRewardReqDto) {
 
-        Challenge challenge= findChallenge(challengeRewardReqDto.getChallengeId());
+        Challenge challenge= findChallengeId(challengeRewardReqDto.getChallengeId());
         ChallengeReward challengeReward=null;
 
 
@@ -98,8 +92,9 @@ public class ChallengeService {
         return challengeRewardRepository.save(challengeReward);
     }
 
-    public Challenge findChallenge(Long challengeId) {
-        return challengeRepository.findChallengeByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+    public Challenge findChallengeId(Long challengeId) {
+        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
     }
+
 }
 
