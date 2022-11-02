@@ -54,27 +54,28 @@ function GifticonScreen() {
       .catch(console.log);
   }, [onResponse]);
 
-  // const onComplete = useCallback(async () => {
-  //   if (!image) {
-  //     Alert.alert('알림', '파일을 업로드해주세요.');
-  //     return;
-  //   }
-  //   const formData = new FormData();
-  //   formData.append('image', image);
-  //   try {
-  //     await axios.post(`${Config.API_URL}/gifticon`, formData, {
-  //       headers: {
-  //         authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //     Alert.alert('알림', '기프티콘 업로드 완료되었습니다.');
-  //   } catch (error) {
-  //     const errorResponse = (error as AxiosError).response;
-  //     if (errorResponse) {
-  //       Alert.alert('알림', errorResponse.data.message);
-  //     }
-  //   }
-  // }, [image, accessToken]);
+  const onComplete = useCallback(async () => {
+    if (!image) {
+      Alert.alert('알림', '파일을 업로드해주세요.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', image);
+    try {
+      await axios.post('https://k7a205.p.ssafy.io/api/gifticon', formData, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+      Alert.alert('알림', '기프티콘 업로드 완료되었습니다.');
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response;
+      if (errorResponse) {
+        Alert.alert('알림', errorResponse.data.message);
+      }
+    }
+    console.log(formData);
+  }, [image, accessToken]);
 
   return (
     <View>
@@ -89,9 +90,9 @@ function GifticonScreen() {
         />
       )}
 
-      {/* <TouchableOpacity onPress={onComplete}>
+      <TouchableOpacity onPress={onComplete}>
         <Text>기프티콘 제출</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 }

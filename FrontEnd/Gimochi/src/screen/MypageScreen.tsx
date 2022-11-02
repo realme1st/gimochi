@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import axios from 'axios';
 import { Text, View, LogBox, TouchableOpacity } from 'react-native';
@@ -22,16 +23,19 @@ const MypageScreen = ({ navigation: { navigate } }) => {
       const authCode = url.substring(startIndex + exp.length);
       console.log('access code :: ' + authCode);
       console.log(url);
-
       // await axios
-      //   .post('본인 url', {
-      //     params: {
+      //   .get('http://k7a205.p.ssafy.io/api/kakao/oauth/token', {
+      //     header: {
       //       code: authCode,
       //     },
       //   })
-      //   .then((res) => AsyncStorage.setItem('userNumber', JSON.stringify(res['data']['userId'])));
-
-      // navigate('Home', { screen: 'Home' });
+      //   .then(function (res) {
+      //     console.log(res);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      console.log('hi');
     }
   };
 
