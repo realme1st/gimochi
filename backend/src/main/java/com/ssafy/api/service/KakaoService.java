@@ -247,7 +247,7 @@ public class KakaoService {
         return tokenInforamtion;
     }
     @Transactional
-    public RefreshedToken refreshToken(String token) {
+    public RefreshedTokenResDto refreshToken(String token) {
         User user = userRepository.findByUserSocialToken(token).get();
         String refreshToken = user.getUserSocialRefreshToken();
         RestTemplate rt = new RestTemplate();
@@ -266,6 +266,7 @@ public class KakaoService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         RefreshedToken refreshedToken = null;
+        RefreshedTokenResDto refreshedTokenResDto = null;
 
         ResponseEntity<String> tokenInformationResponse = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
@@ -275,6 +276,14 @@ public class KakaoService {
         );
         try {
             refreshedToken = objectMapper.readValue(tokenInformationResponse.getBody(), RefreshedToken.class);
+            refreshedTokenResDto = RefreshedTokenResDto.builder()
+                    .id_token(refreshedToken.getId_token())
+                    .access_token(refreshedToken.getAccess_token())
+                    .token_type(refreshedToken.getToken_type())
+                    .refresh_token(refreshedToken.getRefresh_token())
+                    .expires_in(refreshedToken.getExpires_in())
+                    .refresh_token_expires_in(refreshedToken.getRefresh_token_expires_in())
+                    .build();
             if(refreshedToken.getRefresh_token() == null){
                 user.changeSocialTokenInfo(refreshedToken.getAccess_token(), user.getUserSocialRefreshToken());
             }else{
@@ -284,7 +293,7 @@ public class KakaoService {
             e.printStackTrace();
         }
 
-        return refreshedToken;
+        return refreshedTokenResDto;
     }
 
     public UserIdDto expireToken(String token) {
