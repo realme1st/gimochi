@@ -3,9 +3,9 @@ package com.ssafy.common.response;
 import com.ssafy.common.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
-@Data
-@Builder
+@Getter
 public class ErrorResponseEntity  extends BasicResponse {
     private int status;
     private String code;
@@ -15,11 +15,13 @@ public class ErrorResponseEntity  extends BasicResponse {
     public static ResponseEntity<ErrorResponseEntity> toResponseEntity(ErrorCode e){
         return ResponseEntity
                 .status(e.getHttpStatus())
-                .body(ErrorResponseEntity.builder()
-                        .status(e.getHttpStatus().value())
-                        .code(e.name())
-                        .message(e.getMessage())
-                        .build()
-                );
+                .body(ErrorResponseEntity.builder().e(e).build());
+    }
+    @Builder
+    public ErrorResponseEntity(ErrorCode e) {
+        this.status = e.getHttpStatus().value();
+        this.code = e.name();
+        this.message = e.getMessage();
+        this.success = false;
     }
 }
