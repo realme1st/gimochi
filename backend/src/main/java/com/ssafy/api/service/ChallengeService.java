@@ -3,6 +3,7 @@ package com.ssafy.api.service;
 import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeListRes;
 import com.ssafy.api.response.UserListRes;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -135,23 +136,26 @@ public class ChallengeService {
             listres.add(userListRes);
         }
         return listres;
-        //return challengeInfoRepository.findAll(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
     }
 
+    //userId로 챌린지 List 가져오기
+    public List<ChallengeListRes> findChallengeListByUserId(Long userId){
+        User user = findUserByUserId(userId);
+        List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId()).orElseThrow(()->new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
-//    public List<ChallengeInfoReqDto> getChallengeListByUserId(Long userId) {
-//        User user =findUserByUserId(userId);
-//        List<ChallengeInfoReqDto> list = new ArrayList<>();
-//        List<ChallengeInfo> challengeInfoList = user.getChallengeInfoList();
-//        for(ChallengeInfo challengeInfo: challengeInfoList ){
-//            ChallengeInfoReqDto challengeInfoReqDto = new ChallengeInfoReqDto();
-//            challengeInfoReqDto.setChallengeId(challengeInfoReqDto.getChallengeId());
-//            challengeInfoReqDto.setUserId(challengeInfoReqDto.getUserId());
-//            challengeInfoReqDto.setSuccessCnt(challengeInfoReqDto.getSuccessCnt());
-//            list.add(challengeInfoReqDto);
-//        }
-//        return list;
-//    }
+        List<ChallengeListRes> listres =new ArrayList<>();
+        for(ChallengeInfo challengeInfo : userInfoList){
+
+            ChallengeListRes challengeListRes = ChallengeListRes.builder()
+                    .challengeId(challengeInfo.getChallenge().getChallengeId())
+                    .challengeName(challengeInfo.getChallenge().getChallengeTitle())
+                    .successCnt(challengeInfo.getSuccessCnt())
+                    .build();
+
+            listres.add(challengeListRes);
+        }
+        return listres;
+    }
 
     public List<ChallengeInfo> getUserListByChallengeId(Long challengeId) {
         Challenge challenge = findChallengeByChallengeId(challengeId);
