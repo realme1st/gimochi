@@ -4,9 +4,12 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
+import com.ssafy.api.dto.MultiMessageReqDto;
+import com.ssafy.api.dto.SingleMessageReqDto;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-
+@Slf4j
+@RequiredArgsConstructor
 public class NotificationService {
-
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     @Value("${fcm.key.path}")
     private String FCM_PRIVATE_KEY_PATH;
 
@@ -60,15 +62,27 @@ public class NotificationService {
 
 
     // 알림 보내기
-    public void sendByTokenList(List<String> registrationTokens) {
+    public boolean sendToUserList(MultiMessageReqDto multiMessageReqDto, List<User> userList) {
+
+        List<String> registrationTokens = new ArrayList<>();
+        User sender = userRepository.findByUserId(multiMessageReqDto.getUserId()).get();
+        int type = multiMessageReqDto.getType();
+
+        for (User user: userList) {
+            registrationTokens.add(user.getUserFbToken());
+        }
+
+        String title = setMultiMessageTitle(type);
+        String body = setMultiMessageBody(sender.getUserNickname(), type);
+
         // 메시지 만들기
         MulticastMessage message = MulticastMessage.builder()
                 .putData("time", LocalDateTime.now().toString())
-                .setNotification(Notification.builder().setTitle("제목").setBody("내용").build())
+                .setNotification(Notification.builder().setTitle(title).setBody(body).build())
                 .setAndroidConfig(AndroidConfig.builder()
                         .setTtl(3600 * 1000)
                         .setNotification(AndroidNotification.builder()
-                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로?
+                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로!
                                 .setColor("#f45342")
                                 .build())
                         .build())
@@ -85,12 +99,78 @@ public class NotificationService {
                         failedTokens.add(registrationTokens.get(i));
                     }
                 }
-
-                System.out.println("List of tokens that caused failures: " + failedTokens);
+                log.info("List of tokens that caused failures:" + failedTokens);
             }
         } catch (FirebaseMessagingException e) {
+            log.info("cannot send to memberList push message. error info : {}");
+            log.info(e.getMessage());
+
+            return  false;
+        }
+        return true;
+    }
+    @Transactional
+    public boolean sendToUser(SingleMessageReqDto singleMessageReqDto) {
+        User sender = userRepository.findByUserId(singleMessageReqDto.getSenderId()).get();
+        User receiver = userRepository.findByUserId(singleMessageReqDto.getReceiverId()).get();
+        int type = singleMessageReqDto.getType();
+        String registrationToken = receiver.getUserFbToken();
+
+        String title = setSingleMessageTitle(type);
+        String body = setSingleMessageBody(sender.getUserNickname(), type);
+
+        Message message = Message.builder()
+                .putData("time", LocalDateTime.now().toString())
+                .setNotification(Notification.builder().setTitle(title).setBody(body).build())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setTtl(3600 * 1000)
+                        .setNotification(AndroidNotification.builder()
+                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로?
+                                .setColor("#f45342")
+                                .build())
+                        .build())
+                .setToken(registrationToken)
+                .build();
+        try {
+            String response = FirebaseMessaging.getInstance().send(message);
+            System.out.println("Successfully sent message: " + response);
+        }catch (FirebaseMessagingException e){
             System.out.println("cannot send to memberList push message. error info : {}");
             System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public String setMultiMessageTitle(int type){
+        if(type == 1){
+            return "친구가 기념일을 생성했어요!";
+        }else{
+            return "";
+        }
+    }
+
+    public String setMultiMessageBody(String name, int type){
+        if(type == 1){
+            return name+"님에게 추카포카 메세지를 남겨주세요.";
+        }else{
+            return "";
+        }
+    }
+
+    public String setSingleMessageTitle(int type){
+        if(type == 1){
+            return "친구가 챌린지에 초대했어요!";
+        }else{
+            return "";
+        }
+    }
+
+    public String setSingleMessageBody(String name, int type){
+        if(type == 1){
+            return name+"님이 챌린지에 초대하셨습니다. 수락을 눌러 참여하세요.";
+        }else{
+            return "";
         }
     }
 }
