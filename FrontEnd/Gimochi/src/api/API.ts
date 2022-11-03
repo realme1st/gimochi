@@ -1,13 +1,15 @@
 import axios from 'axios';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../store/reducer';
 
 export const URL = 'https://k7a205.p.ssafy.io/api';
+
+// const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
 export const axiosBasic = axios.create({
   baseURL: URL,
   // headers: {
-  //   'Content-Type': 'application/json',
+  //   AccessToken: accessToken,
   // },
   timeout: 10000,
 });
-
-// 토큰 유효성 검사하는 api 작성하기

@@ -30,10 +30,9 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
     }
-    // console.log(routeName);
+    console.log(routeName);
   }, [navigation, route]);
 
-  // const routeName = getFocusedRouteNameFromRoute(route);
   return (
     <Home.Navigator
       // initialRouteName='HomeScreen'

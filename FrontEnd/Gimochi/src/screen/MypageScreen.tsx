@@ -45,8 +45,9 @@ function MypageScreen() {
   const signOutWithKakao = async (): Promise<void> => {
     // 1. logout() 메서드 실행
     const message = await logout();
-    // 2. AsyncStorage 'Login'값 변경
+    // 2. AsyncStorage 'Login'값 변경, UserId 삭제
     await AsyncStorage.setItem('Login', 'false');
+    await AsyncStorage.removeItem('UserId');
     setResult(message);
     console.log(message);
     // 3. redux isLogin값 변경

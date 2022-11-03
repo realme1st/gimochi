@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import RPMainScreen from '../screen/rollingpaper/RPMainScreen';
 import RPDetailScreen from '../screen/rollingpaper/RPDetailScreen';
-import RPWriteScreen from '../screen/rollingpaper/RPwriteScreen';
+import RPWriteScreen from '../screen/rollingpaper/RPWriteScreen';
 
 export type RPStackParamList = {
   RPMainScreen: undefined;
@@ -10,6 +10,7 @@ export type RPStackParamList = {
   RPDetailScreen: undefined;
 };
 
+export type RPNavigationProps = NativeStackScreenProps<RPStackParamList>;
 const RP = createNativeStackNavigator<RPStackParamList>();
 function RPNavigation() {
   return (

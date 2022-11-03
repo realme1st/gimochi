@@ -22,10 +22,11 @@ import screenSlice from '../slices/screen';
 import { RootState } from '../store/reducer';
 import { HomeModalProps } from '../navigation/HomeNavigation';
 
-function HomeModal({ navigation }: HomeModalProps) {
+function HomeModal({ navigation, route }: HomeModalProps) {
   const currentScreen = useSelector((state: RootState) => state.screen.screenName);
   // console.log(currentScreen);
-
+  const routeName = getFocusedRouteNameFromRoute(route);
+  console.log(routeName);
   const dispatch = useAppDispatch();
 
   const goHome = () => {
