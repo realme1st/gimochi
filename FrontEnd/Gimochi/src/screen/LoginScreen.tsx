@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
@@ -17,8 +18,9 @@ import KakaoLogo from 'react-native-kakao-logo';
 function LoginScreen() {
   const dispatch = useAppDispatch();
 
-  const redux = async (token: string, time: string) => {
+  const redux = async (token: string, time: string, userId: string) => {
     await AsyncStorage.setItem('Login', 'true');
+    await AsyncStorage.setItem('UserId', userId);
     await EncryptedStorage.setItem('accessToken', token);
     await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
@@ -43,7 +45,8 @@ function LoginScreen() {
       })
       .then(function (response) {
         console.log(response);
-        redux(token.accessToken, String(token.accessTokenExpiresAt));
+        console.log(response.data.data.userId);
+        redux(token.accessToken, String(token.accessTokenExpiresAt), String(response.data.data.userId));
       })
       .catch(function (error) {
         console.log(error);

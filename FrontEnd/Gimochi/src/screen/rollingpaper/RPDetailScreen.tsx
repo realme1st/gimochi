@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { View, Text } from 'react-native';
 
@@ -5,7 +7,7 @@ function RPDetailScreen({ route }) {
   const ID = route.params.RPId;
   return (
     <View>
-      <Text>개별 추카포카</Text>
+      <Text>{ID}번 추카포카</Text>
     </View>
   );
 }

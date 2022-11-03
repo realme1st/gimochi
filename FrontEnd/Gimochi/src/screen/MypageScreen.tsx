@@ -15,6 +15,7 @@ import {
   getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../slices/user';
 import screenSlice from '../slices/screen';
 import { useAppDispatch } from '../store';
@@ -37,16 +38,19 @@ function MypageScreen() {
         isLogin: 'true',
       }),
     );
-    console.log(token);
-    console.log(token.accessTokenExpiresAt);
+    // console.log(token);
+    // console.log(token.accessTokenExpiresAt);
     setTokenTime(token.accessTokenExpiresAt);
   };
 
   const signOutWithKakao = async (): Promise<void> => {
     // 1. logout() 메서드 실행
     const message = await logout();
-    // 2. AsyncStorage 'Login'값 변경
+    // 2. AsyncStorage 'Login'값 변경, UserId 삭제
     await AsyncStorage.setItem('Login', 'false');
+    await AsyncStorage.removeItem('UserId');
+    await EncryptedStorage.removeItem('accessToken');
+    await EncryptedStorage.removeItem('accessTokenExpiresAt');
     setResult(message);
     console.log(message);
     // 3. redux isLogin값 변경
