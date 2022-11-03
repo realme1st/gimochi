@@ -19,6 +19,8 @@ function LoginScreen() {
 
   const redux = async (token: string, time: string) => {
     await AsyncStorage.setItem('Login', 'true');
+    await EncryptedStorage.setItem('accessToken', token);
+    await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
       userSlice.actions.setLogin({
         isLogin: 'true',
@@ -26,8 +28,6 @@ function LoginScreen() {
         accessTokenExpiresAt: time,
       }),
     );
-    await EncryptedStorage.setItem('accessToken', token);
-    await EncryptedStorage.setItem('accessTokenExpiresAt', time);
   };
 
   const signInWithKakao = async (): Promise<void> => {
@@ -43,7 +43,7 @@ function LoginScreen() {
       })
       .then(function (response) {
         console.log(response);
-        redux(token.accessToken, token.accessTokenExpiresAt);
+        redux(token.accessToken, String(token.accessTokenExpiresAt));
       })
       .catch(function (error) {
         console.log(error);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
@@ -26,8 +27,9 @@ function AppInner() {
     const login = await AsyncStorage.getItem('Login');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
-    if (String(now) > String(accessTokenExpiresAt)) {
-      // 토큰 갱신하는 axios요청
+    const tokenTime = new Date(accessTokenExpiresAt);
+    if (format(tokenTime - now, 'HH') <= 2) {
+      // 토큰 만료 시간이 2시간 이하로 남으면 토큰 갱신하는 axios요청
     }
     dispatch(
       userSlice.actions.setLogin({
@@ -36,13 +38,13 @@ function AppInner() {
         isLogin: login,
       }),
     );
-    console.log(login);
   };
 
   useEffect(() => {
     void loginCheck();
-    SplashScreen.hide();
-    // console.log(isLoggedIn);
+    setTimeout(function () {
+      SplashScreen.hide();
+    }, 2000);
   }, []);
 
   return (
@@ -53,8 +55,6 @@ function AppInner() {
         ) : (
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>
         )}
-        {/* <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
-        <Stack.Screen name='Login' component={LoginScreen} options={{ title: '로그인' }}></Stack.Screen> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
