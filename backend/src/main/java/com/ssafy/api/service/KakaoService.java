@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.api.dto.*;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 @Service("kakaoService")
+@Slf4j
 //@Transactional(readOnly = true)
 public class KakaoService {
 
@@ -247,7 +249,6 @@ public class KakaoService {
     @Transactional
     public RefreshedToken refreshToken(String token) {
         User user = userRepository.findByUserSocialToken(token).get();
-
         String refreshToken = user.getUserSocialRefreshToken();
         RestTemplate rt = new RestTemplate();
 
@@ -267,14 +268,18 @@ public class KakaoService {
         RefreshedToken refreshedToken = null;
 
         ResponseEntity<String> tokenInformationResponse = rt.exchange(
-                "https://kapi.kakao.com/oauth/token",
+                "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 refreshRequest,
                 String.class
         );
         try {
             refreshedToken = objectMapper.readValue(tokenInformationResponse.getBody(), RefreshedToken.class);
-            user.changeSocialTokenInfo(refreshedToken.getAccess_token(), refreshedToken.getRefresh_token());
+            if(refreshedToken.getRefresh_token() == null){
+                user.changeSocialTokenInfo(refreshedToken.getAccess_token(), user.getUserSocialRefreshToken());
+            }else{
+                user.changeSocialTokenInfo(refreshedToken.getAccess_token(), refreshedToken.getRefresh_token());
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
