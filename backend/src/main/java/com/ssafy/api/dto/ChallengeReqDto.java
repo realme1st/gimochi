@@ -26,6 +26,4 @@ public class ChallengeReqDto {
     @ApiModelProperty(name="챌린지 보상 타입", example="1")
     int challengeRewardType;
 
-    @ApiModelProperty(name="챌린지 초대자 이름", example="황태순")
-    String challengeLeaderName;
 }
