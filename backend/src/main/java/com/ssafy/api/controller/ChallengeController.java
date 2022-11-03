@@ -2,6 +2,7 @@ package com.ssafy.api.controller;
 
 
 import com.ssafy.api.dto.ChallengeInfoReqDto;
+import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChallengeController {
 
 
-    private ChallengeService challengeService;
+    private final ChallengeService challengeService;
 
     @PostMapping()
     @ApiOperation(value = "챌린지 생성", notes = "<strong>챌린지 정보를 입력하여</strong> 챌린지를 만든다.")
@@ -88,5 +89,12 @@ public class ChallengeController {
 
 
     //challengeInfo 생성
+
+    @PostMapping("/challengeInvite")
+    @ApiOperation(value = "user_id에 해당하는 사용자에게 Challenge 초대장 전송")
+    public ResponseEntity<? extends BasicResponse> createChallengeInvite(@RequestBody ChallengeInviteReqDto challengeInviteReqDto){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeInvite(challengeInviteReqDto)));
+    }
+
 
 }

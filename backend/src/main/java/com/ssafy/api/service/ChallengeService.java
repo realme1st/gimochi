@@ -1,17 +1,16 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.ChallengeInfoReqDto;
+import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.entity.ChallengeInfo;
+import com.ssafy.db.entity.ChallengeInvite;
 import com.ssafy.db.entity.User;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
-import com.ssafy.db.repository.ChallengeInfoRepository;
-import com.ssafy.db.repository.ChallengeRepository;
-import com.ssafy.db.repository.ChallengeRewardRepository;
-import com.ssafy.db.repository.UserRepository;
+import com.ssafy.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +32,9 @@ public class ChallengeService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ChallengeInviteRepository challengeInviteRepository;
 
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto){
@@ -116,5 +118,22 @@ public class ChallengeService {
     }
 
 
+    @Transactional
+    public ChallengeInvite createChallengeInvite(ChallengeInviteReqDto challengeInviteReqDto) {
+        // 사용자, 챌린지 유효성 체크
+        User user = findUserByUserId(challengeInviteReqDto.getUserId());
+        Challenge challenge = findChallengeByChallengeId(challengeInviteReqDto.getChallengeId());
+
+        ChallengeInvite challengeInvite = ChallengeInvite.builder()
+                .challenge(challenge)
+                .user(user)
+                .build();
+        try{
+            challengeInviteRepository.save(challengeInvite);
+        }catch (IllegalArgumentException e){
+            throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
+        }
+        return challengeInvite;
+    }
 }
 

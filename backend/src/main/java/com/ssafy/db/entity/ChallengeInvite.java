@@ -2,6 +2,7 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,13 @@ public class ChallengeInvite {
     @ManyToOne(fetch=LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
+
+    @Builder
+    public ChallengeInvite(User user, Challenge challenge) {
+        this.user = user;
+        this.challenge = challenge;
+    }
+
 
     public void setUser(User user){
         this.user =user;
