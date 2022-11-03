@@ -28,7 +28,6 @@ public class ChallengeInvite {
     @ManyToOne(fetch=LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
-
     @Builder
     public ChallengeInvite(User user, Challenge challenge) {
         this.user = user;

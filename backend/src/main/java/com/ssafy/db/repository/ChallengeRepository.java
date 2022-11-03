@@ -17,5 +17,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
 
 
+//    Optional<List<Challenge>> findChallengeListByChallengeIdList(List<Long> challengeIdList);
 
+    Optional<String> findChallengeLeaderNameByChallengeId(Long id);
+
+    Optional<String> findChallengeTitleByChallengeId(Long id);
 }

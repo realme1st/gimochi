@@ -4,6 +4,7 @@ import com.ssafy.api.dto.ChallengeAuthReqDto;
 import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeInviteRes;
 import com.ssafy.api.response.ChallengeListRes;
 import com.ssafy.api.response.UserListRes;
 import com.ssafy.common.exception.CustomException;
@@ -199,5 +200,26 @@ public class ChallengeService {
 
     }
 
+
+    public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
+        // userId가 속한 ChallengeInvite 리스트 가져오기
+        List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
+
+        // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
+        List<Long> challengeIdList = new ArrayList<>();
+        for (ChallengeInvite challengeInvite : challengeInviteList) {
+            challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
+        }
+        List<ChallengeInviteRes> result = new ArrayList<>();
+        for(Long id : challengeIdList){
+            Challenge challenge = findChallengeByChallengeId(id);
+            result.add(ChallengeInviteRes.builder()
+                    .challengeLeaderName(challenge.getChallengeLeaderName())
+                    .challengeTitle(challenge.getChallengeTitle())
+                    .challengeId(challenge.getChallengeId())
+                    .build());
+        }
+        return result;
+    }
 }
 
