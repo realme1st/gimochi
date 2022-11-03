@@ -30,12 +30,11 @@ function AppInner() {
     const login = await AsyncStorage.getItem('Login');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
+    console.log(accessToken);
+    console.log(accessTokenExpiresAt);
     const tokenTime = new Date(accessTokenExpiresAt);
-    // console.log(accessToken);
-    // console.log(accessTokenExpiresAt);
-    // console.log(tokenTime);
-    // console.log(format(tokenTime - date, 'HH'));
-    if (format(tokenTime - date, 'HH') <= 2) {
+    // EncryptedStorage에 토큰이 있고(로그인된 상태) 토큰만료시간-현재시간이 2시간 이하라면 새 토큰을 발급받음
+    if (accessToken && format(tokenTime - date, 'HH') <= 2) {
       axios
         .get(`${URL}/kakao/oauth/refreshToken`, {
           headers: {
@@ -43,12 +42,29 @@ function AppInner() {
           },
         })
         .then(async function (response) {
+          // console.log(response);
           await EncryptedStorage.setItem('accessToken', response.data.data.accessToken);
+          await EncryptedStorage.setItem('accessTokenExpiresAt', response.data.data.expiresIn);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
+    axios
+      .get(`${URL}/kakao/oauth/refreshToken`, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then(async function (response) {
+        console.log(response.data.data.accessToken);
+        console.log(response.data.data.expiresIn);
+        await EncryptedStorage.setItem('accessToken', response.data.data.accessToken);
+        await EncryptedStorage.setItem('accessTokenExpiresAt', response.data.data.expiresIn);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     dispatch(
       userSlice.actions.setLogin({
         accessToken: accessToken,
