@@ -22,13 +22,17 @@ function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.user.isLogin);
   const date = new Date();
-  const now = format(date, 'yyyy-MM-dd HH:mm:ss');
+  // const now = format(date, 'yyyy-MM-dd HH:mm:ss');
   const loginCheck = async (): Promise<void> => {
     const login = await AsyncStorage.getItem('Login');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
+    console.log(accessToken);
     const tokenTime = new Date(accessTokenExpiresAt);
-    if (format(tokenTime - now, 'HH') <= 2) {
+    console.log(accessTokenExpiresAt);
+    console.log(tokenTime);
+    console.log(format(tokenTime - date, 'HH'));
+    if (format(tokenTime - date, 'HH') <= 2) {
       // 토큰 만료 시간이 2시간 이하로 남으면 토큰 갱신하는 axios요청
     }
     dispatch(
@@ -44,7 +48,7 @@ function AppInner() {
     void loginCheck();
     setTimeout(function () {
       SplashScreen.hide();
-    }, 2000);
+    }, 3000);
   }, []);
 
   return (
