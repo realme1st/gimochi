@@ -4,9 +4,9 @@ import lombok.*;
 
 @Getter
 public class UserListRes {
-    Long userId;
+    private Long userId;
 
-    int successCnt;
+    private int successCnt;
 
     @Builder
     public UserListRes(Long userId, int successCnt) {
