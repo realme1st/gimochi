@@ -121,7 +121,8 @@ public class ChallengeService {
 
 
     public List<UserListRes> findUserListByChallengeId(Long challengeId){
-        List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challengeId).orElseThrow(()->new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        Challenge challenge = findChallengeByChallengeId(challengeId);
+        List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId()).orElseThrow(()->new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
         List<UserListRes> listres =new ArrayList<>();
         for(ChallengeInfo challengeInfo : challengeInfoList){
