@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.ChallengeAuthReqDto;
 import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
@@ -7,10 +8,7 @@ import com.ssafy.api.response.ChallengeListRes;
 import com.ssafy.api.response.UserListRes;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
-import com.ssafy.db.entity.Challenge;
-import com.ssafy.db.entity.ChallengeInfo;
-import com.ssafy.db.entity.ChallengeInvite;
-import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.*;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ public class ChallengeService {
     @Autowired
     private ChallengeInfoRepository challengeInfoRepository;
     @Autowired
-    private ChallengeRewardRepository challengeRewardRepository;
+    private ChallengeAuthRepository challengeAuthRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,6 +49,7 @@ public class ChallengeService {
                 .challengeStartTime(challengeReqDto.getChallengeStartTime())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
+                .challengeLeaderName(challengeReqDto.getChallengeLeaderName())
                 .build();
 
         challengeRepository.save(challenge);
@@ -182,6 +181,22 @@ public class ChallengeService {
         }
 
         return challengeInvite;
+    }
+
+    @Transactional
+    public ChallengeAuth createChllengeAuth(ChallengeAuth challengeAuth){
+
+        //challenge auth_id가 없는 경우(challenge_info 만들면서 auth도 (userId추가)
+        ChallengeAuth challengeauth = ChallengeAuth.builder()
+                .authUserId(challengeAuth.getAuthUserId())
+                .challengePath(challengeAuth.getChallengePath())
+                .voteCnt(challengeAuth.getVoteCnt())
+                .challengeDate(challengeAuth.getChallengeDate())
+                .isConfirm(challengeAuth.getIsConfirm())
+                .build();
+
+        return challengeAuthRepository.save(challengeauth);
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,8 +26,8 @@ public class ChallengeAuth {
     @JoinColumn(name="challenge_info_id")
     private ChallengeInfo challengeInfo;
 
-    @Column(name="user_id")
-    private int userId;
+    @Column(name="auth_user_id")
+    private Long authUserId;
 
     @Column(name="challenge_path")
     private String challengePath;
@@ -35,7 +36,7 @@ public class ChallengeAuth {
     private int voteCnt;
 
     @Column(name="is_confirm")
-    private boolean isConfirm;
+    private int isConfirm;
 
     @Column(name="challenge_date")
     @Temporal(TemporalType.TIME)
@@ -49,4 +50,17 @@ public class ChallengeAuth {
             challengeinfo.getChallengeAuthsList().add(this);
         }
     }
+
+    @Builder
+    public ChallengeAuth(ChallengeInfo challengeInfo, Long authUserId, String challengePath, int voteCnt, int isConfirm, Date challengeDate){
+        this.challengeInfo = challengeInfo;
+        this.authUserId = authUserId;
+        this.challengePath = challengePath;
+        this.voteCnt = voteCnt;
+        this.isConfirm = isConfirm;
+        this.challengeDate = challengeDate;
+    }
+
+
+
 }

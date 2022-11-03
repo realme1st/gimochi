@@ -39,6 +39,9 @@ public class Challenge {
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
 
+    @Column(nullable = false,name="challenge_leader_name")
+    private String challengeLeaderName;
+
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
 
@@ -58,7 +61,7 @@ public class Challenge {
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType) {
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
         this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
@@ -66,6 +69,7 @@ public class Challenge {
         this.challengeStartTime = challengeStartTime;
         this.challengeEndTime = challengeEndTime;
         this.challengeRewardType = challengeRewardType;
+        this.challengeLeaderName = challengeLeaderName;
     }
 
 
