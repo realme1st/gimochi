@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,8 +49,7 @@ public class SessionService {
                 .user(user)
                 .name(reqDto.getName())
                 .sessionTypeId(reqDto.getSessionTypeId())
-                .createTime(reqDto.getCreateTime())
-                .expireTime(reqDto.getExpireTime())
+                .expireTime(reqDto.getAnniversary().plusDays(7)) // 기념일 7일뒤 세션 만료
                 .anniversary(reqDto.getAnniversary())
                 .build();
         log.info("세션 생성");
@@ -118,7 +118,9 @@ public class SessionService {
         SessionMessage sessionMessage = null;
         // img를 첨부하지 않은 경우
         if (sessionMessageReqDto.getImg() == null) {
-            sessionMessageReqDto.setImg("");
+            SessionMessageReqDto.builder()
+                    .img("default")
+                    .build();
         }
         // img가 gifticon이 아닌 경우 (판별은 gifticonService에서 구현)
         sessionMessage = SessionMessage.builder()
@@ -163,13 +165,13 @@ public class SessionService {
     }
 
     /*
-     * description: 만료시간이 현재시간보다 오래됐는지 체크 (expireTime < now)
+     * description: 만료일이 현재보다 오래됐는지 체크 (expireTime < now), 스케줄러에 적용해야함
      * return: 오래됐다면 삭제메서드 호출
      * */
-    public void checkExpireTime(LocalDateTime expireTime) {
+    public void checkExpireTime(LocalDate expireTime) {
         List<Session> sessionList = sessionRepository.findAll();
         for (Session session : sessionList) {
-            if (session.getExpireTime().isBefore(LocalDateTime.now())) {
+            if (session.getExpireTime().isBefore(LocalDate.now())) {
                 deleteSession(session.getSessionId());
             }
         }

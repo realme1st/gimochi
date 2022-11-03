@@ -2,13 +2,12 @@ package com.ssafy.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class SessionMessageReqDto {
     @ApiModelProperty(name = "세션id", example = "1")
     Long sessionId;
@@ -30,4 +29,8 @@ public class SessionMessageReqDto {
     @ApiModelProperty(name = "첨부이미지", example = "첨부이미지")
     String img;
 
+    @Builder
+    public SessionMessageReqDto(String img) {
+        this.img = img;
+    }
 }

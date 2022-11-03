@@ -24,10 +24,10 @@ public class Session {
     private Long sessionId;
 
     private String name;
-    @Column(nullable = false, name = "create_time")
-    private LocalDateTime createTime;
+//    @Column(nullable = false, name = "create_time")
+//    private LocalDateTime createTime;
     @Column(nullable = false, name = "expire_time")
-    private LocalDateTime expireTime;
+    private LocalDate expireTime;
     @Column(nullable = false)
     private LocalDate anniversary;
 
@@ -69,9 +69,8 @@ public class Session {
     }
 
     @Builder
-    public Session(String name, LocalDateTime createTime, LocalDateTime expireTime, LocalDate anniversary, User user, Long sessionTypeId) {
+    public Session(String name, LocalDate expireTime, LocalDate anniversary, User user, Long sessionTypeId) {
         this.name = name;
-        this.createTime = createTime;
         this.expireTime = expireTime;
         this.anniversary = anniversary;
         this.user = user;
