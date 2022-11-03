@@ -5,7 +5,7 @@ import HomeScreen from '../screen/HomeScreen';
 import AttendanceScreen from '../screen/AttendanceScreen';
 import ChallengeScreen from '../screen/ChallengeScreen';
 import PlayScreen from '../screen/PlayScreen';
-import RollingpaperScreen from '../screen/RollingpaperScreen';
+import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
 
@@ -58,8 +58,8 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
       <Home.Screen name='PlayScreen' component={PlayScreen} options={{ title: '놀이터' }}></Home.Screen>
       <Home.Screen
         name='RollingpaperScreen'
-        component={RollingpaperScreen}
-        options={{ title: '추카포카' }}
+        component={RPNavigation}
+        options={{ headerShown: false }}
       ></Home.Screen>
       <Home.Screen
         name='ScheduleScreen'
