@@ -12,4 +12,5 @@ public class ChallengeInviteReqDto {
 
     @ApiModelProperty(name = "초대 받을 Challenge ID", example = "1")
     Long challengeId;
+
 }

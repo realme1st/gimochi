@@ -27,20 +27,9 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @PostMapping()
-    @ApiOperation(value = "챌린지 생성", notes = "<strong>챌린지 정보를 입력하여</strong> 챌린지를 만든다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-
+    @ApiOperation(value = "챌린지 생성", notes = "<strong>챌린지 정보를 입력하여</strong> 챌린지와 챌린지유저 정보를 만든다.")
     public ResponseEntity<? extends BasicResponse> createChallenge
             (@RequestBody @ApiParam(value = "챌린지") ChallengeReqDto challengeReqDto) {
-
-
-
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChllenge(challengeReqDto)));
     }
 
@@ -61,15 +50,8 @@ public class ChallengeController {
 
 
     @GetMapping("/{challengeId}")
-    @ApiOperation(value = "챌린지 조회(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 챌린지를 조회한다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<? extends BasicResponse> getChallengeListByChallengeId(@PathVariable Long challengeId){
+    @ApiOperation(value = "챌린지 조회(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 해당챌린지를 상세 조회한다.")
+    public ResponseEntity<? extends BasicResponse> getChallengeByChallengeId(@PathVariable Long challengeId){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeByChallengeId(challengeId)));
     }
 
@@ -88,7 +70,12 @@ public class ChallengeController {
     }
 
 
-    //challengeInfo 생성
+    //challengeId에 속한 UserList 조회
+    @GetMapping("/userList/{challengeId}")
+    @ApiOperation(value = "챌린지에 참여하는 유저리스트 조회(challengeId기반)", notes = "<strong>challengeId를 입력하여</strong> 해당 챌린지에 참여하는 유저리스트를 조회한다.")
+    public ResponseEntity<? extends BasicResponse> findUserListByChallengeId(@PathVariable Long challengeId){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findUserListByChallengeId(challengeId)));
+    }
 
     @PostMapping("/challengeInvite")
     @ApiOperation(value = "user_id에 해당하는 사용자에게 Challenge 초대장 전송")

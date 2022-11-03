@@ -35,7 +35,6 @@ public class ChallengeInvite {
         this.challenge = challenge;
     }
 
-
     public void setUser(User user){
         this.user =user;
         //무한 루프 주의
