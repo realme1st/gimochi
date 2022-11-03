@@ -41,6 +41,9 @@ public class ChallengeService {
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto){
 
+        User user = userRepository.findByUserId(challengeReqDto.getChallengeLeaderId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         //challenge id가 없는 경우(challenge 만들면서 info도 (방장이추가)
         Challenge challenge = Challenge.builder()
                 .challengeTitle(challengeReqDto.getChallengeTitle())
@@ -50,7 +53,7 @@ public class ChallengeService {
                 .challengeStartTime(challengeReqDto.getChallengeStartTime())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
-                .challengeLeaderName(challengeReqDto.getChallengeLeaderName())
+                .challengeLeaderName(user.getUserNickname())
                 .build();
 
         challengeRepository.save(challenge);
@@ -97,6 +100,7 @@ public class ChallengeService {
     public ChallengeInfo createChallengeInfoFirst(Challenge challenge) {
 
         User user =findUserByUserId(challenge.getChallengeLeaderId());
+
         ChallengeInfo challengeInfo = ChallengeInfo.builder()
                 .challenge(challenge)
                 .user(user)
