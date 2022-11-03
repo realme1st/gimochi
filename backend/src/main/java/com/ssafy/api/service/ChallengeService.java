@@ -221,5 +221,25 @@ public class ChallengeService {
         }
         return result;
     }
+
+    @Transactional
+    public boolean acceptChallengeInvite(Long challengeInviteId) {
+        // challengeInviteId로 ChallengeInvite 가져오기
+        ChallengeInvite challengeInvite = challengeInviteRepository.findByChallengeInviteId(challengeInviteId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_INVITE_NOT_FOUND));
+
+        // ChallengeInvite의 challengeId로 Challenge 가져오기
+        Challenge challenge = challengeInvite.getChallenge();
+
+        // Challenge의 challengeInfoList에 ChallengeInvite의 userId 추가
+        challengeInfoRepository.save(ChallengeInfo.builder()
+                .challenge(challenge)
+                .user(challengeInvite.getUser())
+                .successCnt(0)
+                .build());
+        // ChallengeInvite 삭제
+        challengeInviteRepository.delete(challengeInvite);
+
+        return true;
+    }
 }
 

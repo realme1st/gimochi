@@ -95,6 +95,13 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInviteList(userId)));
     }
 
+    // 챌린지 수락을 눌렀을 떄 , 챌린지 유저 정보 테이블에 값 추가
+    @PostMapping("/challengeInvite/accept/{challengeInviteId}")
+    @ApiOperation(value = "챌린지 초대장 수락", notes = "<strong>챌린지 초대장 ID를 입력하여</strong> 해당 챌린지 초대장을 수락한다.")
+    public ResponseEntity<? extends BasicResponse> acceptChallengeInvite(@PathVariable Long challengeInviteId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.acceptChallengeInvite(challengeInviteId)));
+    }
+
 
 
 }
