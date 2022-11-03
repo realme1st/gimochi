@@ -7,6 +7,7 @@ import { Text, View, TouchableOpacity, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../slices/user';
 import { useAppDispatch } from '../store';
 import { URL } from '../api/API';
@@ -16,13 +17,17 @@ import KakaoLogo from 'react-native-kakao-logo';
 function LoginScreen() {
   const dispatch = useAppDispatch();
 
-  const redux = async () => {
+  const redux = async (token: string, time: string) => {
     await AsyncStorage.setItem('Login', 'true');
     dispatch(
       userSlice.actions.setLogin({
         isLogin: 'true',
+        accessToken: token,
+        accessTokenExpiresAt: time,
       }),
     );
+    await EncryptedStorage.setItem('accessToken', token);
+    await EncryptedStorage.setItem('accessTokenExpiresAt', time);
   };
 
   const signInWithKakao = async (): Promise<void> => {
@@ -38,11 +43,12 @@ function LoginScreen() {
       })
       .then(function (response) {
         console.log(response);
-        redux();
+        redux(token.accessToken, token.accessTokenExpiresAt);
       })
       .catch(function (error) {
         console.log(error);
       });
+    // redux();
   };
 
   // const test = async () => {
