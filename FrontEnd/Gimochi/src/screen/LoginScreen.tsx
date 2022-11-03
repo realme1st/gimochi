@@ -44,8 +44,9 @@ function LoginScreen() {
         },
       })
       .then(function (response) {
+        console.log(response);
         console.log(response.data.data.userId);
-        redux(token.accessToken, String(token.accessTokenExpiresAt), response.data.data.userId);
+        redux(token.accessToken, String(token.accessTokenExpiresAt), String(response.data.data.userId));
       })
       .catch(function (error) {
         console.log(error);
