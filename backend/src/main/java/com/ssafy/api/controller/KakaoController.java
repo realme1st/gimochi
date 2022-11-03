@@ -42,7 +42,7 @@ public class KakaoController {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseEntity<>(kakaoService.expireToken(token)));
     }
 
-    @GetMapping("/oauth/refreshToekn")
+    @GetMapping("/oauth/refreshToken")
     @ApiOperation(value = "AccessToken토큰 갱신", notes = "해당 사용자의 AccessToken을 갱신한다.")
     public ResponseEntity<? extends BasicResponse> refreshToken(
             @RequestHeader(value = "token") String token) {
