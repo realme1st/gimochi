@@ -28,6 +28,7 @@ function AppInner() {
   // const now = format(date, 'yyyy-MM-dd HH:mm:ss');
   const loginCheck = async (): Promise<void> => {
     const login = await AsyncStorage.getItem('Login');
+    const userId = await AsyncStorage.getItem('userId');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
     console.log(accessToken);
@@ -70,6 +71,7 @@ function AppInner() {
         accessToken: accessToken,
         accessTokenExpiresAt: accessTokenExpiresAt,
         isLogin: login,
+        userId: Number(userId),
       }),
     );
   };
