@@ -77,6 +77,7 @@ public class ChallengeService {
     public boolean deleteChallenge(Long challengeId) {
         Challenge challenge = challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
         try {
+            challengeInfoRepository.delete(challengeInfoRepository.findByChallenge(challenge));
             challengeRepository.delete(challenge);
             return true;
         } catch (IllegalArgumentException e) {
@@ -166,6 +167,9 @@ public class ChallengeService {
         List<ChallengeInfo> challengeInfoList = challenge.getChallengeInfoList();
         return challengeInfoList;
     }
+
+
+
 
     @Transactional
     public ChallengeInvite createChallengeInvite(ChallengeInviteReqDto challengeInviteReqDto) {

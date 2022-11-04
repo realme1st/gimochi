@@ -18,4 +18,9 @@ public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Lo
 
     @Query("select ch from ChallengeInfo ch join fetch ch.challenge where ch.user.userId = :userId")
     Optional<List<ChallengeInfo>> findChallengeListByUserId(Long userId);
+
+    ChallengeInfo findByChallenge(Challenge challenge);
+
+
+
 }
