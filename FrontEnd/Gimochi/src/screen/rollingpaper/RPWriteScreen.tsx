@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -15,14 +17,16 @@ import axios from 'axios';
 import { URL } from '../../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
+import { useAppDispatch } from '../../store';
+import reloadSlice from '../../slices/reload';
 
-function RPWriteScreen() {
+function RPWriteScreen({ navigation }) {
   const [typeId, setTypeId] = useState<number>(0);
   const [sessionName, setSessionName] = useState<string>('');
   const [date, onChangeDate] = useState<Date>(new Date());
   const [visible, setVisible] = useState<boolean>(false); // 달력 모달 노출 여부
   const userId = useSelector((state: RootState) => state.user.userId);
-  console.log(userId);
+  const dispatch = useAppDispatch();
 
   const onPressDate = () => {
     // 날짜 클릭 시
@@ -51,15 +55,20 @@ function RPWriteScreen() {
   const onSubmit = () => {
     axios
       .post(`${URL}/session`, {
-        body: {
-          anniversary: format(date, 'yyyy-MM-dd'),
-          name: sessionName,
-          sessionTypeId: typeId,
-          userId: userId,
-        },
+        anniversary: format(date, 'yyyy-MM-dd'),
+        name: sessionName,
+        sessionTypeId: typeId,
+        userId: userId,
       })
       .then(function (response) {
         console.log(response);
+        // 실시간 상태관리용, 무지성 복붙할것
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        navigation.goBack();
       })
       .catch(function (error) {
         console.log(error);
