@@ -77,6 +77,8 @@ public class ChallengeAuth {
         this.challengeDate = challengeDate;
     }
 
-
-
+    // 투표수 증가
+    public void voteCntUp() {
+        this.voteCnt += 1; 
+    }
 }
