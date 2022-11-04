@@ -1,10 +1,7 @@
 package com.ssafy.api.controller;
 
 
-import com.ssafy.api.dto.ChallengeInfoReqDto;
-import com.ssafy.api.dto.ChallengeInviteReqDto;
-import com.ssafy.api.dto.ChallengeReqDto;
-import com.ssafy.api.dto.ChallengeVoteReqDto;
+import com.ssafy.api.dto.*;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -37,13 +34,6 @@ public class ChallengeController {
 
     @GetMapping()
     @ApiOperation(value = "모든 챌린지 조회", notes = "<strong>챌린지 전체정보 조회</strong> 존재하는 모든 챌린지를 조회한다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
     public ResponseEntity<? extends BasicResponse> getSessionTypeList(){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallengeList()));
     }
@@ -59,13 +49,7 @@ public class ChallengeController {
 
     @DeleteMapping("/{challengeId}")
     @ApiOperation(value = "챌린지 삭제(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 챌린지를 삭제한다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "잘못된 요청"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 404, message = "해당하는 챌린지 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
+
     public ResponseEntity<? extends BasicResponse> deleteChallenge(@PathVariable Long challengeId){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.deleteChallenge(challengeId)));
     }
@@ -103,10 +87,16 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.acceptChallengeInvite(challengeInviteId)));
     }
 
-    // 챌린지 인증의 투표수를 증가시키는 API
-    @PutMapping("/challenge/vote")
-    @ApiOperation(value = "챌린지 인증의 투표수를 증가시키는 API", notes = "<strong>A가 B의</strong> 해당 챌린지 인증의 투표수를 증가시킨다.")
-    public ResponseEntity<? extends BasicResponse> voteChallenge(@RequestBody ChallengeVoteReqDto challengeVoteReqDto) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.voteChallenge(challengeVoteReqDto)));
+    @PostMapping("/challengeAuth")
+    @ApiOperation(value = "챌린지 인증", notes = "<strong>챌린지 인증 정보를 입력하여</strong> 해당 챌린지 인증을 생성한다.")
+    public ResponseEntity<? extends BasicResponse> createChallengeAuth(@RequestBody ChallengeAuthReqDto challengeAuthReqDto) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeAuth(challengeAuthReqDto)));
+    }
+
+
+    @PostMapping("/vote")
+    @ApiOperation(value = "챌린지 인증 투표", notes = "<strong>챌린지 인증 투표 정보를 입력하여</strong> 해당 챌린지 인증 투표를 생성한다.")
+    public ResponseEntity<? extends BasicResponse> createVote(@RequestBody VoteReqDto voteReqDto) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createVote(voteReqDto)));
     }
 }
