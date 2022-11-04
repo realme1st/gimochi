@@ -27,8 +27,9 @@ function AppInner() {
   const isUserId = useSelector((state: RootState) => !!state.user.userId);
   const date = new Date();
   const loginCheck = async (): Promise<void> => {
-    const login = await AsyncStorage.getItem('Login');
-    const userId = await AsyncStorage.getItem('UserId');
+    const login = await AsyncStorage.getItem('login');
+    const userId = await AsyncStorage.getItem('userId');
+    const userNickname = await AsyncStorage.getItem('userNickname');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
     console.log(accessToken);
@@ -57,6 +58,7 @@ function AppInner() {
         accessTokenExpiresAt: accessTokenExpiresAt,
         isLogin: login,
         userId: Number(userId),
+        userNickname: userNickname,
       }),
     );
   };
