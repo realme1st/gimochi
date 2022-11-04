@@ -51,12 +51,10 @@ function RPWriteScreen() {
   const onSubmit = () => {
     axios
       .post(`${URL}/session`, {
-        body: {
-          anniversary: format(date, 'yyyy-MM-dd'),
-          name: sessionName,
-          sessionTypeId: typeId,
-          userId: userId,
-        },
+        anniversary: format(date, 'yyyy-MM-dd'),
+        name: sessionName,
+        sessionTypeId: typeId,
+        userId: userId,
       })
       .then(function (response) {
         console.log(response);
