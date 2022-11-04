@@ -18,6 +18,7 @@ import userSlice from './src/slices/user';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { URL } from './src/api/API';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -95,11 +96,14 @@ function AppInner() {
     </NavigationContainer>
   );
 }
+
 function App() {
   return (
-    <Provider store={store}>
-      <AppInner />
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <AppInner />
+      </Provider>
+    </SafeAreaProvider>
   );
 }
 
