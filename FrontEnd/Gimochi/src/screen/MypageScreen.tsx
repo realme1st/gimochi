@@ -18,13 +18,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../slices/user';
 import screenSlice from '../slices/screen';
+import reloadSlice from '../slices/reload';
 import { useAppDispatch } from '../store';
 import { format } from 'date-fns';
+import { URL } from '../api/API';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/reducer';
+import axios from 'axios';
 
 function MypageScreen() {
   const [result, setResult] = useState<string>('');
   const dispatch = useAppDispatch();
   const [tokenTime, setTokenTime] = useState<Date>();
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
 
   const signInWithKakao = async (): Promise<void> => {
     // 1. 로그인 메서드 실행
@@ -54,11 +60,6 @@ function MypageScreen() {
     setResult(message);
     console.log(message);
     // 3. redux isLogin값 변경
-    dispatch(
-      userSlice.actions.setLogin({
-        isLogin: 'false',
-      }),
-    );
     // 4. redux screenName 홈으로 변경
     dispatch(
       screenSlice.actions.setScreen({
@@ -66,6 +67,36 @@ function MypageScreen() {
       }),
     );
     // 5. 백에 accessToken, refreshToken 지우는 axios 요청 보내기
+    await axios
+      .get(`${URL}/kakao/oauth/logout`, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          userSlice.actions.setUser({
+            name: '',
+          }),
+        );
+        dispatch(
+          userSlice.actions.setLogin({
+            isLogin: 'false',
+            accessToken: '',
+            accessTokenExpiresAt: '',
+            userId: '',
+          }),
+        );
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const getKakaoProfile = async (): Promise<void> => {
