@@ -79,7 +79,7 @@ public class SessionService {
      * @return : user가 작성한 세션 메세지 목록
      */
     public List<Session> getSessionByUserId(Long userId) {
-        return sessionRepository.findAllByUserUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        return sessionRepository.findAllByUserUserIdOrderByAnniversary(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
     /*
@@ -126,8 +126,7 @@ public class SessionService {
         sessionMessage = SessionMessage.builder()
                 .session(session)
                 .field(sessionMessageReqDto.getField())
-                .createTime(sessionMessageReqDto.getCreateTime())
-                .expireTime(sessionMessageReqDto.getExpireTime())
+                .expireTime(session.getAnniversary().plusDays(7))
                 .nickname(sessionMessageReqDto.getNickname())
                 .build();
         // gifticon인 경우 gifticonService에서 처리 (기프티콘 저장)
