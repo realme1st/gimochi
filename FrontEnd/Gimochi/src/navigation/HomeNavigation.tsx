@@ -3,7 +3,7 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import HomeScreen from '../screen/HomeScreen';
 import AttendanceScreen from '../screen/AttendanceScreen';
-import ChallengeScreen from '../screen/ChallengeScreen';
+import ChallengeScreen from './ChallengeNavigation';
 import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
