@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
@@ -13,8 +15,10 @@ import { RootState } from '../../store/reducer';
 
 function RPMainScreen({ navigation }: RPNavigationProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
-  const [myRPList, setMyRPList] = useState<Array<1>>([]);
+  const [myRPList, setMyRPList] = useState([]);
   console.log(userId);
+  // useEffect쓸때 [reload] 무지성 복붙할것
+  const reload = useSelector((state: RootState) => state.reload.reload);
   useEffect(() => {
     axios
       .get(`${URL}/session/user/${userId}`)
@@ -25,7 +29,7 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  }, [reload]);
   const ID = 1;
   const goDetail = (id) => {
     navigation.navigate('RPDetailScreen', { RPId: id });

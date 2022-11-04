@@ -23,12 +23,11 @@ const Stack = createNativeStackNavigator();
 
 function AppInner() {
   const dispatch = useAppDispatch();
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLogin);
+  const isUserId = useSelector((state: RootState) => !!state.user.userId);
   const date = new Date();
-  // const now = format(date, 'yyyy-MM-dd HH:mm:ss');
   const loginCheck = async (): Promise<void> => {
     const login = await AsyncStorage.getItem('Login');
-    const userId = await AsyncStorage.getItem('userId');
+    const userId = await AsyncStorage.getItem('UserId');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
     console.log(accessToken);
@@ -51,21 +50,6 @@ function AppInner() {
           console.log(error);
         });
     }
-    axios
-      .get(`${URL}/kakao/oauth/refreshToken`, {
-        headers: {
-          token: accessToken,
-        },
-      })
-      .then(async function (response) {
-        console.log(response.data.data.accessToken);
-        console.log(response.data.data.expiresIn);
-        await EncryptedStorage.setItem('accessToken', response.data.data.accessToken);
-        await EncryptedStorage.setItem('accessTokenExpiresAt', response.data.data.expiresIn);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
     dispatch(
       userSlice.actions.setLogin({
         accessToken: accessToken,
@@ -81,12 +65,12 @@ function AppInner() {
     setTimeout(function () {
       SplashScreen.hide();
     }, 3000);
-  }, []);
+  }, [isUserId]);
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isLoggedIn === 'true' ? (
+        {isUserId ? (
           <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
         ) : (
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>

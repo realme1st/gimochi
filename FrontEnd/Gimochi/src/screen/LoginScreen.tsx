@@ -19,8 +19,8 @@ function LoginScreen() {
   const dispatch = useAppDispatch();
 
   const redux = async (token: string, time: string, userId: string) => {
-    await AsyncStorage.setItem('Login', 'true');
     await AsyncStorage.setItem('UserId', userId);
+    await AsyncStorage.setItem('Login', 'true');
     await EncryptedStorage.setItem('accessToken', token);
     await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
