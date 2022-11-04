@@ -29,6 +29,8 @@ public class ChallengeAuth {
     @Column(name="auth_user_id")
     private Long authUserId;
 
+    @Column(name="vote_user_id")
+    private Long voteUserId;
     @Column(name="challenge_path")
     private String challengePath;
 
@@ -52,15 +54,18 @@ public class ChallengeAuth {
     }
 
     @Builder
-    public ChallengeAuth(ChallengeInfo challengeInfo, Long authUserId, String challengePath, int voteCnt, int isConfirm, Date challengeDate){
+    public ChallengeAuth(ChallengeInfo challengeInfo, Long authUserId, Long voteUserId, String challengePath, int voteCnt, int isConfirm, Date challengeDate){
         this.challengeInfo = challengeInfo;
         this.authUserId = authUserId;
+        this.voteUserId = voteUserId;
         this.challengePath = challengePath;
         this.voteCnt = voteCnt;
         this.isConfirm = isConfirm;
         this.challengeDate = challengeDate;
     }
 
-
-
+    // 투표수 증가
+    public void voteCntUp() {
+        this.voteCnt += 1; 
+    }
 }

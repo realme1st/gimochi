@@ -5,7 +5,10 @@ import com.ssafy.db.entity.ChallengeAuth;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ChallengeAuthRepository extends JpaRepository<ChallengeAuth, Long> {
 
+    Optional<ChallengeAuth> findByChallengeAuthId(Long challengeAuthId);
 }

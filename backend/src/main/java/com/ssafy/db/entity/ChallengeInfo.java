@@ -73,4 +73,9 @@ public class ChallengeInfo {
         this.challenge = challenge;
         this.successCnt = successCnt;
     }
+
+    // 달성 횟수 증가
+    public void successCntUp() {
+        this.successCnt += 1;
+    }
 }
