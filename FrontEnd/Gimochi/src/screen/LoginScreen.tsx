@@ -18,9 +18,10 @@ import KakaoLogo from 'react-native-kakao-logo';
 function LoginScreen() {
   const dispatch = useAppDispatch();
 
-  const redux = async (token: string, time: string, userId: string) => {
-    await AsyncStorage.setItem('UserId', userId);
-    await AsyncStorage.setItem('Login', 'true');
+  const redux = async (token: string, time: string, userId: string, userNickname: string) => {
+    await AsyncStorage.setItem('userId', userId);
+    await AsyncStorage.setItem('userNickname', userNickname);
+    await AsyncStorage.setItem('login', 'true');
     await EncryptedStorage.setItem('accessToken', token);
     await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
@@ -29,6 +30,7 @@ function LoginScreen() {
         accessToken: token,
         accessTokenExpiresAt: time,
         userId: Number(userId),
+        userNickname: userNickname,
       }),
     );
   };
@@ -47,7 +49,12 @@ function LoginScreen() {
       .then(function (response) {
         console.log(response);
         console.log(response.data.data.userId);
-        redux(token.accessToken, String(token.accessTokenExpiresAt), String(response.data.data.userId));
+        redux(
+          token.accessToken,
+          String(token.accessTokenExpiresAt),
+          String(response.data.data.userId),
+          String(response.data.data.userNickname),
+        );
       })
       .catch(function (error) {
         console.log(error);

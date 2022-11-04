@@ -15,6 +15,7 @@ import { RootState } from '../../store/reducer';
 
 function RPMainScreen({ navigation }: RPNavigationProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
+  const userNickname = useSelector((state: RootState) => state.user.userNickname);
   const [myRPList, setMyRPList] = useState([]);
   console.log(userId);
   // useEffect쓸때 [reload] 무지성 복붙할것
@@ -30,7 +31,6 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
-  const ID = 1;
   const goDetail = (id) => {
     navigation.navigate('RPDetailScreen', { RPId: id });
   };
@@ -42,7 +42,7 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
   return (
     <RPContainer>
       <RPTitleContainer>
-        <RPTitle>열린 추카포카</RPTitle>
+        <RPTitle>{userNickname}님의 추카포카</RPTitle>
       </RPTitleContainer>
       <RPListContainer>
         {myRPList.map((RP, index) => (
