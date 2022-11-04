@@ -27,9 +27,6 @@ public class Challenge {
     @Column(nullable = false,name="challenge_description")
     private String challengeDescription;
 
-    @Column(nullable = false,name="challenge_participant")
-    private Long challengeParticipant;
-
     @Column(nullable = false,name="challenge_start_time")
     private String challengeStartTime;
 
@@ -61,11 +58,10 @@ public class Challenge {
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
         this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
-        this.challengeParticipant = challengeParticipant;
         this.challengeStartTime = challengeStartTime;
         this.challengeEndTime = challengeEndTime;
         this.challengeRewardType = challengeRewardType;

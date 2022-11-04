@@ -1,5 +1,6 @@
 package com.ssafy.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -29,19 +33,32 @@ public class ChallengeAuth {
     @Column(name="auth_user_id")
     private Long authUserId;
 
+
     @Column(name="challenge_path")
     private String challengePath;
 
     @Column(name="vote_cnt")
     private int voteCnt;
 
+
+    @Column(nullable = false,name="challenge_date")
+    private LocalDate challengeDate;
+
     @Column(name="is_confirm")
     private int isConfirm;
 
-    @Column(name="challenge_date")
-    @Temporal(TemporalType.TIME)
-    private Date challengeDate;
+    @OneToMany(mappedBy = "challengeAuth")
+    private List<Vote> voteList = new ArrayList<>();
 
+
+    public void addVote(Vote vote){
+        this.voteList.add(vote);
+
+        if(vote.getChallengeAuth() !=this) { //무한루프 방지
+            vote.setChallengeAuth(this);
+        }
+
+    }
 
     public void setChallengeInfo(ChallengeInfo challengeinfo){
         this.challengeInfo =challengeinfo;
@@ -52,9 +69,8 @@ public class ChallengeAuth {
     }
 
     @Builder
-    public ChallengeAuth(ChallengeInfo challengeInfo, Long authUserId, String challengePath, int voteCnt, int isConfirm, Date challengeDate){
+    public ChallengeAuth(ChallengeInfo challengeInfo,String challengePath, int voteCnt, LocalDate challengeDate,int isConfirm){
         this.challengeInfo = challengeInfo;
-        this.authUserId = authUserId;
         this.challengePath = challengePath;
         this.voteCnt = voteCnt;
         this.isConfirm = isConfirm;

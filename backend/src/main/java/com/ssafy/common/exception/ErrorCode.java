@@ -40,7 +40,11 @@ public enum ErrorCode {
     LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 id를 가진 챌린지 리더가 없습니다." ),
 
     CHALLENGE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB INSERT 중 문제가 발생했습니다." ),
-    CHALLENGE_INVITE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대입니다.");
+    CHALLENGE_INVITE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대입니다."),
+
+    CHALLENGEINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 정보입니다."),
+    CHALLENGEAUTHID_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 인증 id입니다."),
+    CHALLENGE_AUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 인증입니다."),;
 
     private final HttpStatus httpStatus;
     private final String message;

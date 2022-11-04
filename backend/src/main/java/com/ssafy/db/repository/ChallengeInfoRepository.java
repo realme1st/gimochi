@@ -22,5 +22,5 @@ public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Lo
     ChallengeInfo findByChallenge(Challenge challenge);
 
 
-
+    Optional<ChallengeInfo> findByChallengeInfoId(Long challengeInfoId);
 }

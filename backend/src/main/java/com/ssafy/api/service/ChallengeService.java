@@ -1,9 +1,6 @@
 package com.ssafy.api.service;
 
-import com.ssafy.api.dto.ChallengeAuthReqDto;
-import com.ssafy.api.dto.ChallengeInfoReqDto;
-import com.ssafy.api.dto.ChallengeInviteReqDto;
-import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.dto.*;
 import com.ssafy.api.response.ChallengeInviteRes;
 import com.ssafy.api.response.ChallengeListRes;
 import com.ssafy.api.response.UserListRes;
@@ -12,6 +9,7 @@ import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.*;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.*;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +36,9 @@ public class ChallengeService {
     @Autowired
     private ChallengeInviteRepository challengeInviteRepository;
 
+    @Autowired
+    private VoteRepository voteRepository;
+
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto){
 
@@ -49,7 +50,7 @@ public class ChallengeService {
                 .challengeTitle(challengeReqDto.getChallengeTitle())
                 .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
-                .challengeParticipant(challengeReqDto.getChallengeParticipant())
+
                 .challengeStartTime(challengeReqDto.getChallengeStartTime())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
@@ -105,21 +106,6 @@ public class ChallengeService {
         ChallengeInfo challengeInfo = ChallengeInfo.builder()
                 .challenge(challenge)
                 .user(user)
-                .build();
-
-        return challengeInfoRepository.save(challengeInfo);
-    }
-
-    //challengeInfo 만들기
-    //해당 challengeId에 유저들 추가
-    @Transactional
-    public ChallengeInfo addUserChallengeInfo(ChallengeInfoReqDto challengeInfoReqDto) {
-        Challenge challenge= findChallengeByChallengeId(challengeInfoReqDto.getChallengeId());
-        User user =findUserByUserId(challengeInfoReqDto.getUserId());
-        ChallengeInfo challengeInfo = ChallengeInfo.builder()
-                .challenge(challenge)
-                .user(user)
-                .successCnt(challengeInfoReqDto.getSuccessCnt())
                 .build();
 
         return challengeInfoRepository.save(challengeInfo);
@@ -193,20 +179,26 @@ public class ChallengeService {
     }
 
     @Transactional
-    public ChallengeAuth createChllengeAuth(ChallengeAuth challengeAuth){
+    public ChallengeAuth createChallengeAuth(ChallengeAuthReqDto challengeAuthReqDto){
 
-        //challenge auth_id가 없는 경우(challenge_info 만들면서 auth도 (userId추가)
+        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeAuthReqDto.getChallengeInfoId()).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGEINFO_NOT_FOUND));
+
+        // 사용자, 챌린지 유효성 체크
         ChallengeAuth challengeauth = ChallengeAuth.builder()
-                .authUserId(challengeAuth.getAuthUserId())
-                .challengePath(challengeAuth.getChallengePath())
-                .voteCnt(challengeAuth.getVoteCnt())
-                .challengeDate(challengeAuth.getChallengeDate())
-                .isConfirm(challengeAuth.getIsConfirm())
+                .challengeInfo(challengeInfo)
+                .challengePath(challengeAuthReqDto.getChallengePath())
+                .voteCnt(0)
+                .challengeDate(challengeAuthReqDto.getChallengeDate())
+                .isConfirm(0)
                 .build();
 
         return challengeAuthRepository.save(challengeauth);
 
     }
+
+    //vote table 생성
+    @Transactional
+
 
 
     public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
@@ -248,6 +240,28 @@ public class ChallengeService {
         challengeInviteRepository.delete(challengeInvite);
 
         return true;
+    }
+
+
+    @Transactional
+    public Vote createVote(VoteReqDto voteReqDto) {
+
+        ChallengeAuth challengeAuth = challengeAuthRepository.findByChallengeAuthId(voteReqDto.getChallengeAuthId()).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
+
+        Vote vote = Vote.builder()
+                .challengeAuth(challengeAuth)
+                .authUserId(voteReqDto.getAuthUserId())
+                .voteUserId(voteReqDto.getVoteUserId())
+                .build();
+
+        // Vote 저장
+        try{
+            voteRepository.save(vote);
+        }catch (IllegalArgumentException e){
+            throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
+        }
+
+        return vote;
     }
 }
 
