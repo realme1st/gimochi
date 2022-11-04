@@ -1,9 +1,6 @@
 package com.ssafy.api.service;
 
-import com.ssafy.api.dto.ChallengeAuthReqDto;
-import com.ssafy.api.dto.ChallengeInfoReqDto;
-import com.ssafy.api.dto.ChallengeInviteReqDto;
-import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.dto.*;
 import com.ssafy.api.response.ChallengeInviteRes;
 import com.ssafy.api.response.ChallengeListRes;
 import com.ssafy.api.response.UserListRes;
@@ -248,6 +245,33 @@ public class ChallengeService {
         challengeInviteRepository.delete(challengeInvite);
 
         return true;
+    }
+
+    public ChallengeAuth voteChallenge(ChallengeVoteReqDto challengeVoteReqDto) {
+        //  요청값 유효성 검사
+        ChallengeAuth challengeAuth = (challengeAuthRepository.findByChallengeAuthId(challengeVoteReqDto.getChallengeAuthId()))
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
+
+        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeVoteReqDto.getChallengeInfoId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_INFO_NOT_FOUND));
+
+        // 1. ChallengeAuth의 voteCnt +1
+        challengeAuth.voteCntUp();
+
+        // challengeInfo의 challengeId개수 = 참가인원
+        int challengeInfoCnt = challengeInfo.getChallenge().getChallengeInfoList().size();
+
+        // 이미 달성여부가 성공으로 반환된 경우
+        if (challengeAuth.getIsConfirm() == 1) {
+            return challengeAuth;
+        }
+
+        // 2. ChallengeAuth의 voteCnt가 참가인원의 절반보다 크다면, ChallengeInfo의 successCnt 증가 .
+        if(challengeAuth.getVoteCnt() > challengeInfoCnt/2){
+            challengeInfo.successCntUp();
+        }
+
+        return challengeAuth;
     }
 }
 

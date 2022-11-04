@@ -4,6 +4,7 @@ package com.ssafy.api.controller;
 import com.ssafy.api.dto.ChallengeInfoReqDto;
 import com.ssafy.api.dto.ChallengeInviteReqDto;
 import com.ssafy.api.dto.ChallengeReqDto;
+import com.ssafy.api.dto.ChallengeVoteReqDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -102,6 +103,10 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.acceptChallengeInvite(challengeInviteId)));
     }
 
-
-
+    // 챌린지 인증의 투표수를 증가시키는 API
+    @PutMapping("/challenge/vote")
+    @ApiOperation(value = "챌린지 인증의 투표수를 증가시키는 API", notes = "<strong>A가 B의</strong> 해당 챌린지 인증의 투표수를 증가시킨다.")
+    public ResponseEntity<? extends BasicResponse> voteChallenge(@RequestBody ChallengeVoteReqDto challengeVoteReqDto) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.voteChallenge(challengeVoteReqDto)));
+    }
 }
