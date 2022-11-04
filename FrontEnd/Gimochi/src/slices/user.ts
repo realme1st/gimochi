@@ -7,6 +7,7 @@ const initialState = {
   accessToken: '',
   accessTokenExpiresAt: '',
   isLogin: '',
+  userId: '',
 };
 const userSlice = createSlice({
   name: 'user',
@@ -19,6 +20,7 @@ const userSlice = createSlice({
       state.isLogin = action.payload.isLogin;
       state.accessToken = action.payload.accessToken;
       state.accessTokenExpiresAt = action.payload.accessTokenExpiresAt;
+      state.userId = action.payload.userId;
     },
   },
   extraReducers: (builder) => {},

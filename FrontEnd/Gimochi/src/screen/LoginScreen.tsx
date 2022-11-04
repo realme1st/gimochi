@@ -28,6 +28,7 @@ function LoginScreen() {
         isLogin: 'true',
         accessToken: token,
         accessTokenExpiresAt: time,
+        userId: Number(userId),
       }),
     );
   };

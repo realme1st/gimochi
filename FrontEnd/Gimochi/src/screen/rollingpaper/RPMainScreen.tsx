@@ -3,7 +3,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { RPNavigationProps } from '../../navigation/RPNavigation';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -19,7 +19,9 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
 
   return (
     <RPContainer>
-      <RPTitle>추카포카</RPTitle>
+      <RPTitleContainer>
+        <RPTitle>열린 추카포카</RPTitle>
+      </RPTitleContainer>
       <TouchableOpacity onPress={() => goDetail(ID)}>
         <Text>추카포카 디테일</Text>
       </TouchableOpacity>
@@ -30,9 +32,12 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
   );
 }
 
-const RPContainer = styled.ScrollView`
+const RPContainer = styled.View`
   background-color: #ffffff;
+  flex: 1;
 `;
+
+const RPTitleContainer = styled.View``;
 
 const RPTitle = styled.Text`
   font-family: 'Regular';
