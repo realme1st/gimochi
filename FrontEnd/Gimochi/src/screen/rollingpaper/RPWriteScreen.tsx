@@ -16,13 +16,12 @@ import { URL } from '../../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 
-function RPWriteScreen() {
+function RPWriteScreen({ navigation }) {
   const [typeId, setTypeId] = useState<number>(0);
   const [sessionName, setSessionName] = useState<string>('');
   const [date, onChangeDate] = useState<Date>(new Date());
   const [visible, setVisible] = useState<boolean>(false); // 달력 모달 노출 여부
   const userId = useSelector((state: RootState) => state.user.userId);
-  console.log(userId);
 
   const onPressDate = () => {
     // 날짜 클릭 시
@@ -58,6 +57,7 @@ function RPWriteScreen() {
       })
       .then(function (response) {
         console.log(response);
+        navigation.goBack();
       })
       .catch(function (error) {
         console.log(error);
