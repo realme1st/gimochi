@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import axios from 'axios';
-import { URL } from '../../api/API';
+import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { List } from 'reselect/es/types';
@@ -21,7 +22,7 @@ function RPDetailScreen({ route }) {
 
   useEffect(() => {
     axios
-      .get(`${URL}/session/${sessionId}`)
+      .get(`${Config.API_URL}/session/${sessionId}`)
       .then(function (response) {
         console.log(response);
         console.log(response.data.data.anniversary);

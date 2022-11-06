@@ -1,87 +1,88 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import store from './src/store';
-import TabNavigation from './src/navigation/TabNavigation';
-import LoginScreen from './src/screen/LoginScreen';
-import SplashScreen from 'react-native-splash-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { useAppDispatch } from './src/store';
-import { useSelector } from 'react-redux';
-import { RootState } from './src/store/reducer';
-import userSlice from './src/slices/user';
-import { format } from 'date-fns';
-import axios from 'axios';
-import { URL } from './src/api/API';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AppInner from './AppInner';
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
 
-const Stack = createNativeStackNavigator();
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log('Message handled in the background!', remoteMessage);
+});
+PushNotification.configure({
+  // (optional) 토큰이 생성될 때 실행됨(토큰을 서버에 등록할 때 쓸 수 있음)
+  onRegister: function (token: any) {
+    console.log('TOKEN:', token);
+  },
 
-function AppInner() {
-  const dispatch = useAppDispatch();
-  const isUserId = useSelector((state: RootState) => !!state.user.userId);
-  const date = new Date();
-  const loginCheck = async (): Promise<void> => {
-    const login = await AsyncStorage.getItem('login');
-    const userId = await AsyncStorage.getItem('userId');
-    const userNickname = await AsyncStorage.getItem('userNickname');
-    const accessToken = await EncryptedStorage.getItem('accessToken');
-    const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
-    console.log(accessToken);
-    console.log(accessTokenExpiresAt);
-    const tokenTime = new Date(accessTokenExpiresAt);
-    // EncryptedStorage에 토큰이 있고(로그인된 상태) 토큰만료시간-현재시간이 2시간 이하라면 새 토큰을 발급받음
-    if (accessToken && format(tokenTime - date, 'HH') <= 2) {
-      axios
-        .get(`${URL}/kakao/oauth/refreshToken`, {
-          headers: {
-            token: accessToken,
-          },
-        })
-        .then(async function (response) {
-          // console.log(response);
-          await EncryptedStorage.setItem('accessToken', response.data.data.accessToken);
-          await EncryptedStorage.setItem('accessTokenExpiresAt', response.data.data.expiresIn);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+  // (required) 리모트 노티를 수신하거나, 열었거나 로컬 노티를 열었을 때 실행
+  onNotification: function (notification: any) {
+    console.log('NOTIFICATION:', notification);
+    if (notification.channelId === 'riders') {
+      // if (notification.message || notification.data.message) {
+      //   store.dispatch(
+      //     userSlice.actions.showPushPopup(
+      //       notification.message || notification.data.message,
+      //     ),
+      //   );
+      // }
     }
-    dispatch(
-      userSlice.actions.setLogin({
-        accessToken: accessToken,
-        accessTokenExpiresAt: accessTokenExpiresAt,
-        isLogin: login,
-        userId: Number(userId),
-        userNickname: userNickname,
-      }),
-    );
-  };
+    // process the notification
+  },
 
-  useEffect(() => {
-    void loginCheck();
-    setTimeout(function () {
-      SplashScreen.hide();
-    }, 3000);
-  }, [isUserId]);
+  // (optional) 등록한 액션을 누렀고 invokeApp이 false 상태일 때 실행됨, true면 onNotification이 실행됨 (Android)
+  onAction: function (notification: any) {
+    console.log('ACTION:', notification.action);
+    console.log('NOTIFICATION:', notification);
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {isUserId ? (
-          <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
-        ) : (
-          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
+    // process the action
+  },
+
+  // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+  onRegistrationError: function (err: Error) {
+    console.error(err.message, err);
+  },
+
+  // Should the initial notification be popped automatically
+  // default: true
+  popInitialNotification: true,
+
+  /**
+   * (optional) default: true
+   * - Specified if permissions (ios) and token (android and ios) will requested or not,
+   * - if not, you must call PushNotificationsHandler.requestPermissions() later
+   * - if you are not using remote notification or do not have Firebase installed, use this:
+   *     requestPermissions: Platform.OS === 'ios'
+   */
+  requestPermissions: true,
+});
+PushNotification.createChannel(
+  {
+    channelId: 'challenge', // (required)
+    channelName: '챌린지', // (required)
+    channelDescription: '챌린지 알림', // (optional) default: undefined.
+    soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    importance: 4, // (optional) default: 4. Int value of the Android notification importance
+    vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+  },
+  (created: boolean) => console.log(`createChannel challenge returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+);
+PushNotification.createChannel(
+  {
+    channelId: 'gifticon', // (required)
+    channelName: '기프티콘', // (required)
+    channelDescription: '기프티콘 만료 알림', // (optional) default: undefined.
+    soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    importance: 4, // (optional) default: 4. Int value of the Android notification importance
+    vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+  },
+  (created: boolean) => console.log(`createChannel gifticon returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+);
 
 function App() {
   return (

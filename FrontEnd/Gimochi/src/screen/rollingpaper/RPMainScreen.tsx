@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -9,6 +10,7 @@ import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCirclePlus, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import Config from 'react-native-config';
 import { URL } from '../../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
@@ -22,7 +24,7 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
   const reload = useSelector((state: RootState) => state.reload.reload);
   useEffect(() => {
     axios
-      .get(`${URL}/session/user/${userId}`)
+      .get(`${Config.API_URL}/session/user/${userId}`)
       .then(function (response) {
         console.log(response.data.data);
         setMyRPList(response.data.data);
