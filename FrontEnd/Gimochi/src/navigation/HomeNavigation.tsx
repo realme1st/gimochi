@@ -52,7 +52,7 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
       <Home.Screen
         name='ChallengeScreen'
         component={ChallengeScreen}
-        options={{ title: '챌린지콘' }}
+        options={{ headerShown: false }}
       ></Home.Screen>
       <Home.Screen name='PlayScreen' component={PlayScreen} options={{ title: '놀이터' }}></Home.Screen>
       <Home.Screen
