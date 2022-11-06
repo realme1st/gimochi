@@ -11,17 +11,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCirclePlus, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Config from 'react-native-config';
-import { URL } from '../../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-function RPMainScreen({ navigation }: RPNavigationProps) {
+function RPMainScreen({ navigation, route }: RPNavigationProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
   const [myRPList, setMyRPList] = useState([]);
-  console.log(userId);
   // useEffect쓸때 [reload] 무지성 복붙할것
   const reload = useSelector((state: RootState) => state.reload.reload);
+  useEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    console.log(routeName);
+  }, []);
+
   useEffect(() => {
     axios
       .get(`${Config.API_URL}/session/user/${userId}`)
