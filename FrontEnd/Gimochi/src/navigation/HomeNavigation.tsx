@@ -8,6 +8,9 @@ import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
+import { Button } from 'react-native';
+import { useAppDispatch } from '../store';
+import screenSlice from '../slices/screen';
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
@@ -22,15 +25,28 @@ export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeMod
 
 const Home = createNativeStackNavigator<HomeStackParamList>();
 function HomeNavigation({ route, navigation }: HomeModalProps) {
+  const routeName = getFocusedRouteNameFromRoute(route);
+  const dispatch = useAppDispatch();
+  const back = () => {
+    navigation.pop();
+    const backRouteName = getFocusedRouteNameFromRoute(route);
+    console.log(backRouteName);
+    dispatch(
+      screenSlice.actions.setScreen({
+        screenName: backRouteName,
+      }),
+    );
+    console.log('hi');
+    console.log(backRouteName);
+  };
   useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === 'HomeModal') {
       //MyPage이외의 화면에 대해 tabBar none을 설정한다.
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
     }
-    console.log(routeName);
+    // console.log(routeName);
   }, [navigation, route]);
 
   return (
@@ -43,11 +59,20 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         },
       }}
     >
-      <Home.Screen name='HomeScreen' component={HomeScreen} options={{ title: '기모치' }}></Home.Screen>
+      <Home.Screen
+        name='HomeScreen'
+        component={HomeScreen}
+        options={{
+          title: '기모치',
+        }}
+      ></Home.Screen>
       <Home.Screen
         name='AttendanceScreen'
         component={AttendanceScreen}
-        options={{ title: '출석 체크' }}
+        options={{
+          title: '출석 체크',
+          headerLeft: () => <Button onPress={back} title='back' />,
+        }}
       ></Home.Screen>
       <Home.Screen
         name='ChallengeScreen'

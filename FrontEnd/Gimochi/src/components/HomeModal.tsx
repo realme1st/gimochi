@@ -26,7 +26,7 @@ function HomeModal({ navigation, route }: HomeModalProps) {
   const currentScreen = useSelector((state: RootState) => state.screen.screenName);
   // console.log(currentScreen);
   const routeName = getFocusedRouteNameFromRoute(route);
-  console.log(routeName);
+  // console.log(routeName);
   const dispatch = useAppDispatch();
 
   const goHome = () => {
