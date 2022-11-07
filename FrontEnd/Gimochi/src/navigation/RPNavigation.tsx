@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React from 'react';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import RPMainScreen from '../screen/rollingpaper/RPMainScreen';
@@ -8,11 +9,12 @@ export type RPStackParamList = {
   RPMainScreen: undefined;
   RPWriteScreen: undefined;
   RPDetailScreen: undefined;
+  RPId: number;
 };
 
 export type RPNavigationProps = NativeStackScreenProps<RPStackParamList>;
 const RP = createNativeStackNavigator<RPStackParamList>();
-function RPNavigation() {
+function RPNavigation({ route }) {
   return (
     <RP.Navigator
       initialRouteName='RPMainScreen'
@@ -27,7 +29,7 @@ function RPNavigation() {
       <RP.Screen
         name='RPDetailScreen'
         component={RPDetailScreen}
-        options={{ title: '개별 추카포카' }}
+        options={({ route }) => ({ title: `${route.params.RPId}번 추카포카` })}
       ></RP.Screen>
       <RP.Screen
         name='RPWriteScreen'

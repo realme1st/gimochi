@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState } from 'react';
-import { View, Text, Keyboard, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
+import { TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import SelectDropdown from 'react-native-select-dropdown';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
@@ -19,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
+import Config from 'react-native-config';
 
 function RPWriteScreen({ navigation }) {
   const [typeId, setTypeId] = useState<number>(0);
@@ -54,7 +56,7 @@ function RPWriteScreen({ navigation }) {
 
   const onSubmit = () => {
     axios
-      .post(`${URL}/session`, {
+      .post(`${Config.API_URL}/session`, {
         anniversary: format(date, 'yyyy-MM-dd'),
         name: sessionName,
         sessionTypeId: typeId,
@@ -208,7 +210,7 @@ const SubmitButton = styled.TouchableOpacity`
 const SubmitText = styled.Text`
   font-family: 'Regular';
   font-size: 20px;
-  color: #ffffff
+  color: #ffffff;
   margin: 5%;
 `;
 

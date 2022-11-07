@@ -3,8 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import React from 'react';
-import { Text, View, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,10 +17,12 @@ import KakaoLogo from 'react-native-kakao-logo';
 
 function LoginScreen() {
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
 
-  const redux = async (token: string, time: string, userId: string) => {
-    await AsyncStorage.setItem('UserId', userId);
-    await AsyncStorage.setItem('Login', 'true');
+  const redux = async (token: string, time: string, userId: string, userNickname: string) => {
+    await AsyncStorage.setItem('userId', userId);
+    await AsyncStorage.setItem('userNickname', userNickname);
+    await AsyncStorage.setItem('login', 'true');
     await EncryptedStorage.setItem('accessToken', token);
     await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
@@ -29,11 +31,13 @@ function LoginScreen() {
         accessToken: token,
         accessTokenExpiresAt: time,
         userId: Number(userId),
+        userNickname: userNickname,
       }),
     );
   };
 
   const signInWithKakao = async (): Promise<void> => {
+    setLoading(true);
     const token: KakaoOAuthToken = await login();
     console.log(token.accessToken);
     console.log(token.refreshToken);
@@ -47,41 +51,34 @@ function LoginScreen() {
       .then(function (response) {
         console.log(response);
         console.log(response.data.data.userId);
-        redux(token.accessToken, String(token.accessTokenExpiresAt), String(response.data.data.userId));
+        redux(
+          token.accessToken,
+          String(token.accessTokenExpiresAt),
+          String(response.data.data.userId),
+          String(response.data.data.userNickname),
+        );
+        setLoading(false);
       })
       .catch(function (error) {
+        setLoading(false);
         console.log(error);
       });
     // redux();
   };
 
-  // const test = async () => {
-  //   await axios
-  //     .post('https://k7a205.p.ssafy.io/api/v1/user/follow', {
-  //       params: {
-  //         followerUserId: 5,
-  //         followingUserId: 6,
-  //       },
-  //     })
-  //     .then(function (response) {
-  //       console.log(response);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
-
   return (
     <LoginScreenContainer>
       <Image source={require('../assets/images/login.png')} style={{ width: '70%', height: '70%' }} />
       <LoginButtonContainer onPress={signInWithKakao}>
-        <KakaoLogo color={'black'} />
-        <LoginButtonText>카카오로 로그인</LoginButtonText>
+        {loading ? (
+          <ActivityIndicator color='black' />
+        ) : (
+          <>
+            <KakaoLogo color={'black'} />
+            <LoginButtonText>카카오로 로그인</LoginButtonText>
+          </>
+        )}
       </LoginButtonContainer>
-      {/* <LoginButtonContainer onPress={test}>
-        <KakaoLogo color={'black'} />
-        <LoginButtonText>테스트</LoginButtonText>
-      </LoginButtonContainer> */}
     </LoginScreenContainer>
   );
 }

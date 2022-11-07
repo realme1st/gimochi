@@ -1,4 +1,4 @@
-package com.gimochi;
+package com.a205.gimochi;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;

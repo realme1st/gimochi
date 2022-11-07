@@ -3,24 +3,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  name: '',
+  userNickname: '',
   accessToken: '',
   accessTokenExpiresAt: '',
   isLogin: '',
   userId: '',
+  phoneToken: '',
 };
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action) {
-      state.name = action.payload.name;
-    },
     setLogin(state, action) {
+      state.userNickname = action.payload.userNickname;
       state.isLogin = action.payload.isLogin;
       state.accessToken = action.payload.accessToken;
       state.accessTokenExpiresAt = action.payload.accessTokenExpiresAt;
       state.userId = action.payload.userId;
+      state.phoneToken = action.payload.phoneToken;
+    },
+    setPhoneToken(state, action) {
+      state.phoneToken = action.payload;
     },
   },
   extraReducers: (builder) => {},
