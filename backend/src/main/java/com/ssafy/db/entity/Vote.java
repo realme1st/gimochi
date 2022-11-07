@@ -42,4 +42,11 @@ public class Vote {
         this.voteUserId = voteUserId;
         this.challengeAuth = challengeAuth;
     }
+    @Builder
+    public Vote(Long authUserId, Long voteUserId, ChallengeAuth challengeAuth){
+        this.authUserId = authUserId;
+        this.voteUserId = voteUserId;
+        this.challengeAuth = challengeAuth;
+    }
+
 }
