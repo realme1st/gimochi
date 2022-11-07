@@ -1,15 +1,28 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.GifticonReqDto;
 import com.ssafy.api.dto.OcrReqDto;
 import com.ssafy.api.dto.OcrResDto;
+import com.ssafy.common.exception.CustomException;
+import com.ssafy.common.exception.ErrorCode;
+import com.ssafy.common.util.AmazonS3Util;
 import com.ssafy.common.util.VisionApiUtil;
+import com.ssafy.db.entity.Gifticon;
+import com.ssafy.db.entity.User;
+import com.ssafy.db.repository.GifticonRepository;
+import com.ssafy.db.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -18,8 +31,19 @@ import java.util.List;
 @Service("GiftconService")
 @Transactional(readOnly = true)
 @Slf4j
+@RequiredArgsConstructor
 public class GifticonService {
+
+    private final UserRepository userRepository;
+
+    private final AmazonS3Util amazonS3Util;
+
+    private final GifticonRepository gifticonRepository;
+
     public OcrResDto detect(OcrReqDto ocrReqDto) {
+
+        User user = userRepository.findByUserId(ocrReqDto.getUserId()).
+                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String base64Enc = ocrReqDto.getGifticonEnc(); // base64 인코딩 된 이미지 파일
         String fileExtension = ocrReqDto.getGifticonExtension(); // 해당 파일의 확장자
@@ -63,15 +87,16 @@ public class GifticonService {
             * */
             OcrResDto ocrResDto = null;
             ocrResDto = OcrResDto.builder()
-                    .userId(ocrReqDto.getUserId())
-                    .gifticonUsage("바나프레소")
-                    .gifticonExp("")
+                    .user(user)
+                    .gifticonStore("바나프레소(아직 미완성)")
+                    .gifticonPeriod("2022-12-31")
                     .build();
 
             /*
             * 파일 삭제
             * */
             file.delete();
+            return ocrResDto;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,4 +104,28 @@ public class GifticonService {
 
         return null;
     }
+    @Transactional
+    public Gifticon createGifticon(Long userId, String store, LocalDate period, MultipartFile multipartFile) {
+        User user = userRepository.findByUserId(userId).
+                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        String url = null;
+
+        try {
+            url = amazonS3Util.upload(multipartFile, user.getUserSocialToken());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        Gifticon gifticon = Gifticon.builder()
+                .user(user)
+                .gifticonStore(store)
+                .gifticonPeriod(period)
+                .gifticonUsed(false)
+                .gifticonPath(url)
+                .build();
+
+        return gifticonRepository.save(gifticon);
+    }
+
 }
