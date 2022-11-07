@@ -24,4 +24,8 @@ public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Lo
 
 
     Optional<ChallengeInfo> findByChallengeInfoId(Long challengeInfoId);
+
+    //challengeId에 속한 userId 수
+    @Query("select count(ch.user.userId) from ChallengeInfo ch where ch.challenge.challengeId = :challengeId")
+    int findChallegerCntByChallengeId(Long challengeId);
 }

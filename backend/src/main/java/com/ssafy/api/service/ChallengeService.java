@@ -103,6 +103,8 @@ public class ChallengeService {
 
         User user =findUserByUserId(challenge.getChallengeLeaderId());
 
+
+
         ChallengeInfo challengeInfo = ChallengeInfo.builder()
                 .challenge(challenge)
                 .user(user)
@@ -190,6 +192,7 @@ public class ChallengeService {
                 .voteCnt(0)
                 .challengeDate(challengeAuthReqDto.getChallengeDate())
                 .isConfirm(0)
+                .challengerCnt(challengeInfoRepository.findChallegerCntByChallengeId(challengeInfo.getChallenge().getChallengeId()))
                 .build();
 
         return challengeAuthRepository.save(challengeauth);
