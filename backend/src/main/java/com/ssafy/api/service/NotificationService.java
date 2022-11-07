@@ -29,6 +29,9 @@ public class NotificationService {
     @Value("${fcm.key.path}")
     private String FCM_PRIVATE_KEY_PATH;
 
+//    @Value("gimochi-6f7fe-firebase-adminsdk-wfw15-6edda71fbe.json")
+//    private String FCM_PRIVATE_KEY_PATH;
+
     // 메시징만 권한 설정
     @Value("${fcm.key.scope}")
     private String fireBaseScope;
