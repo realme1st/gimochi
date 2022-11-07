@@ -24,8 +24,9 @@ type HomeStackScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
 function TabNavigation({ navigation, route }: HomeStackScreenProps) {
   // 화면에 보여주는 화면의 name값 받아오기
-  const currentScreen = useSelector((state: RootState) => state.screen.screenName);
-
+  const currentScreenArray = useSelector((state: RootState) => state.screen.screenArray);
+  const currentScreen = currentScreenArray[currentScreenArray.length - 1];
+  console.log(currentScreen);
   const routeName = getFocusedRouteNameFromRoute(route);
   const homeModal = () => {
     navigation.navigate('HomeModal');

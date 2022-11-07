@@ -1,13 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Calendars from '../components/Calendar';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducer';
+import { useAppDispatch } from '../store';
+import screenSlice from '../slices/screen';
 
 function HomeScreen() {
   const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'HomeScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      // dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
+
   return (
     <View>
       <Text>{userId}</Text>

@@ -14,6 +14,8 @@ import Modal from 'react-native-modal';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import { useAppDispatch } from '../../store';
+import screenSlice from '../../slices/screen';
 
 function RPDetailScreen({ navigation, route }) {
   const sessionId: number = route.params.RPId;
@@ -21,9 +23,21 @@ function RPDetailScreen({ navigation, route }) {
   const reload = useSelector((state: RootState) => state.reload.reload);
   const [messageList, setMessageList] = useState([]);
   const [modal, setModal] = useState<boolean>(false);
-  const [idx, setIdx] = useState<number>(1);
   const [nickname, setNickname] = useState('');
   const [text, setText] = useState('');
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'RollingpaperScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({

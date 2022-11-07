@@ -14,6 +14,8 @@ import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { useAppDispatch } from '../../store';
+import screenSlice from '../../slices/screen';
 
 function RPMainScreen({ navigation, route }: RPNavigationProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -21,6 +23,20 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
   const [myRPList, setMyRPList] = useState([]);
   // useEffect쓸때 [reload] 무지성 복붙할것
   const reload = useSelector((state: RootState) => state.reload.reload);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'RollingpaperScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
+
   useEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     console.log(routeName);

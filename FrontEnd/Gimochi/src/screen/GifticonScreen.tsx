@@ -5,14 +5,14 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducer';
-// import Config from 'react-native-config';
+import Config from 'react-native-config';
 
 function GifticonScreen() {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
@@ -62,7 +62,7 @@ function GifticonScreen() {
     const formData = new FormData();
     formData.append('image', image);
     try {
-      await axios.post('https://k7a205.p.ssafy.io/api/gifticon', formData, {
+      await axios.post(`${Config.API_URL}/gifticon`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
