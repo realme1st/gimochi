@@ -4,17 +4,19 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import RPMainScreen from '../screen/rollingpaper/RPMainScreen';
 import RPDetailScreen from '../screen/rollingpaper/RPDetailScreen';
 import RPWriteScreen from '../screen/rollingpaper/RPWriteScreen';
+import RPMessageWriteScreen from '../screen/rollingpaper/RPMessageWriteScreen';
 
 export type RPStackParamList = {
   RPMainScreen: undefined;
   RPWriteScreen: undefined;
   RPDetailScreen: undefined;
+  RPMessageWriteScreen: undefined;
   RPId: number;
 };
 
 export type RPNavigationProps = NativeStackScreenProps<RPStackParamList>;
 const RP = createNativeStackNavigator<RPStackParamList>();
-function RPNavigation({ route }) {
+function RPNavigation() {
   return (
     <RP.Navigator
       initialRouteName='RPMainScreen'
@@ -26,15 +28,16 @@ function RPNavigation({ route }) {
       }}
     >
       <RP.Screen name='RPMainScreen' component={RPMainScreen} options={{ title: '추카포카' }}></RP.Screen>
-      <RP.Screen
-        name='RPDetailScreen'
-        component={RPDetailScreen}
-        options={({ route }) => ({ title: `${route.params.RPId}번 추카포카` })}
-      ></RP.Screen>
+      <RP.Screen name='RPDetailScreen' component={RPDetailScreen}></RP.Screen>
       <RP.Screen
         name='RPWriteScreen'
         component={RPWriteScreen}
         options={{ title: '추카포카 작성' }}
+      ></RP.Screen>
+      <RP.Screen
+        name='RPMessageWriteScreen'
+        component={RPMessageWriteScreen}
+        options={{ title: '추카포카 메시지 작성' }}
       ></RP.Screen>
     </RP.Navigator>
   );

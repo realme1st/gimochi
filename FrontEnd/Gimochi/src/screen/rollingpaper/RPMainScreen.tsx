@@ -37,8 +37,8 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
-  const goDetail = (id) => {
-    navigation.navigate('RPDetailScreen', { RPId: id });
+  const goDetail = (id, sessionTypeId) => {
+    navigation.navigate('RPDetailScreen', { RPId: id, sessionTypeId: sessionTypeId });
   };
 
   const goWrite = () => {
@@ -52,7 +52,7 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
       </RPTitleContainer>
       <RPListContainer>
         {myRPList.map((RP, index) => (
-          <RPItemButton key={index} onPress={() => goDetail(RP.sessionId)}>
+          <RPItemButton key={index} onPress={() => goDetail(RP.sessionId, RP.sessionTypeId)}>
             <RPItemContainer>
               <FontAwesomeIcon icon={faCalendar} size={20} />
               <RPListText>{RP.anniversary}</RPListText>

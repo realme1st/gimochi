@@ -15,7 +15,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { URL } from '../../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
@@ -200,7 +199,6 @@ const DateText = styled.Text`
 
 const SubmitButton = styled.TouchableOpacity`
   width: 20%;
-  // height: 20%;
   border-radius: 10px;
   background-color: #ffa401;
   align-items: center;
