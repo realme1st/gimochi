@@ -64,7 +64,7 @@ function GifticonScreen() {
     try {
       await axios.post('https://k7a205.p.ssafy.io/api/gifticon', formData, {
         headers: {
-          authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
       Alert.alert('알림', '기프티콘 업로드 완료되었습니다.');

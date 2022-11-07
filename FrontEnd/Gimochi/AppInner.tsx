@@ -28,6 +28,7 @@ function AppInner() {
   const dispatch = useAppDispatch();
   const isUserId = useSelector((state: RootState) => !!state.user.userId);
   const date = new Date();
+  const [aToken, setAToken] = useState('');
   const loginCheck = async (): Promise<void> => {
     const login = await AsyncStorage.getItem('login');
     const userId = await AsyncStorage.getItem('userId');
@@ -63,6 +64,7 @@ function AppInner() {
         userNickname: userNickname,
       }),
     );
+    setAToken(accessToken);
   };
 
   useEffect(() => {
@@ -75,21 +77,30 @@ function AppInner() {
   // // 푸시알림 토큰 설정
   useEffect(() => {
     async function getToken() {
-      try {
-        if (!messaging().isDeviceRegisteredForRemoteMessages) {
-          await messaging().registerDeviceForRemoteMessages();
-        }
-        const token = await messaging().getToken();
-        console.log('phone token', token);
-        dispatch(userSlice.actions.setPhoneToken(token));
-        // 서버에 폰 토큰 보내야
-        // return axios.post(`${Config.API_URL}/phonetoken`, { token });
-      } catch (error) {
-        console.error(error);
+      if (!messaging().isDeviceRegisteredForRemoteMessages) {
+        await messaging().registerDeviceForRemoteMessages();
       }
+      const token = await messaging().getToken();
+      console.log('phone token', token);
+      console.log('accessToken', aToken);
+      dispatch(userSlice.actions.setPhoneToken(token));
+      // 서버에 폰 토큰 보내야
+      axios
+        .get(`${Config.API_URL}/notification/token`, {
+          headers: {
+            AccessToken: aToken,
+            FirebaseToken: token,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
     getToken();
-  }, [dispatch]);
+  }, [dispatch, aToken]);
 
   return (
     <NavigationContainer>
