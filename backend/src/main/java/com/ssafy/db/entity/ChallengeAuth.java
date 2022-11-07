@@ -30,10 +30,6 @@ public class ChallengeAuth {
     @JoinColumn(name="challenge_info_id")
     private ChallengeInfo challengeInfo;
 
-    @Column(name="auth_user_id")
-    private Long authUserId;
-
-
     @Column(name="challenge_path")
     private String challengePath;
 
@@ -84,5 +80,9 @@ public class ChallengeAuth {
     // 투표수 증가
     public void voteCntUp() {
         this.voteCnt += 1; 
+    }
+
+    public void isConfirm(){
+        this.isConfirm = 1;
     }
 }

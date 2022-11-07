@@ -40,7 +40,7 @@ public class ChallengeService {
     private VoteRepository voteRepository;
 
     @Transactional
-    public boolean createChllenge(ChallengeReqDto challengeReqDto){
+    public boolean createChllenge(ChallengeReqDto challengeReqDto) {
 
         User user = userRepository.findByUserId(challengeReqDto.getChallengeLeaderId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -63,7 +63,8 @@ public class ChallengeService {
 
         return true;
     }
-    public List<Challenge> getChallengeList(){
+
+    public List<Challenge> getChallengeList() {
 
         return challengeRepository.findAll();
     }
@@ -94,15 +95,14 @@ public class ChallengeService {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public User findBychallengeLeaderId(Long userId){
+    public User findBychallengeLeaderId(Long userId) {
         return challengeRepository.findByChallengeLeaderId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional
     public ChallengeInfo createChallengeInfoFirst(Challenge challenge) {
 
-        User user =findUserByUserId(challenge.getChallengeLeaderId());
-
+        User user = findUserByUserId(challenge.getChallengeLeaderId());
 
 
         ChallengeInfo challengeInfo = ChallengeInfo.builder()
@@ -114,12 +114,12 @@ public class ChallengeService {
     }
 
 
-    public List<UserListRes> findUserListByChallengeId(Long challengeId){
+    public List<UserListRes> findUserListByChallengeId(Long challengeId) {
         Challenge challenge = findChallengeByChallengeId(challengeId);
-        List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId()).orElseThrow(()->new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId()).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
-        List<UserListRes> listres =new ArrayList<>();
-        for(ChallengeInfo challengeInfo : challengeInfoList){
+        List<UserListRes> listres = new ArrayList<>();
+        for (ChallengeInfo challengeInfo : challengeInfoList) {
 
             UserListRes userListRes = UserListRes.builder()
                     .userId(challengeInfo.getUser().getUserId())
@@ -132,12 +132,12 @@ public class ChallengeService {
     }
 
     //userId로 챌린지 List 가져오기
-    public List<ChallengeListRes> findChallengeListByUserId(Long userId){
+    public List<ChallengeListRes> findChallengeListByUserId(Long userId) {
         User user = findUserByUserId(userId);
-        List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId()).orElseThrow(()->new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
-        List<ChallengeListRes> listres =new ArrayList<>();
-        for(ChallengeInfo challengeInfo : userInfoList){
+        List<ChallengeListRes> listres = new ArrayList<>();
+        for (ChallengeInfo challengeInfo : userInfoList) {
 
             ChallengeListRes challengeListRes = ChallengeListRes.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
@@ -157,8 +157,6 @@ public class ChallengeService {
     }
 
 
-
-
     @Transactional
     public ChallengeInvite createChallengeInvite(ChallengeInviteReqDto challengeInviteReqDto) {
         // 사용자, 챌린지 유효성 체크
@@ -171,9 +169,9 @@ public class ChallengeService {
                 .build();
 
         // ChallengeInvite 저장
-        try{
+        try {
             challengeInviteRepository.save(challengeInvite);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
         }
 
@@ -181,7 +179,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public ChallengeAuth createChallengeAuth(ChallengeAuthReqDto challengeAuthReqDto){
+    public ChallengeAuth createChallengeAuth(ChallengeAuthReqDto challengeAuthReqDto) {
 
         ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeAuthReqDto.getChallengeInfoId()).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGEINFO_NOT_FOUND));
 
@@ -203,7 +201,6 @@ public class ChallengeService {
     @Transactional
 
 
-
     public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
@@ -214,7 +211,7 @@ public class ChallengeService {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
         }
         List<ChallengeInviteRes> result = new ArrayList<>();
-        for(Long id : challengeIdList){
+        for (Long id : challengeIdList) {
             Challenge challenge = findChallengeByChallengeId(id);
             result.add(ChallengeInviteRes.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
@@ -258,13 +255,73 @@ public class ChallengeService {
                 .build();
 
         // Vote 저장
-        try{
+        try {
             voteRepository.save(vote);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
         }
 
         return vote;
     }
+
+    @Transactional
+    public ChallengeAuth updateChallengeAuth(UpdateChallengeAuthReqDto updateChallengeAuthReqDto) {
+        ChallengeAuth challengeAuth = challengeAuthRepository.findByChallengeAuthId(updateChallengeAuthReqDto.getChallengeAuthId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
+        Long authUserId = updateChallengeAuthReqDto.getAuthUserId();
+        Long voteUserId = updateChallengeAuthReqDto.getVoteUserId();
+        // User 유효성 검사
+        findUserByUserId(updateChallengeAuthReqDto.getAuthUserId());
+        findUserByUserId(updateChallengeAuthReqDto.getVoteUserId());
+
+        // 두 사용자 모두 해당 챌린지에 속해있는지에 대한 유효성 검사
+        List<UserListRes> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
+        List<Long> userIdList = new ArrayList<>();
+        for(UserListRes list : userList){
+            userIdList.add(list.getUserId());
+        }
+
+        if(!userIdList.contains(authUserId)){
+            if(!userIdList.contains(voteUserId)){
+                throw new CustomException(ErrorCode.BOTH_USER_NOT_EXIST_CHALLENGE);
+            }
+            throw new CustomException(ErrorCode.AUTH_USER_NOT_EXIST_CHALLENGE);
+        }
+        if(!userIdList.contains(voteUserId)) throw new CustomException(ErrorCode.VOTE_USER_NOT_EXIST_CHALLENGE);
+
+        /*   투표 진행
+         *   1. vote 한적 있는지 확인
+         *   2. 이미 과반수인지 확인
+         *   3. 증가 이전에 이미 과반수를 넘겼다면 증가만 시키고 pass
+         *   4. 증가 이후 과반수를 넘겼다면 해당 유저의 챌린지 info를 찾아  successCnt 증가시킨다.
+         * */
+
+        try{
+            // 1
+            voteRepository.findByAuthUserIdAndVoteUserId(authUserId, voteUserId);
+            voteRepository.save(Vote.builder().authUserId(authUserId).voteUserId(voteUserId).build());
+            // 2
+            challengeAuth.voteCntUp();
+            // 3
+            if(challengeAuth.getIsConfirm() == 1) return challengeAuth;
+            // 4
+            int half = challengeAuth.getChallengerCnt() / 2;
+            int cnt = challengeAuth.getVoteCnt();
+            if(cnt >= half){
+                ChallengeInfo challengeInfo = challengeAuth.getChallengeInfo();
+                challengeInfo.successCntUp();
+                challengeAuth.isConfirm();
+                challengeInfoRepository.save(challengeInfo);
+                challengeAuthRepository.save(challengeAuth);
+            }
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new CustomException(ErrorCode.CHALLENGE_ALREADY_VOTED); // 이미 투표 했다면 에러가 발생하지 않으므로 여기서 예외처리
+        }
+
+        return challengeAuth;
+    }
+
 }
 

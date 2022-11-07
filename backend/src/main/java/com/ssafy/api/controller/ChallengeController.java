@@ -99,4 +99,10 @@ public class ChallengeController {
     public ResponseEntity<? extends BasicResponse> createVote(@RequestBody VoteReqDto voteReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createVote(voteReqDto)));
     }
+
+    @PutMapping("/vote")
+    @ApiOperation(value = "챌린지 인증 업데이트", notes = "<strong>챌린지 인증 투표 정보를 입력하여</strong> 해당 챌린지 인증 투표에 대한 사용자의 챌린지 관련 정보를 업데이트한다.")
+    public ResponseEntity<? extends BasicResponse> updateVote(@RequestBody UpdateChallengeAuthReqDto updateChallengeAuthReqDto){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.updateChallengeAuth(updateChallengeAuthReqDto)));
+    }
 }
