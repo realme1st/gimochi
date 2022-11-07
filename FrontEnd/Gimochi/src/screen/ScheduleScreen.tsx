@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Calendars from '../components/Calendar';
+import { useAppDispatch } from '../store';
+import screenSlice from '../slices/screen';
 
 function ScheduleScreen() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'ScheduleScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
+
   return (
     <View>
       <Text>일정관리</Text>

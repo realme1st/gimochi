@@ -8,6 +8,7 @@ import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
+import screenSlice from '../../slices/screen';
 import reloadSlice from '../../slices/reload';
 import styled from 'styled-components/native';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
@@ -19,6 +20,18 @@ function RPMessageWriteScreen({ route, navigation }) {
   // const [gifticon, setGifticon] = useState<string>('');
   const sessionId: number = route.params.RPId;
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'RollingpaperScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
 
   const onSubmit = () => {
     axios

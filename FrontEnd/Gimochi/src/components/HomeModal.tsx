@@ -23,8 +23,8 @@ import { RootState } from '../store/reducer';
 import { HomeModalProps } from '../navigation/HomeNavigation';
 
 function HomeModal({ navigation, route }: HomeModalProps) {
-  const currentScreen = useSelector((state: RootState) => state.screen.screenName);
-  // console.log(currentScreen);
+  const currentScreen = useSelector((state: RootState) => state.screen.screenArray);
+  console.log(currentScreen);
   const routeName = getFocusedRouteNameFromRoute(route);
   // console.log(routeName);
   const dispatch = useAppDispatch();
@@ -63,11 +63,11 @@ function HomeModal({ navigation, route }: HomeModalProps) {
   const goRollingpaper = () => {
     navigation.goBack();
     navigation.navigate('RollingpaperScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'RollingpaperScreen',
-      }),
-    );
+    // dispatch(
+    //   screenSlice.actions.setScreen({
+    //     screenName: 'RollingpaperScreen',
+    //   }),
+    // );
   };
 
   const goSchedule = () => {

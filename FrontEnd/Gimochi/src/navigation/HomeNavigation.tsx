@@ -71,7 +71,6 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         component={AttendanceScreen}
         options={{
           title: '출석 체크',
-          headerLeft: () => <Button onPress={back} title='back' />,
         }}
       ></Home.Screen>
       <Home.Screen

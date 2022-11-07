@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
+import screenSlice from '../../slices/screen';
 import Config from 'react-native-config';
 
 function RPWriteScreen({ navigation }) {
@@ -28,6 +29,18 @@ function RPWriteScreen({ navigation }) {
   const [visible, setVisible] = useState<boolean>(false); // 달력 모달 노출 여부
   const userId = useSelector((state: RootState) => state.user.userId);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'RollingpaperScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
 
   const onPressDate = () => {
     // 날짜 클릭 시
