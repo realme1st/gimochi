@@ -25,7 +25,7 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
 
-    @PostMapping("/token")
+    @GetMapping("/token")
     @ApiOperation(value = "Firebase 토큰 저장", notes = "Firebase 토큰 서버에 저장")
     public  ResponseEntity<? extends BasicResponse> registFirebaseToken(
             @RequestHeader(value = "AccessToken") String accessToken, @RequestHeader(value = "FirebaseToken") String firebaseToken) {
