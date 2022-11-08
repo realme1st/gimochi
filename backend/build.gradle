@@ -205,6 +205,9 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'javax.activation:activation:1.1.1'
 
+    // 구글 vision api (ocr)
+    implementation platform('com.google.cloud:libraries-bom:26.1.3')
+    implementation 'com.google.cloud:google-cloud-vision'
 }
 
 //test {
