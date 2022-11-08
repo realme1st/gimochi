@@ -19,7 +19,7 @@ public class GifticonReqDto {
 
     @ApiModelProperty(name="기프티콘 유효기간", example="2022-12-31")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    LocalDate gifticonPeriod;
+    LocalDate gifticonPeriod; 
 
     @ApiModelProperty(name="기프티콘 사용여부", example="false")
     boolean gifticonUsed;

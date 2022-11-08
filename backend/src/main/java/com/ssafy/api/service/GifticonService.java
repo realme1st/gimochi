@@ -1,6 +1,7 @@
 package com.ssafy.api.service;
 
 import com.google.protobuf.ByteString;
+import com.ssafy.api.dto.GifticonReqDto;
 import com.ssafy.api.dto.OcrResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -63,9 +64,9 @@ public class GifticonService {
     }
 
     @Transactional
-    public Gifticon createGifticon(Long userId, String store, LocalDate period, MultipartFile multipartFile) {
+    public Gifticon createGifticon(GifticonReqDto gifticonReqDto, MultipartFile multipartFile) {
 
-        User user = userRepository.findByUserId(userId).
+        User user = userRepository.findByUserId(gifticonReqDto.getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String url = null;
@@ -78,8 +79,9 @@ public class GifticonService {
 
         Gifticon gifticon = Gifticon.builder()
                 .user(user)
-                .gifticonStore(store)
-                .gifticonPeriod(LocalDate.parse(period.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .gifticonStore(gifticonReqDto.getGifticonStore())
+                .gifticonPeriod(LocalDate.parse(gifticonReqDto.getGifticonPeriod()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
                 .gifticonUsed(false)
                 .gifticonPath(url)
                 .build();
