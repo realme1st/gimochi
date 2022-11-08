@@ -32,11 +32,13 @@ public class GifticonController {
 
     @PostMapping("/upload/{userId}/{store}/{period}")
     @ApiOperation(value = "기프티콘 저장", notes = "<strong>기프티콘 이미지와 정보</strong>를 받아" +
-            " <strong>기프티콘</strong>을 db와 S3에 저장한다.")
+            "<strong>기프티콘</strong>을 db와 S3에 저장한다." + "<br>" +
+            "store : 사용처, ex) 바나프레소" + "<br>" +
+            "period : 유효기간, ex) 2022-12-31")
 
     public ResponseEntity<? extends BasicResponse> createGifticon(@PathVariable Long userId, @PathVariable String store,
                                                                   @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate period,
-                                                                  @RequestPart("file") MultipartFile file) {
+                                                                  @RequestPart("formData") MultipartFile file) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.createGifticon(userId, store, period, file)));
     }
 
