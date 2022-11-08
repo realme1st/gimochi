@@ -4,21 +4,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  screenName: 'HomeScreen',
-  screenArray: ['HomeScreen'],
+  screenArray: [],
 };
 const screenSlice = createSlice({
   name: 'screen',
   initialState,
   reducers: {
-    setScreen(state, action) {
-      state.screenName = action.payload.screenName;
-    },
     addScreen(state, action) {
       state.screenArray = [...state.screenArray, action.payload.screen];
     },
     deleteScreen(state) {
       state.screenArray = state.screenArray.slice(0, state.screenArray.length - 1);
+    },
+    resetScreen(state) {
+      state.screenArray = [];
     },
   },
   extraReducers: (builder) => {},

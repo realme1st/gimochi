@@ -1,36 +1,41 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import {
-  KakaoOAuthToken,
-  logout,
-  getProfile,
-  unlink,
-  KakaoProfile,
-  login,
-  getAccessToken,
-} from '@react-native-seoul/kakao-login';
+import { logout, getProfile, unlink, KakaoProfile } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../slices/user';
 import screenSlice from '../slices/screen';
 import reloadSlice from '../slices/reload';
 import { useAppDispatch } from '../store';
-import { format } from 'date-fns';
-import { URL } from '../api/API';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducer';
 import axios from 'axios';
+import Config from 'react-native-config';
 
 function MypageScreen() {
-  const [result, setResult] = useState<string>('');
   const dispatch = useAppDispatch();
-  const [tokenTime, setTokenTime] = useState<Date>();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+
+  useEffect(() => {
+    axios
+      .get(`${Config.API_URL}/kakao/friends`, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   const signOutWithKakao = async (): Promise<void> => {
     // 1. logout() 메서드 실행
@@ -41,23 +46,24 @@ function MypageScreen() {
     await AsyncStorage.removeItem('userNickname');
     await EncryptedStorage.removeItem('accessToken');
     await EncryptedStorage.removeItem('accessTokenExpiresAt');
-    setResult(message);
     console.log(message);
-    // 3. redux isLogin값 변경
-    // 4. redux screenName 홈으로 변경
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'HomeScreen',
-      }),
-    );
-    dispatch(
-      userSlice.actions.setLogin({
-        isLogin: 'false',
-        accessToken: '',
-        accessTokenExpiresAt: '',
-        userId: '',
-      }),
-    );
+    // 3. back에 로그아웃 axios 요청
+    axios
+      .get(`${Config.API_URL}/kakao/oauth/logout`, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // 4. redux isLogin값 변경
+    dispatch(userSlice.actions.setLogout());
+    // 5. redux screenName 홈으로 변경
+    dispatch(screenSlice.actions.resetScreen());
     dispatch(
       reloadSlice.actions.setReload({
         reload: String(new Date()),

@@ -8,9 +8,6 @@ import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
-import { Button } from 'react-native';
-import { useAppDispatch } from '../store';
-import screenSlice from '../slices/screen';
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
@@ -26,19 +23,6 @@ export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeMod
 const Home = createNativeStackNavigator<HomeStackParamList>();
 function HomeNavigation({ route, navigation }: HomeModalProps) {
   const routeName = getFocusedRouteNameFromRoute(route);
-  const dispatch = useAppDispatch();
-  const back = () => {
-    navigation.pop();
-    const backRouteName = getFocusedRouteNameFromRoute(route);
-    console.log(backRouteName);
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: backRouteName,
-      }),
-    );
-    console.log('hi');
-    console.log(backRouteName);
-  };
   useLayoutEffect(() => {
     if (routeName === 'HomeModal') {
       //MyPage이외의 화면에 대해 tabBar none을 설정한다.

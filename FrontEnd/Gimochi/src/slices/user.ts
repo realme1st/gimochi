@@ -8,7 +8,6 @@ const initialState = {
   accessTokenExpiresAt: '',
   isLogin: '',
   userId: '',
-  phoneToken: '',
 };
 const userSlice = createSlice({
   name: 'user',
@@ -20,10 +19,13 @@ const userSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.accessTokenExpiresAt = action.payload.accessTokenExpiresAt;
       state.userId = action.payload.userId;
-      state.phoneToken = action.payload.phoneToken;
     },
-    setPhoneToken(state, action) {
-      state.phoneToken = action.payload;
+    setLogout(state) {
+      state.userNickname = '';
+      state.isLogin = '';
+      state.accessToken = '';
+      state.accessTokenExpiresAt = '';
+      state.userId = '';
     },
   },
   extraReducers: (builder) => {},

@@ -3,10 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react/jsx-key */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
-import { View, Text, Pressable, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { View, Pressable, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import RoundMenu from './RoundMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
@@ -16,78 +15,38 @@ import {
   faTicket,
   faTrophy,
 } from '@fortawesome/free-solid-svg-icons';
-import { useAppDispatch } from '../store';
-import { useSelector } from 'react-redux';
-import screenSlice from '../slices/screen';
-import { RootState } from '../store/reducer';
 import { HomeModalProps } from '../navigation/HomeNavigation';
 
 function HomeModal({ navigation, route }: HomeModalProps) {
-  const currentScreen = useSelector((state: RootState) => state.screen.screenArray);
-  console.log(currentScreen);
-  const routeName = getFocusedRouteNameFromRoute(route);
-  // console.log(routeName);
-  const dispatch = useAppDispatch();
-
   const goHome = () => {
     navigation.goBack();
     navigation.navigate('HomeScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'HomeScreen',
-      }),
-    );
   };
 
   const goAttendance = () => {
     // goBack을 하지 않으면 이동한 스택에서 뒤로가면 모달이 뜸, 그래서 스택을 뒤로 옮기고 다음 스크린으로 이동
     navigation.goBack();
     navigation.navigate('AttendanceScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'AttendanceScreen',
-      }),
-    );
   };
 
   const goPlay = () => {
     navigation.goBack();
     navigation.navigate('PlayScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'PlayScreen',
-      }),
-    );
   };
 
   const goRollingpaper = () => {
     navigation.goBack();
     navigation.navigate('RollingpaperScreen');
-    // dispatch(
-    //   screenSlice.actions.setScreen({
-    //     screenName: 'RollingpaperScreen',
-    //   }),
-    // );
   };
 
   const goSchedule = () => {
     navigation.goBack();
     navigation.navigate('ScheduleScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'ScheduleScreen',
-      }),
-    );
   };
 
   const goChallenge = () => {
     navigation.goBack();
     navigation.navigate('ChallengeScreen');
-    dispatch(
-      screenSlice.actions.setScreen({
-        screenName: 'ChallengeScreen',
-      }),
-    );
   };
 
   const content = [

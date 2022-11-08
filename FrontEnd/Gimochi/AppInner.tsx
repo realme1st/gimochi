@@ -35,8 +35,8 @@ function AppInner() {
     const userNickname = await AsyncStorage.getItem('userNickname');
     const accessToken = await EncryptedStorage.getItem('accessToken');
     const accessTokenExpiresAt = await EncryptedStorage.getItem('accessTokenExpiresAt');
-    console.log(accessToken);
-    console.log(accessTokenExpiresAt);
+    // console.log(accessToken);
+    // console.log(accessTokenExpiresAt);
     const tokenTime = new Date(accessTokenExpiresAt);
     // EncryptedStorage에 토큰이 있고(로그인된 상태) 토큰만료시간-현재시간이 2시간 이하라면 새 토큰을 발급받음
     if (accessToken && format(tokenTime - date, 'HH') <= 2) {
@@ -81,9 +81,6 @@ function AppInner() {
         await messaging().registerDeviceForRemoteMessages();
       }
       const token = await messaging().getToken();
-      console.log('phone token', token);
-      console.log('accessToken', aToken);
-      dispatch(userSlice.actions.setPhoneToken(token));
       // 서버에 폰 토큰 보내야
       axios
         .get(`${Config.API_URL}/notification/token`, {
