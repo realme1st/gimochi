@@ -9,15 +9,12 @@ import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.*;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.*;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service("ChallengeService")
 @Transactional(readOnly = true)
@@ -72,7 +69,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public ChallengeInfo createChallengeInfoFirst(Challenge challenge) {
+    public void createChallengeInfoFirst(Challenge challenge) {
 
         User user = findUserByUserId(challenge.getChallengeLeaderId());
 
@@ -81,7 +78,7 @@ public class ChallengeService {
                 .user(user)
                 .build();
 
-        return challengeInfoRepository.save(challengeInfo);
+        challengeInfoRepository.save(challengeInfo);
     }
 
 
@@ -92,14 +89,15 @@ public class ChallengeService {
         List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
-        for (ChallengeInfo challengeInfo : challengeInfoList) {
+        challengeInfoList.stream().forEach(challengeInfo -> {
             UserListRes userListRes = UserListRes.builder()
                     .userId(challengeInfo.getUser().getUserId())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
             listRes.add(userListRes);
-        }
+        });
+
         return listRes;
     }
 
@@ -111,7 +109,7 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
         List<ChallengeListRes> listRes = new ArrayList<>();
 
-        for (ChallengeInfo challengeInfo : userInfoList) {
+        userInfoList.stream().forEach(challengeInfo -> {
             ChallengeListRes challengeListRes = ChallengeListRes.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
                     .challengeName(challengeInfo.getChallenge().getChallengeTitle())
@@ -119,7 +117,7 @@ public class ChallengeService {
                     .build();
 
             listRes.add(challengeListRes);
-        }
+        });
         return listRes;
     }
 
@@ -165,22 +163,26 @@ public class ChallengeService {
     public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
+        if (challengeInviteList.isEmpty()){
+            throw new CustomException(ErrorCode.CHALLENGEINVITE_USER_NOT_FOUND);
+        }
         // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
         List<Long> challengeIdList = new ArrayList<>();
         List<ChallengeInviteRes> result = new ArrayList<>();
 
-        for (ChallengeInvite challengeInvite : challengeInviteList) {
+        challengeInviteList.stream().forEach(challengeInvite -> {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
-        }
+        });
 
-        for (Long id : challengeIdList) {
+        challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
             result.add(ChallengeInviteRes.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())
                     .build());
-        }
+        });
+
         return result;
     }
 
@@ -240,9 +242,10 @@ public class ChallengeService {
         List<UserListRes> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
         List<Long> userIdList = new ArrayList<>();
 
-        for (UserListRes list : userList) {
-            userIdList.add(list.getUserId());
-        }
+//        for (UserListRes list : userList) {
+//            userIdList.add(list.getUserId());
+//        }
+        userList.stream().forEach(list -> userIdList.add(list.getUserId()));
 
         if (!userIdList.contains(authUserId)) {
             if (!userIdList.contains(voteUserId)) {
