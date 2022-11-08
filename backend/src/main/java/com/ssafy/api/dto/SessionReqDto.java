@@ -2,6 +2,7 @@ package com.ssafy.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -22,4 +23,12 @@ public class SessionReqDto {
 
     @ApiModelProperty(name = "세션 타입 id", example = "1")
     Long sessionTypeId;
+
+    @Builder
+    public SessionReqDto(String name, LocalDate anniversary, Long userId, Long sessionTypeId) {
+        this.name = name;
+        this.anniversary = anniversary;
+        this.userId = userId;
+        this.sessionTypeId = sessionTypeId;
+    }
 }
