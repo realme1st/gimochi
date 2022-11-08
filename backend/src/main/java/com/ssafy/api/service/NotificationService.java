@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import com.ssafy.api.dto.MultiMessageReqDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
+import com.ssafy.db.entity.Gifticon;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -145,9 +146,49 @@ public class NotificationService {
         return true;
     }
 
+    @Transactional
+    public boolean sendDailyNotification(Long userId, int day, boolean isOne, List<Gifticon> gifticons) {
+        User receiver = userRepository.findByUserId(userId).get();
+        String registrationToken = receiver.getUserFbToken();
+
+        String title = "곧 사라지는 기프티콘이 있어요!";
+        String body = "";
+
+        if(isOne){
+            body = gifticons.get(0).getGifticonStore() + " 기프티콘이 "+day+"일 뒤에 사라져요!";
+        }else{
+            body = gifticons.size() + "개의 기프티콘이 "+day+" 일 뒤에 사라져요!";
+        }
+
+
+        Message message = Message.builder()
+                .putData("time", LocalDateTime.now().toString())
+                .setNotification(Notification.builder().setTitle(title).setBody(body).build())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setTtl(3600 * 1000)
+                        .setNotification(AndroidNotification.builder()
+                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로?
+                                .setColor("#f45342")
+                                .build())
+                        .build())
+                .setToken(registrationToken)
+                .build();
+        try {
+            String response = FirebaseMessaging.getInstance().send(message);
+            System.out.println("Successfully sent message: " + response);
+        }catch (FirebaseMessagingException e){
+            System.out.println("cannot send to memberList push message. error info : {}");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
     public String setMultiMessageTitle(int type){
         if(type == 1){
             return "친구가 기념일을 생성했어요!";
+        }else if(type ==2){
+            return "";
         }else{
             return "";
         }
@@ -156,6 +197,8 @@ public class NotificationService {
     public String setMultiMessageBody(String name, int type){
         if(type == 1){
             return name+"님에게 추카포카 메세지를 남겨주세요.";
+        }else if(type ==2){
+            return "x일 뒤에 사라지는 기프티콘이 x개 있어요!";
         }else{
             return "";
         }
