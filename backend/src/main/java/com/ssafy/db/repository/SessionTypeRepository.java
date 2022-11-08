@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface SessionTypeRepository extends JpaRepository<SessionType, Long> {
     Optional<SessionType> findSessionTypeBySessionTypeId(Long sessionTypeId);
+
 }

@@ -7,8 +7,6 @@ import com.ssafy.common.response.CommonResponseEntity;
 import com.ssafy.db.repository.FriendsListRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final FriendsListRepository friendsListRepository;
     private final UserService userService;
-
     // 팔로우
     @PostMapping("/follow")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우", notes = "팔로우")

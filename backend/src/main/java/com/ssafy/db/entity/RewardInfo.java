@@ -13,7 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //new User막음
-public class ChallengeReward {
+public class RewardInfo {
     @Id
     @Column(name = "challenge_reward_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,18 +25,18 @@ public class ChallengeReward {
     private Challenge challenge;
 
     @Column(nullable = false, name = "challenge_reward_type")
-    private String challengeRewardType;
+    private Long challengeRewardType;
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
         //무한 루프 주의
-        if (!challenge.getChallengeRewardList().contains(this)) {
-            challenge.getChallengeRewardList().add(this);
+        if (!challenge.getRewardInfoList().contains(this)) {
+            challenge.getRewardInfoList().add(this);
         }
     }
 
     @Builder
-    public ChallengeReward(Challenge challenge, String challengeRewardType) {
+    public RewardInfo(Challenge challenge, Long challengeRewardType) {
         this.challenge = challenge;
         this.challengeRewardType = challengeRewardType;
     }

@@ -30,10 +30,29 @@ public enum ErrorCode {
     SESSION_MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 세션 메세지 id 입니다"),
     ALREADY_FOLLOW(HttpStatus.CONFLICT, "이미 팔로우한 사용자입니다."),
     INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
-
+    INVALID_SESSION_TYPE(HttpStatus.NOT_FOUND, "존재하지 않는 세션 타입입니다."),
     //  Challenge 관련 예외
-    CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 챌린지 id 입니다"),
-    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "존재하지 않는 팔로워-팔로잉 관계입니다.");
+    CHALLENEGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 챌린지 id 입니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "존재하지 않는 팔로워-팔로잉 관계입니다."),
+
+    CHALLENEGE_REWARD_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"이미 첼린지 리워드 설정을 하였습니다."),
+
+    LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 id를 가진 챌린지 리더가 없습니다." ),
+
+    CHALLENGE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB INSERT 중 문제가 발생했습니다." ),
+    CHALLENGE_INVITE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대입니다."),
+
+    CHALLENGEINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 정보입니다."),
+
+    CHALLENGEAUTHID_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 인증 id입니다."),
+    CHALLENGE_AUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 인증입니다."),
+
+    CHALLENGE_ALREADY_VOTED(HttpStatus.BAD_REQUEST,"이미 투표한 사용자입니다." ),
+    BOTH_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "두 사용자 모두 해당 챌린지에 없습니다." ),
+    AUTH_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "투표 요청할 유저가 해당 챌린지에 없습니다." ),
+    VOTE_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "투표를 요청한 유저가 해당 챌린지에 없습니다." ),
+    INVALID_AUTH_USER(HttpStatus.BAD_REQUEST, "해당 투표를 요청한 유저 본인이 아닙니다." ),
+    CHALLENGEINVITE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대장 사용자입니다." ), ;
 
     private final HttpStatus httpStatus;
     private final String message;

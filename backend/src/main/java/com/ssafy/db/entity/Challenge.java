@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,8 +18,8 @@ public class Challenge {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long challengeId;
 
-    @Column(nullable = false,name="challenge_user_id")
-    private Long challengeUserId;
+    @Column(nullable = false,name="challenge_leader_id")
+    private Long challengeLeaderId;
 
     @Column(nullable = false,name="challenge_title")
     private String challengeTitle;
@@ -28,15 +27,17 @@ public class Challenge {
     @Column(nullable = false,name="challenge_description")
     private String challengeDescription;
 
-    @Column(nullable = false,name="challenge_participant")
-    private Long challengeParticipant;
-
     @Column(nullable = false,name="challenge_start_time")
     private String challengeStartTime;
 
     @Column(nullable = false,name="challenge_end_time")
     private String challengeEndTime;
 
+    @Column(nullable = false,name="challenge_reward_type")
+    private int challengeRewardType;
+
+    @Column(nullable = false,name="challenge_leader_name")
+    private String challengeLeaderName;
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
@@ -51,29 +52,30 @@ public class Challenge {
     }
 
     @OneToMany(mappedBy = "challenge")
-    private List<ChallengeReward> challengeRewardList = new ArrayList<>();
+    private List<RewardInfo> rewardInfoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeUserId, String challengeTitle, String challengeDescription, Long challengeParticipant, String challengeStartTime, String challengeEndTime) {
-        this.challengeUserId = challengeUserId;
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
+        this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
-        this.challengeParticipant = challengeParticipant;
         this.challengeStartTime = challengeStartTime;
         this.challengeEndTime = challengeEndTime;
+        this.challengeRewardType = challengeRewardType;
+        this.challengeLeaderName = challengeLeaderName;
     }
 
 
 
 
-    public void addChallengeReward(ChallengeReward challengeReward){
-        this.challengeRewardList.add(challengeReward);
+    public void addChallengeReward(RewardInfo rewardInfo){
+        this.rewardInfoList.add(rewardInfo);
 
-        if(challengeReward.getChallenge() !=this) { //무한루프 방지
-            challengeReward.setChallenge(this);
+        if(rewardInfo.getChallenge() !=this) { //무한루프 방지
+            rewardInfo.setChallenge(this);
         }
 
     }
