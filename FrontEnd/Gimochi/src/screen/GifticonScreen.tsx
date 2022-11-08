@@ -18,6 +18,7 @@ function GifticonScreen() {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
   const [preview, setPreview] = useState<{ uri: string }>();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const userId = useSelector((state: RootState) => state.user.userId);
   console.log(preview);
   const onResponse = useCallback(async (response) => {
     console.log(response.width, response.height, response.exif);
@@ -32,12 +33,13 @@ function GifticonScreen() {
       100,
       0,
     ).then((r) => {
-      console.log(r.uri, r.name);
-
+      console.log(r);
+      console.log(r.uri);
+      console.log(r.name);
       setImage({
         uri: r.uri,
         name: r.name,
-        type: response.mime,
+        type: 'image/jpeg',
       });
     });
   }, []);
@@ -59,23 +61,25 @@ function GifticonScreen() {
       Alert.alert('알림', '파일을 업로드해주세요.');
       return;
     }
+    console.log(preview);
     const formData = new FormData();
-    formData.append('image', image);
-    try {
-      await axios.post(`${Config.API_URL}/gifticon`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      Alert.alert('알림', '기프티콘 업로드 완료되었습니다.');
-    } catch (error) {
-      const errorResponse = (error as AxiosError).response;
-      if (errorResponse) {
-        Alert.alert('알림', errorResponse.data.message);
-      }
-    }
+    const info = { userId: userId, gifticonScore: 'testStore', gifticonPeriod: '2022-11-08' };
+    formData.append('file', image);
+    formData.append('gifticon', info);
     console.log(formData);
-  }, [image, accessToken]);
+    await axios
+      .post(`${Config.API_URL}/gifticon/upload`, formData, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [image, accessToken, userId]);
 
   return (
     <View>
@@ -89,7 +93,6 @@ function GifticonScreen() {
           source={preview}
         />
       )}
-
       <TouchableOpacity onPress={onComplete}>
         <Text>기프티콘 제출</Text>
       </TouchableOpacity>

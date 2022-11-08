@@ -27,7 +27,6 @@ function LoginScreen() {
     await EncryptedStorage.setItem('accessTokenExpiresAt', time);
     dispatch(
       userSlice.actions.setLogin({
-        isLogin: 'true',
         accessToken: token,
         accessTokenExpiresAt: time,
         userId: Number(userId),

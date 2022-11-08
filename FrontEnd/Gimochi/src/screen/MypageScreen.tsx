@@ -61,7 +61,7 @@ function MypageScreen() {
       .catch(function (error) {
         console.log(error);
       });
-    // 4. redux isLogin값 변경
+    // 4. redux 변경
     dispatch(userSlice.actions.setLogout());
     // 5. redux screenName 홈으로 변경
     dispatch(screenSlice.actions.resetScreen());
