@@ -2,8 +2,10 @@ package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -32,6 +34,7 @@ public class ChallengeInfo {
     private Challenge challenge;
 
     @Column(name="success_cnt")
+    @ColumnDefault("0")
     private int successCnt;
 
     @OneToMany(mappedBy = "challengeInfo")
@@ -62,5 +65,17 @@ public class ChallengeInfo {
         if(!challenge.getChallengeInfoList().contains(this)){
             challenge.getChallengeInfoList().add(this);
         }
+    }
+
+    @Builder
+    public ChallengeInfo(User user, Challenge challenge, int successCnt) {
+        this.user = user;
+        this.challenge = challenge;
+        this.successCnt = successCnt;
+    }
+
+    // 달성 횟수 증가
+    public void successCntUp() {
+        this.successCnt += 1;
     }
 }

@@ -1,12 +1,11 @@
 package com.ssafy.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -18,12 +17,12 @@ public class Gifticon{
     private Long gifticonId;
 
     @ManyToOne(fetch=LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
 
     @Column(nullable = false)
-    private Date gifticonPeriod;
+    private LocalDate gifticonPeriod;
     @Column(nullable = false)
     private String gifticonStore;
     @Column(nullable = false)
@@ -41,6 +40,14 @@ public class Gifticon{
         if(!user.getGifticonsList().contains(this)){
             user.getGifticonsList().add(this);
         }
+    }
+    @Builder
+    public Gifticon(User user, LocalDate gifticonPeriod, String gifticonStore, boolean gifticonUsed, String gifticonPath) {
+        this.user = user;
+        this.gifticonPeriod = gifticonPeriod;
+        this.gifticonStore = gifticonStore;
+        this.gifticonUsed = gifticonUsed;
+        this.gifticonPath = gifticonPath;
     }
 
 

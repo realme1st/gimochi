@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.api.dto.*;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 @Service("kakaoService")
+@Slf4j
 //@Transactional(readOnly = true)
 public class KakaoService {
 
@@ -34,12 +36,12 @@ public class KakaoService {
         params.add("grant_type", "authorization_code");
         params.add("client_id", "0e3c9cecfd800e2aae8228d69a635959");
         //로컬에서 할 때
-        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
+//        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
         //ssl 인증서 설정 전
         //params.add("redirect_uri", "http://k7a205.p.ssafy.io/kakao/oauth");
 
         //ssl 인증서 설정 후
-        //params.add("redirect_uri", "https://k7a205.p.ssafy.io/kakao/oauth");
+        params.add("redirect_uri", "https://k7a205.p.ssafy.io/kakao/oauth");
         params.add("code", code);
         params.add("client_secret", "5YBXwlymi8l1I2H57ZObnlrOQ4NNUrnS"); // 생략 가능!
 
@@ -68,7 +70,7 @@ public class KakaoService {
 
 
     @Transactional
-    public User saveUser(OauthToken token) {
+    public UserLoginDto saveUser(OauthToken token) {
 
         KakaoProfile profile = findProfile(token.getAccess_token());
         Optional<User> user = userRepository.findByUserEmail(profile.getKakao_account().getEmail());
@@ -83,10 +85,48 @@ public class KakaoService {
                     .userSocialRefreshToken(token.getRefresh_token())
                     .build();
             userRepository.save(newUser);
-            return newUser;
+            UserLoginDto userLoginDto = new UserLoginDto();
+            userLoginDto.setUserEmail(newUser.getUserEmail());
+            userLoginDto.setUserNickname(newUser.getUserNickname());
+            userLoginDto.setUserSocialToken(newUser.getUserSocialToken());
+            userLoginDto.setUserSocialRefreshToken(newUser.getUserSocialRefreshToken());
+            userLoginDto.setNewUser(true);
+
+            return userLoginDto;
 
         } else {
             user.get().changeSocialTokenInfo(token.getAccess_token(),token.getRefresh_token());
+            UserLoginDto userLoginDto = new UserLoginDto();
+            userLoginDto.setUserEmail(user.get().getUserEmail());
+            userLoginDto.setUserNickname(user.get().getUserNickname());
+            userLoginDto.setUserSocialToken(user.get().getUserSocialToken());
+            userLoginDto.setUserSocialRefreshToken(user.get().getUserSocialRefreshToken());
+            userLoginDto.setNewUser(true);
+            return userLoginDto;
+        }
+    }
+
+    //saveUser 오버로드 메소드
+    @Transactional
+    public User saveUser(String accessToken, String refreshToken) {
+
+        KakaoProfile profile = findProfile(accessToken);
+        Optional<User> user = userRepository.findByUserEmail(profile.getKakao_account().getEmail());
+
+        if (!user.isPresent()) {
+            User newUser = User.builder()
+                    .userKakaoId(profile.getId())
+                    .userNickname(profile.getProperties().getNickname())
+                    .userEmail(profile.getKakao_account().getEmail())
+                    .userBirthday(profile.getKakao_account().getBirthday())
+                    .userSocialToken(accessToken)
+                    .userSocialRefreshToken(refreshToken)
+                    .build();
+            userRepository.save(newUser);
+            return newUser;
+
+        } else {
+            user.get().changeSocialTokenInfo(accessToken,refreshToken);
             return user.get();
         }
     }
@@ -220,9 +260,8 @@ public class KakaoService {
         return tokenInforamtion;
     }
     @Transactional
-    public RefreshedToken refreshToken(String token) {
+    public RefreshedTokenResDto refreshToken(String token) {
         User user = userRepository.findByUserSocialToken(token).get();
-
         String refreshToken = user.getUserSocialRefreshToken();
         RestTemplate rt = new RestTemplate();
 
@@ -240,21 +279,34 @@ public class KakaoService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         RefreshedToken refreshedToken = null;
+        RefreshedTokenResDto refreshedTokenResDto = null;
 
         ResponseEntity<String> tokenInformationResponse = rt.exchange(
-                "https://kapi.kakao.com/oauth/token",
+                "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 refreshRequest,
                 String.class
         );
         try {
             refreshedToken = objectMapper.readValue(tokenInformationResponse.getBody(), RefreshedToken.class);
-            user.changeSocialTokenInfo(refreshedToken.getAccess_token(), refreshedToken.getRefresh_token());
+            refreshedTokenResDto = RefreshedTokenResDto.builder()
+                    .id_token(refreshedToken.getId_token())
+                    .access_token(refreshedToken.getAccess_token())
+                    .token_type(refreshedToken.getToken_type())
+                    .refresh_token(refreshedToken.getRefresh_token())
+                    .expires_in(refreshedToken.getExpires_in())
+                    .refresh_token_expires_in(refreshedToken.getRefresh_token_expires_in())
+                    .build();
+            if(refreshedToken.getRefresh_token() == null){
+                user.changeSocialTokenInfo(refreshedToken.getAccess_token(), user.getUserSocialRefreshToken());
+            }else{
+                user.changeSocialTokenInfo(refreshedToken.getAccess_token(), refreshedToken.getRefresh_token());
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
-        return refreshedToken;
+        return refreshedTokenResDto;
     }
 
     public UserIdDto expireToken(String token) {
@@ -285,6 +337,7 @@ public class KakaoService {
         UserIdDto dto = new UserIdDto();
         try {
             dto = objectMapper.readValue(logoutResponse.getBody(), UserIdDto.class);
+            user.changeSocialTokenInfo(user.getUserSocialToken(),"expired");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

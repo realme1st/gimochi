@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
-    Optional<List<Session>> findAllByUserUserId(Long userId);
+    Optional<List<Session>> findAllByUserUserIdOrderByAnniversary(Long userId);
 }

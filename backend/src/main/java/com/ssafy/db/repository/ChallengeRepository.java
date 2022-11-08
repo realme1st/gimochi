@@ -11,7 +11,15 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
-    Optional<Challenge> findChallengeByChallengeId(Long challengeId);
+    Optional<Challenge> findByChallengeId(Long challengeId);
     //Optional<Challenge> findChallengeByChallengeUserId(Long challengeUserId);
+    Optional<User> findByChallengeLeaderId(Long challengeLeaderId);
 
+
+
+//    Optional<List<Challenge>> findChallengeListByChallengeIdList(List<Long> challengeIdList);
+
+    Optional<String> findChallengeLeaderNameByChallengeId(Long id);
+
+    Optional<String> findChallengeTitleByChallengeId(Long id);
 }
