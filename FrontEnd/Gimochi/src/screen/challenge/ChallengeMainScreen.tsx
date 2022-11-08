@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Tab, Text, TabView, ThemeProvider, createTheme } from '@rneui/themed';
-// import styled from 'styled-components/native';
-// import { ThemeProvider, createTheme } from '@rneui/themed';
-import SpeedDial from './SpeedDial';
+import { useAppDispatch } from '../../store';
+import screenSlice from '../../slices/screen';
+import Dial from './SpeedDial';
 import { Divider } from '@rneui/themed';
 const theme = createTheme({
   components: {
@@ -17,26 +17,31 @@ const theme = createTheme({
 });
 
 function ChallengeMainScreen({ navigation }) {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      screenSlice.actions.addScreen({
+        screen: 'ChallengeScreen',
+      }),
+    );
+    return () => {
+      console.log('unmount');
+      dispatch(screenSlice.actions.deleteScreen());
+    };
+  }, []);
+
   const [index, setIndex] = useState(0);
+  console.log(index);
   const goDetail = (id) => {
     navigation.navigate('ChallengeDetailScreen', { challengeId: id });
   };
 
   const goWrite = () => {
-    navigation.navigate('ChallengeCreateScreen');
+    navigation.navigate('ChallengeCreateScreen1');
   };
-
-  console.log(index);
-
   return (
-    <>
-      <Text>챌린지 진행 / 완료 조건부 랜더링 | 챌린지 목록들 보여줄 예정입니다.</Text>
-      <TouchableOpacity onPress={() => goDetail(12)}>
-        <Text>추카포카 상세보기 버튼</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={goWrite}>
-        <Text>추카포카 생성하기 버튼</Text>
-      </TouchableOpacity>
+    <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
       <ThemeProvider theme={theme}>
         <Tab
           value={index}
@@ -111,6 +116,9 @@ function ChallengeMainScreen({ navigation }) {
       <TabView value={index} onChange={setIndex} animationType='spring'>
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <ScrollView>
+            <TouchableOpacity onPress={() => goDetail(1)}>
+              <Text h1>챌린지 상세보기 버튼</Text>
+            </TouchableOpacity>
             <Text h1>진행중 목록</Text>
             <Text h1>진행중 목록</Text>
             <Text h1>진행중 목록</Text>
@@ -129,8 +137,8 @@ function ChallengeMainScreen({ navigation }) {
           </ScrollView>
         </TabView.Item>
       </TabView>
-      <SpeedDial></SpeedDial>
-    </>
+      <Dial navigation={navigation}></Dial>
+    </View>
   );
 }
 

@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SpeedDial } from '@rneui/themed';
 
 // 생성 삭제 다이얼 참고용
 // 이모티콘은 FAB 참고  | 버튼은 button 참고
-export default () => {
+function Dial({ navigation }) {
   const [open, setOpen] = React.useState(false);
+  const goWrite = () => {
+    navigation.navigate('ChallengeCreateScreen1');
+  };
   return (
     <SpeedDial
-      style={{ width: 400, height: 600 }} //위치
+      style={{ width: 400, height: 550 }} //위치
       buttonStyle={{ backgroundColor: '#FFE7BC' }}
       isOpen={open}
       icon={{ name: 'edit', color: '#FFA401' }}
@@ -18,15 +21,16 @@ export default () => {
       <SpeedDial.Action
         buttonStyle={{ backgroundColor: '#FFE7BC' }}
         icon={{ name: 'add', color: '#FFA401' }}
-        title='Add'
-        onPress={() => console.log('Add Something')}
+        title='만들기'
+        onPress={() => goWrite()}
       />
       <SpeedDial.Action
         buttonStyle={{ backgroundColor: '#FFE7BC' }}
         icon={{ name: 'delete', color: '#FFA401' }}
-        title='Delete'
+        title='삭제'
         onPress={() => console.log('Delete Something')}
       />
     </SpeedDial>
   );
-};
+}
+export default Dial;
