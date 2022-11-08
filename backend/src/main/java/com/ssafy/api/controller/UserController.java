@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final FriendsListRepository friendsListRepository;
     private final UserService userService;
-
     // 팔로우
     @PostMapping("/follow")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우", notes = "팔로우")

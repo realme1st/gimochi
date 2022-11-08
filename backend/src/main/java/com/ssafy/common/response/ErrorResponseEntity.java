@@ -2,7 +2,6 @@ package com.ssafy.common.response;
 
 import com.ssafy.common.exception.ErrorCode;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 @Getter

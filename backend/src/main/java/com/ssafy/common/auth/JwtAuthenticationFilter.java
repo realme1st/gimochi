@@ -1,13 +1,8 @@
 package com.ssafy.common.auth;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.ssafy.api.service.UserService;
 import com.ssafy.common.util.JwtTokenUtil;
 import com.ssafy.common.util.ResponseBodyWriteUtil;
-import com.ssafy.db.entity.User;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -23,11 +18,13 @@ import java.io.IOException;
  * 요청 헤더에 jwt 토큰이 있는 경우, 토큰 검증 및 인증 처리 로직 정의.
  */
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
-    private UserService userService;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+//    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+//        super(authenticationManager);
+//        this.userService = userService;
+//    }
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager ) {
         super(authenticationManager);
-        this.userService = userService;
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.ssafy.common.response;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class CommonResponseEntity<T>  extends BasicResponse {
@@ -16,10 +14,5 @@ public class CommonResponseEntity<T>  extends BasicResponse {
     public CommonResponseEntity(T data) {
         this.data = data;
         this.success = true;
-//        if(data instanceof List) {
-//            this.count = ((List<?>)data).size();
-//        } else {
-//            this.count = 1;
-//        }
     }
 }
