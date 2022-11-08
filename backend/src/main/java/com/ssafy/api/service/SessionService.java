@@ -169,11 +169,16 @@ public class SessionService {
      * */
     public void checkExpireTime(LocalDate expireTime) {
         List<Session> sessionList = sessionRepository.findAll();
-        for (Session session : sessionList) {
-            if (session.getExpireTime().isBefore(LocalDate.now())) {
+//        for (Session session : sessionList) {
+//            if (session.getExpireTime().isBefore(LocalDate.now())) {
+//                deleteSession(session.getSessionId());
+//            }
+//        }
+        sessionList.stream().forEach(session -> {
+            if (session.getAnniversary().isBefore(LocalDate.now())) {
                 deleteSession(session.getSessionId());
             }
-        }
+        });
     }
 
 }

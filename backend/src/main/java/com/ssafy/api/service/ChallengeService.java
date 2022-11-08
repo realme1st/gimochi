@@ -242,9 +242,6 @@ public class ChallengeService {
         List<UserListRes> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
         List<Long> userIdList = new ArrayList<>();
 
-//        for (UserListRes list : userList) {
-//            userIdList.add(list.getUserId());
-//        }
         userList.stream().forEach(list -> userIdList.add(list.getUserId()));
 
         if (!userIdList.contains(authUserId)) {
