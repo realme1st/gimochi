@@ -1,14 +1,10 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.GifticonReqDto;
-import com.ssafy.api.dto.OcrReqDto;
 import com.ssafy.api.service.GifticonService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +21,13 @@ public class GifticonController {
     @Autowired
     GifticonService gifticonService;
 
-    @PostMapping("/ocr")
-    @ApiOperation(value = "기프티콘 ocr 분석", notes = "<strong>기프티콘 이미지(base64 인코딩)</strong>를 받아" +
+    @PostMapping("/ocr/{userId}")
+    @ApiOperation(value = "기프티콘 ocr 분석", notes = "<strong>기프티콘 이미지</strong>를 받아" +
             " <strong>정제된 기프티콘 정보</strong>를 반환한다.")
 
-    public ResponseEntity<? extends BasicResponse> detectText(@RequestBody OcrReqDto ocrReqDto) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.detect(ocrReqDto)));
+    public ResponseEntity<? extends BasicResponse> detectText(@PathVariable Long userId,
+                                                               @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.detect(userId, file)));
     }
 
     @PostMapping("/upload/{userId}/{store}/{period}")
@@ -38,8 +35,25 @@ public class GifticonController {
             " <strong>기프티콘</strong>을 db와 S3에 저장한다.")
 
     public ResponseEntity<? extends BasicResponse> createGifticon(@PathVariable Long userId, @PathVariable String store,
-                                                                  @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate period, @RequestPart("file") MultipartFile file) {
+                                                                  @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate period,
+                                                                  @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.createGifticon(userId, store, period, file)));
+    }
+
+    @GetMapping("/{userId}")
+    @ApiOperation(value = "회원이 등록한 기프티콘 조회", notes = "<strong>유저 아이디</strong>를 받아" +
+            " <strong>기프티콘 정보</strong>를 반환한다.")
+
+    public ResponseEntity<? extends BasicResponse> getGifticonByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.getGifticonByUserId(userId)));
+    }
+
+    @DeleteMapping("/{userId}/{gifticonId}")
+    @ApiOperation(value = "회원이 선택한 기프티콘 삭제", notes = "<strong>유저 아이디와 기프티콘 아이디</strong>를 받아" +
+            " <strong>해당 기프티콘을 삭제</strong> 한다.")
+
+    public ResponseEntity<? extends BasicResponse> deleteGifticon(@PathVariable Long userId, @PathVariable Long gifticonId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.deleteGifticon(userId, gifticonId)));
     }
 
 }
