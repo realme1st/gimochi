@@ -21,6 +21,7 @@ import Config from 'react-native-config';
 function MypageScreen() {
   const dispatch = useAppDispatch();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  console.log(accessToken);
 
   useEffect(() => {
     axios
