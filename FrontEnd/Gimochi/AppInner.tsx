@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from './src/navigation/TabNavigation';
 import LoginScreen from './src/screen/LoginScreen';
+import AccessFriendsScreen from './src/screen/AccessFriendsScreen';
 import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -30,7 +31,7 @@ function AppInner() {
   const date = new Date();
   const [aToken, setAToken] = useState('');
   const loginCheck = async (): Promise<void> => {
-    const login = await AsyncStorage.getItem('login');
+    // const login = await AsyncStorage.getItem('login');
     const userId = await AsyncStorage.getItem('userId');
     const userNickname = await AsyncStorage.getItem('userNickname');
     const accessToken = await EncryptedStorage.getItem('accessToken');
@@ -59,7 +60,6 @@ function AppInner() {
       userSlice.actions.setLogin({
         accessToken: accessToken,
         accessTokenExpiresAt: accessTokenExpiresAt,
-        isLogin: login,
         userId: Number(userId),
         userNickname: userNickname,
       }),
@@ -102,10 +102,10 @@ function AppInner() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isUserId ? (
-          <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
-        ) : (
+        {!isUserId ? (
           <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>
+        ) : (
+          <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>
