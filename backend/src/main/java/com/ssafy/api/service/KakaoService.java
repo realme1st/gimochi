@@ -70,7 +70,7 @@ public class KakaoService {
 
 
     @Transactional
-    public User saveUser(OauthToken token) {
+    public UserLoginDto saveUser(OauthToken token) {
 
         KakaoProfile profile = findProfile(token.getAccess_token());
         Optional<User> user = userRepository.findByUserEmail(profile.getKakao_account().getEmail());
@@ -85,11 +85,24 @@ public class KakaoService {
                     .userSocialRefreshToken(token.getRefresh_token())
                     .build();
             userRepository.save(newUser);
-            return newUser;
+            UserLoginDto userLoginDto = new UserLoginDto();
+            userLoginDto.setUserEmail(newUser.getUserEmail());
+            userLoginDto.setUserNickname(newUser.getUserNickname());
+            userLoginDto.setUserSocialToken(newUser.getUserSocialToken());
+            userLoginDto.setUserSocialRefreshToken(newUser.getUserSocialRefreshToken());
+            userLoginDto.setNewUser(true);
+
+            return userLoginDto;
 
         } else {
             user.get().changeSocialTokenInfo(token.getAccess_token(),token.getRefresh_token());
-            return user.get();
+            UserLoginDto userLoginDto = new UserLoginDto();
+            userLoginDto.setUserEmail(user.get().getUserEmail());
+            userLoginDto.setUserNickname(user.get().getUserNickname());
+            userLoginDto.setUserSocialToken(user.get().getUserSocialToken());
+            userLoginDto.setUserSocialRefreshToken(user.get().getUserSocialRefreshToken());
+            userLoginDto.setNewUser(true);
+            return userLoginDto;
         }
     }
 
@@ -324,6 +337,7 @@ public class KakaoService {
         UserIdDto dto = new UserIdDto();
         try {
             dto = objectMapper.readValue(logoutResponse.getBody(), UserIdDto.class);
+            user.changeSocialTokenInfo(user.getUserSocialToken(),"expired");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
