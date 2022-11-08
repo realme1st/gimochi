@@ -2,12 +2,12 @@ import React from 'react';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import ChallengeMainScreen from '../screen/challenge/ChallengeMainScreen';
 import ChallengeDetailScreen from '../screen/challenge/ChallengeDetailScreen';
-import ChallengeCreateScreen from '../screen/challenge/ChallengeCreateScreen';
+import ChallengeCreateScreen1 from '../screen/challenge/ChallengeCreateScreen1';
 
 export type ChallengeStackParamList = {
   ChallengeMainScreen: undefined;
   ChallengeDetailScreen: undefined;
-  ChallengeCreateScreen: undefined;
+  ChallengeCreateScreen1: undefined;
 };
 
 const Challenge = createNativeStackNavigator<ChallengeStackParamList>();
@@ -34,8 +34,8 @@ function ChallengeNavigation() {
         options={{ title: '챌린지 상세보기' }}
       ></Challenge.Screen>
       <Challenge.Screen
-        name='ChallengeCreateScreen'
-        component={ChallengeCreateScreen}
+        name='ChallengeCreateScreen1'
+        component={ChallengeCreateScreen1}
         options={{ title: '챌린지 생성하기' }}
       ></Challenge.Screen>
     </Challenge.Navigator>
