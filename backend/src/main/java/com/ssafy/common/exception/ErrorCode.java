@@ -51,7 +51,8 @@ public enum ErrorCode {
     BOTH_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "두 사용자 모두 해당 챌린지에 없습니다." ),
     AUTH_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "투표 요청할 유저가 해당 챌린지에 없습니다." ),
     VOTE_USER_NOT_EXIST_CHALLENGE(HttpStatus.BAD_REQUEST, "투표를 요청한 유저가 해당 챌린지에 없습니다." ),
-    INVALID_AUTH_USER(HttpStatus.BAD_REQUEST, "해당 투표를 요청한 유저 본인이 아닙니다." );
+    INVALID_AUTH_USER(HttpStatus.BAD_REQUEST, "해당 투표를 요청한 유저 본인이 아닙니다." ),
+    CHALLENGEINVITE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대장 사용자입니다." ), ;
 
     private final HttpStatus httpStatus;
     private final String message;
