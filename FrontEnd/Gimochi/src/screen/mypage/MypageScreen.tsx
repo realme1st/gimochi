@@ -9,16 +9,16 @@ import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { logout, getProfile, unlink, KakaoProfile } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import userSlice from '../slices/user';
-import screenSlice from '../slices/screen';
-import reloadSlice from '../slices/reload';
-import { useAppDispatch } from '../store';
+import userSlice from '../../slices/user';
+import screenSlice from '../../slices/screen';
+import reloadSlice from '../../slices/reload';
+import { useAppDispatch } from '../../store';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/reducer';
+import { RootState } from '../../store/reducer';
 import axios from 'axios';
 import Config from 'react-native-config';
 
-function MypageScreen() {
+function MypageScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   console.log(accessToken);
@@ -31,7 +31,7 @@ function MypageScreen() {
         },
       })
       .then(function (response) {
-        console.log(response);
+        console.log(response.data.data.elements);
       })
       .catch(function (error) {
         console.log(error);
@@ -84,9 +84,16 @@ function MypageScreen() {
     setResult(message);
   };
 
+  const goFriendRecom = () => {
+    navigation.navigate('FriendRecomScreen');
+  };
+
   return (
     <View>
       <View style={styles.container}>
+        <TouchableOpacity style={styles.button} onPress={goFriendRecom}>
+          <Text style={styles.text}>친구목록</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => getKakaoProfile()}>
           <Text style={styles.text}>프로필 조회</Text>
         </TouchableOpacity>

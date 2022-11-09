@@ -20,6 +20,8 @@ function GifticonScreen() {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const userId = useSelector((state: RootState) => state.user.userId);
   console.log(preview);
+
+  // ImageCropPicker에서 crop된 사진을 resizing한 후 객체 형태(경로, 파일이름, 타입)로 이미지 파일 저장하는 메서드
   const onResponse = useCallback(async (response) => {
     console.log(response.width, response.height, response.exif);
     setPreview({ uri: `data:${response.mime};base64,${response.data}` });
@@ -44,6 +46,7 @@ function GifticonScreen() {
     });
   }, []);
 
+  // 갤러리에서 사진 파일을 골라서 crop하는 메서드
   const onChangeFile = useCallback(() => {
     return ImageCropPicker.openPicker({
       includeExif: true,
@@ -63,12 +66,12 @@ function GifticonScreen() {
     }
     console.log(preview);
     const formData = new FormData();
-    const info = { userId: userId, gifticonScore: 'testStore', gifticonPeriod: '2022-11-08' };
+    // const info = { userId: userId, gifticonScore: 'testStore', gifticonPeriod: '2022-11-08' };
     formData.append('file', image);
-    formData.append('gifticon', info);
+    // formData.append('gifticon', info);
     console.log(formData);
     await axios
-      .post(`${Config.API_URL}/gifticon/upload`, formData, {
+      .post(`${Config.API_URL}/gifticon/ocr/${userId}`, formData, {
         headers: {
           'content-type': 'multipart/form-data',
         },
