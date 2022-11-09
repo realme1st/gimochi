@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +29,22 @@ public class Challenge {
     private String challengeDescription;
 
     @Column(nullable = false,name="challenge_start_time")
-    private String challengeStartTime;
+    private LocalDate challengeStartTime;
 
     @Column(nullable = false,name="challenge_end_time")
-    private String challengeEndTime;
+    private LocalDate challengeEndTime;
 
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
 
     @Column(nullable = false,name="challenge_leader_name")
     private String challengeLeaderName;
+
+    @Column(name="challenge_reward_point")
+    private int challengeRewardPoint;
+
+    @Column(name="challenge_participant_point")
+    private int challengeParticipantPoint;
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
@@ -58,7 +65,8 @@ public class Challenge {
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, LocalDate challengeStartTime,
+                     LocalDate challengeEndTime, int challengeRewardType,String challengeLeaderName,int challengeRewardPoint,int challengeParticipantPoint) {
         this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
@@ -66,6 +74,8 @@ public class Challenge {
         this.challengeEndTime = challengeEndTime;
         this.challengeRewardType = challengeRewardType;
         this.challengeLeaderName = challengeLeaderName;
+        this.challengeRewardPoint = challengeRewardPoint;
+        this.challengeParticipantPoint = challengeParticipantPoint;
     }
 
 
