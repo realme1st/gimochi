@@ -1,10 +1,9 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.FollowReqDto;
+import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.repository.FriendsListRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

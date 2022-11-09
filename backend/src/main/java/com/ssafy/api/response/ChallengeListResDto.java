@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ChallengeListRes {
+public class ChallengeListResDto {
     private Long challengeId;
 
     private int successCnt;
@@ -12,7 +12,7 @@ public class ChallengeListRes {
     private String challengeName;
 
     @Builder
-    public ChallengeListRes(Long challengeId, int successCnt, String challengeName) {
+    public ChallengeListResDto(Long challengeId, int successCnt, String challengeName) {
         this.challengeId = challengeId;
         this.successCnt = successCnt;
         this.challengeName = challengeName;

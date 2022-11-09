@@ -1,4 +1,4 @@
-package com.ssafy.api.dto;
+package com.ssafy.api.request;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;

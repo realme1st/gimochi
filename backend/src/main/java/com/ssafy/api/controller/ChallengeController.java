@@ -2,12 +2,14 @@ package com.ssafy.api.controller;
 
 
 import com.ssafy.api.dto.*;
+import com.ssafy.api.request.ChallengeAuthReqDto;
+import com.ssafy.api.request.ChallengeInviteReqDto;
+import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

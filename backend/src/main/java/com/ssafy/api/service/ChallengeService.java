@@ -1,9 +1,12 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.*;
-import com.ssafy.api.response.ChallengeInviteRes;
-import com.ssafy.api.response.ChallengeListRes;
-import com.ssafy.api.response.UserListRes;
+import com.ssafy.api.request.ChallengeAuthReqDto;
+import com.ssafy.api.request.ChallengeInviteReqDto;
+import com.ssafy.api.request.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeInviteResDto;
+import com.ssafy.api.response.ChallengeListResDto;
+import com.ssafy.api.response.UserListResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.*;
@@ -82,41 +85,41 @@ public class ChallengeService {
     }
 
 
-    public List<UserListRes> findUserListByChallengeId(Long challengeId) {
+    public List<UserListResDto> findUserListByChallengeId(Long challengeId) {
 
         Challenge challenge = findChallengeByChallengeId(challengeId);
-        List<UserListRes> listRes = new ArrayList<>();
+        List<UserListResDto> listRes = new ArrayList<>();
         List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
 
         challengeInfoList.stream().forEach(challengeInfo -> {
-            UserListRes userListRes = UserListRes.builder()
+            UserListResDto userListResDto = UserListResDto.builder()
                     .userId(challengeInfo.getUser().getUserId())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
-            listRes.add(userListRes);
+            listRes.add(userListResDto);
         });
 
         return listRes;
     }
 
     //userId로 챌린지 List 가져오기
-    public List<ChallengeListRes> findChallengeListByUserId(Long userId) {
+    public List<ChallengeListResDto> findChallengeListByUserId(Long userId) {
 
         User user = findUserByUserId(userId);
         List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
-        List<ChallengeListRes> listRes = new ArrayList<>();
+        List<ChallengeListResDto> listRes = new ArrayList<>();
 
         userInfoList.stream().forEach(challengeInfo -> {
-            ChallengeListRes challengeListRes = ChallengeListRes.builder()
+            ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
                     .challengeName(challengeInfo.getChallenge().getChallengeTitle())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
-            listRes.add(challengeListRes);
+            listRes.add(challengeListResDto);
         });
         return listRes;
     }
@@ -160,7 +163,7 @@ public class ChallengeService {
 
     //vote table 생성
     @Transactional
-    public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
+    public List<ChallengeInviteResDto> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
         if (challengeInviteList.isEmpty()){
@@ -168,7 +171,7 @@ public class ChallengeService {
         }
         // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
         List<Long> challengeIdList = new ArrayList<>();
-        List<ChallengeInviteRes> result = new ArrayList<>();
+        List<ChallengeInviteResDto> result = new ArrayList<>();
 
         challengeInviteList.stream().forEach(challengeInvite -> {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
@@ -176,7 +179,7 @@ public class ChallengeService {
 
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
-            result.add(ChallengeInviteRes.builder()
+            result.add(ChallengeInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())
@@ -239,7 +242,7 @@ public class ChallengeService {
         findUserByUserId(updateChallengeAuthReqDto.getVoteUserId());
 
         // 두 사용자 모두 해당 챌린지에 속해있는지에 대한 유효성 검사
-        List<UserListRes> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
+        List<UserListResDto> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
         List<Long> userIdList = new ArrayList<>();
 
         userList.stream().forEach(list -> userIdList.add(list.getUserId()));

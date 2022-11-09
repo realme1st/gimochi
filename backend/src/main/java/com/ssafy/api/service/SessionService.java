@@ -1,7 +1,8 @@
 package com.ssafy.api.service;
 
-import com.ssafy.api.dto.SessionMessageReqDto;
-import com.ssafy.api.dto.SessionReqDto;
+import com.ssafy.api.request.SessionMessageReqDto;
+import com.ssafy.api.request.SessionReqDto;
+import com.ssafy.api.response.SessionResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.Session;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service("SessionService")
 @Transactional(readOnly = true)
@@ -35,26 +37,28 @@ public class SessionService {
      * return: 생성된 세션
      * */
     @Transactional
-    public Session createSession(SessionReqDto reqDto) {
+    public SessionResDto createSession(SessionReqDto reqDto) {
         // 유효한 사용자인지 검증
         User user = userRepository.findByUserId(reqDto.getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
         // 유효한 세션 타입인지 검증
         SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SESSION_TYPE));
-
         // Sesison 생성
-        Session session = Session.builder()
-                .user(user)
-                .name(reqDto.getName())
-                .sessionTypeId(reqDto.getSessionTypeId())
-                .expireTime(reqDto.getAnniversary().plusDays(7)) // 기념일 7일뒤 세션 만료
-                .anniversary(reqDto.getAnniversary())
-                .build();
+        Session session = SessionResDto.createSessionEntity(reqDto, user);
         log.info("세션 생성");
-        return sessionRepository.save(session);
+        // Response 생성
+        SessionResDto sessionResDto = null;
+        try{
+            Long sessionId = sessionRepository.save(session).getSessionId();
+            session.setSessionId(sessionId);
+            sessionResDto = SessionResDto.toDto(user, session);
+        }catch (IllegalArgumentException e){
+            throw new CustomException(ErrorCode.SESSION_SAVE_ERROR);
+        }
+        return sessionResDto;
     }
+
 
     /*
      * description: 세션 타입 조회
@@ -70,7 +74,8 @@ public class SessionService {
      * */
 
     public Session getSession(Long sessionId) {
-        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        return sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
     /*
@@ -79,7 +84,8 @@ public class SessionService {
      * @return : user가 작성한 세션 메세지 목록
      */
     public List<Session> getSessionByUserId(Long userId) {
-        return sessionRepository.findAllByUserUserIdOrderByAnniversary(userId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        return sessionRepository.findAllByUserUserIdOrderByAnniversary(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
 
     /*
@@ -142,7 +148,8 @@ public class SessionService {
      * return: 조회된 세션메세지 반환
      * */
     public SessionMessage getSessionMessageById(Long sessionMessageId) {
-        return sessionMessageRepository.findBySessionMessageId(sessionMessageId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
+        return sessionMessageRepository.findBySessionMessageId(sessionMessageId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
     }
 
     /*
@@ -150,7 +157,8 @@ public class SessionService {
      * return: 세션유효성 여부 반환
      * */
     public Session findSession(Long sessionId) {
-        return sessionRepository.findById(sessionId).orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        return sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }
     /*
      * description: Time이 유효한지 확인 (createTime < expireTime)

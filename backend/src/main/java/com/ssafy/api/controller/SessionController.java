@@ -1,10 +1,12 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.SessionMessageReqDto;
-import com.ssafy.api.dto.SessionReqDto;
+import com.ssafy.api.request.SessionMessageReqDto;
+import com.ssafy.api.request.SessionReqDto;
+import com.ssafy.api.response.SessionResDto;
 import com.ssafy.api.service.SessionService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
+import com.ssafy.db.entity.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public class SessionController {
     /*      Session      */
     @PostMapping()
     @ApiOperation(value = "세션 생성", notes = "<strong>세션 정보를 입력하여</strong> 세션을 만든다.")
-    public ResponseEntity<? extends BasicResponse> createSession(@RequestBody SessionReqDto sessionReqDto) {
+    public ResponseEntity<CommonResponseEntity<SessionResDto>> createSession(@RequestBody SessionReqDto sessionReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.createSession(sessionReqDto)));
     }
 
