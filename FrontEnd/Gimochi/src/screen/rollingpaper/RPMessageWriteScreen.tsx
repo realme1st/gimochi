@@ -70,6 +70,7 @@ function RPMessageWriteScreen({ route, navigation }) {
             placeholder='추카포카에 담아 보낼 말을 입력해주세요'
             value={text}
             onChangeText={setText}
+            multiline={true}
           ></Form>
         </FormContainer>
         <SubmitButton onPress={onSubmit}>

@@ -67,6 +67,7 @@ function RPWriteScreen({ navigation }) {
   };
 
   const onSubmit = () => {
+    // 정보 제대로 입력하지 않았을 때 alert띄워야
     axios
       .post(`${Config.API_URL}/session`, {
         anniversary: format(date, 'yyyy-MM-dd'),
@@ -98,7 +99,7 @@ function RPWriteScreen({ navigation }) {
         <DropdownContainer>
           {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
           <SelectDropdown
-            data={['생일', '졸업', '크리스마스', '설날', '사용자 정의']}
+            data={['생일', '졸업', '크리스마스', '사용자 정의']}
             defaultButtonText='테마를 선택해주세요'
             buttonTextStyle={{ fontFamily: 'Regular' }}
             rowTextStyle={{ fontFamily: 'Regular' }}
@@ -109,8 +110,8 @@ function RPWriteScreen({ navigation }) {
                 setTypeId(2);
               } else if (selectedItem == '크리스마스') {
                 setTypeId(3);
-              } else if (selectedItem == '설날') {
-                setTypeId(4);
+                // } else if (selectedItem == '설날') {
+                //   setTypeId(4);
               } else {
                 setTypeId(5);
               }

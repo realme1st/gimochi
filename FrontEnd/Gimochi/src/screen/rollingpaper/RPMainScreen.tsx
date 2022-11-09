@@ -13,7 +13,6 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useAppDispatch } from '../../store';
 import screenSlice from '../../slices/screen';
 
@@ -35,11 +34,6 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
       console.log('unmount');
       dispatch(screenSlice.actions.deleteScreen());
     };
-  }, []);
-
-  useEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    console.log(routeName);
   }, []);
 
   useEffect(() => {
