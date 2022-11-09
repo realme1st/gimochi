@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class ChallengeService {
     private final ChallengeInviteRepository challengeInviteRepository;
     private final VoteRepository voteRepository;
 
+
+
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto) {
 
@@ -42,10 +45,13 @@ public class ChallengeService {
                 .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
 
-                .challengeStartTime(challengeReqDto.getChallengeStartTime())
+                .challengeStartTime(LocalDate.now())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .challengeLeaderName(user.getUserNickname())
+                .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
+                .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
+                .challengeActive(challengeReqDto.getChallengeActive())
                 .build();
 
         challengeRepository.save(challenge);
@@ -202,11 +208,16 @@ public class ChallengeService {
                 .user(challengeInvite.getUser())
                 .successCnt(0)
                 .build());
+
         // ChallengeInvite 삭제
+
+        challenge.changeRewardPoint(challenge.getChallengeRewardPoint());
+
         challengeInviteRepository.delete(challengeInvite);
 
         return true;
     }
+
 
 
     @Transactional
@@ -298,6 +309,7 @@ public class ChallengeService {
     public User findUserByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
 
 }
 

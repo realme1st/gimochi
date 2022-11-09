@@ -50,5 +50,9 @@ public class Gifticon{
         this.gifticonPath = gifticonPath;
     }
 
+    public void changeGifticonPath(String path) {
+        this.gifticonPath = path;
+    }
+
 
 }

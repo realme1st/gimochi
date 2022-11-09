@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GifticonReqDto {
+public class GifticonInfoReqDto {
     @ApiModelProperty(name="회원 식별자", example="5")
     Long userId;
 

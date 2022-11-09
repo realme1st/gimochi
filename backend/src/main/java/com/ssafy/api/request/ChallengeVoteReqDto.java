@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class ChallengeVoteReqDto {
-    Long challengeInfoId;
-    Long challengeAuthId;
-    Long authUserId;
-    Long voteUserId;
+    private Long challengeInfoId;
+    private Long challengeAuthId;
+    private Long authUserId;
+    private Long voteUserId;
 }

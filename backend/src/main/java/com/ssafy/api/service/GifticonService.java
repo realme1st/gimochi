@@ -1,7 +1,7 @@
 package com.ssafy.api.service;
 
 import com.google.protobuf.ByteString;
-import com.ssafy.api.dto.GifticonReqDto;
+import com.ssafy.api.dto.GifticonInfoReqDto;
 import com.ssafy.api.dto.OcrResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -42,7 +42,7 @@ public class GifticonService {
         try {
             VisionApiUtil visionApiUtil = new VisionApiUtil();
             ByteString imgBytes = ByteString.readFrom(multipartFile.getInputStream());
-            List<String> words = visionApiUtil.detectText2(imgBytes);
+            List<String> words = visionApiUtil.detectText(imgBytes);
             for(String s : words) log.info(s);
 
             /*
@@ -51,7 +51,7 @@ public class GifticonService {
 
             OcrResDto ocrResDto = OcrResDto.builder()
                     .user(user)
-                    .gifticonStore("바나프레소(아직 미완성)")
+                    .gifticonStore(words.get(0))
                     .gifticonPeriod("2022-12-31(아직 미완성)")
                     .build();
 
@@ -65,9 +65,32 @@ public class GifticonService {
     }
 
     @Transactional
-    public Gifticon createGifticon(GifticonReqDto gifticonReqDto, MultipartFile multipartFile) {
+    public Gifticon createGifticonInfo(GifticonInfoReqDto gifticonInfoReqDto) {
 
-        User user = userRepository.findByUserId(gifticonReqDto.getUserId()).
+        User user = userRepository.findByUserId(gifticonInfoReqDto.getUserId()).
+                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Gifticon gifticon = Gifticon.builder()
+                .user(user)
+                .gifticonStore(gifticonInfoReqDto.getGifticonStore())
+                .gifticonPeriod(LocalDate.parse(gifticonInfoReqDto.getGifticonPeriod()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .gifticonUsed(false)
+                .gifticonPath("notAllocated")
+                .build();
+
+        return gifticonRepository.save(gifticon);
+    }
+
+    @Transactional
+    public Gifticon createGifticonImg(Long gifticonId, MultipartFile multipartFile) {
+
+        // 기프티콘 존재하는지 확인
+        Gifticon gifticon = gifticonRepository.findById(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+
+        // 유저 존재하는지 확인
+        User user = userRepository.findByUserId(gifticon.getUser().getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String url = null;
@@ -78,14 +101,7 @@ public class GifticonService {
             log.error(e.getMessage());
         }
 
-        Gifticon gifticon = Gifticon.builder()
-                .user(user)
-                .gifticonStore(gifticonReqDto.getGifticonStore())
-                .gifticonPeriod(LocalDate.parse(gifticonReqDto.getGifticonPeriod()
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-                .gifticonUsed(false)
-                .gifticonPath(url)
-                .build();
+        gifticon.changeGifticonPath(url);
 
         return gifticonRepository.save(gifticon);
     }
@@ -124,5 +140,34 @@ public class GifticonService {
         }
         return false;
     }
+
+/*
+ * 파일과 reqDto 동시에 받아서 처리하는 서비스 로직 (나중에 다시 해보자)
+    @Transactional
+    public Gifticon createGifticon(GifticonReqDto gifticonReqDto, MultipartFile multipartFile) {
+
+        User user = userRepository.findByUserId(gifticonReqDto.getUserId()).
+                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        String url = null;
+
+        try {
+            url = amazonS3Util.upload(multipartFile, user.getUserSocialToken());
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        Gifticon gifticon = Gifticon.builder()
+                .user(user)
+                .gifticonStore(gifticonReqDto.getGifticonStore())
+                .gifticonPeriod(LocalDate.parse(gifticonReqDto.getGifticonPeriod()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .gifticonUsed(false)
+                .gifticonPath(url)
+                .build();
+
+        return gifticonRepository.save(gifticon);
+    }
+*/
 
 }

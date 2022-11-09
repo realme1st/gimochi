@@ -23,9 +23,17 @@ public class FriendsList{
     @Column(name = "following_id", nullable = false)
     private Long followingId;
 
+    @Column(name = "is_friend", nullable = false)
+    private boolean isFriend;
+
     @Builder
-    public FriendsList(Long followerId, Long followingId) {
+    public FriendsList(Long followerId, Long followingId, boolean isFriend) {
         this.followerId = followerId;
         this.followingId = followingId;
+        this.isFriend = isFriend;
+    }
+
+    public void acceptRequest(boolean isFriend){
+        this.isFriend = isFriend;
     }
 }
