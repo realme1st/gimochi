@@ -40,10 +40,10 @@ public class Challenge {
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
 
-    @Column(name="challenge_reward_point")
+    @Column(nullable = false,name="challenge_reward_point")
     private int challengeRewardPoint;
 
-    @Column(name="challenge_participant_point")
+    @Column(nullable = false,name="challenge_participant_point")
     private int challengeParticipantPoint;
 
     @OneToMany(mappedBy = "challenge")
