@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
+import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.MultiMessageReqDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
 import com.ssafy.db.entity.Gifticon;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -66,14 +68,17 @@ public class NotificationService {
 
 
     // 알림 보내기
-    public boolean sendToUserList(MultiMessageReqDto multiMessageReqDto, List<User> userList) {
+    public boolean sendToUserList(MultiMessageReqDto multiMessageReqDto, List<FriendDto> userList) {
 
         List<String> registrationTokens = new ArrayList<>();
         User sender = userRepository.findByUserId(multiMessageReqDto.getUserId()).get();
         int type = multiMessageReqDto.getType();
 
-        for (User user : userList) {
-            registrationTokens.add(user.getUserFbToken());
+        for (FriendDto friend : userList) {
+            Optional<User> user = userRepository.findByUserId(friend.getUserId());
+            if(user.isPresent()){
+                registrationTokens.add(user.get().getUserFbToken());
+            }
         }
 
         String title = setMultiMessageTitle(type);
@@ -193,7 +198,11 @@ public class NotificationService {
     public String setSingleMessageTitle(int type) {
         if (type == 1) {
             return "친구가 챌린지에 초대했어요!";
-        } else {
+        }else if(type == 2){
+            return "친구 요청이 왔어요!";
+        }else if(type == 3){
+            return "친구가 요청을 수락했어요!";
+        }else {
             return "";
         }
     }
@@ -201,6 +210,10 @@ public class NotificationService {
     public String setSingleMessageBody(String name, int type) {
         if (type == 1) {
             return name + "님이 챌린지에 초대하셨습니다. 수락을 눌러 참여하세요.";
+        }else if(type == 2){
+            return name + "님이 친구 요청을 보냈습니다.";
+        }else if(type == 3){
+            return name + "님이 친구 요청을 수락했습니다.";
         } else {
             return "";
         }
