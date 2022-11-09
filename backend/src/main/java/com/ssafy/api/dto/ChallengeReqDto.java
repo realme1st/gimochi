@@ -15,6 +15,8 @@ public class ChallengeReqDto {
     @ApiModelProperty(name="챌린지 내용", example="매일매일 커밋하기")
     String challengeDescription;
 
+    @ApiModelProperty(name="챌린지 방장이름", example="홍길동")
+    String challengeLeaderName;
 
     // 프론트에서 시간 처리 방식을 정함(String or localDateTime)
     @ApiModelProperty(name="챌린지 시작 시간", example="2022-10-28")
@@ -26,7 +28,7 @@ public class ChallengeReqDto {
     @ApiModelProperty(name="챌린지 보상 타입", example="1")
     int challengeRewardType;
 
-    @ApiModelProperty(name="챌린지 성공 총 보상 포인트", example="100")
+    @ApiModelProperty(name="챌린지 성공 총 보상 포인트", example="0")
     int challengeRewardPoint;
 
     @ApiModelProperty(name="챌린지 참가비 포인트", example="10")
