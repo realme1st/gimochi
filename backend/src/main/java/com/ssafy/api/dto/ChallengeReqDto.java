@@ -31,4 +31,7 @@ public class ChallengeReqDto {
 
     @ApiModelProperty(name="챌린지 참가비 포인트", example="10")
     private int challengeParticipantPoint;
+
+    @ApiModelProperty(name="챌린지 활성화 여부", example="0")
+    private int challengeActive;
 }

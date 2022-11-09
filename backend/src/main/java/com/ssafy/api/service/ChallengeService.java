@@ -48,6 +48,7 @@ public class ChallengeService {
                 .challengeLeaderName(user.getUserNickname())
                 .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
                 .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
+                .challengeActive(challengeReqDto.getChallengeActive())
                 .build();
 
         challengeRepository.save(challenge);
