@@ -27,6 +27,8 @@ public class ChallengeService {
     private final ChallengeInviteRepository challengeInviteRepository;
     private final VoteRepository voteRepository;
 
+
+
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto) {
 
@@ -43,6 +45,8 @@ public class ChallengeService {
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .challengeLeaderName(user.getUserNickname())
+                .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
+                .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
                 .build();
 
         challengeRepository.save(challenge);
@@ -199,11 +203,19 @@ public class ChallengeService {
                 .user(challengeInvite.getUser())
                 .successCnt(0)
                 .build());
+
         // ChallengeInvite 삭제
         challengeInviteRepository.delete(challengeInvite);
 
+        updateChallenge(challenge);
+
+        //challenge 수정
+
+
+        //challengeRepository.save(challenge);
         return true;
     }
+
 
 
     @Transactional
@@ -296,5 +308,20 @@ public class ChallengeService {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public void updateChallenge(Challenge challenge){
+        Challenge updateChallenge = Challenge.builder()
+                .challengeTitle(challenge.getChallengeTitle())
+                .challengeLeaderId(challenge.getChallengeLeaderId())
+                .challengeDescription(challenge.getChallengeDescription())
+                .challengeLeaderName(challenge.getChallengeLeaderName())
+                .challengeStartTime(challenge.getChallengeStartTime())
+                .challengeEndTime(challenge.getChallengeEndTime())
+                .challengeRewardType(challenge.getChallengeRewardType())
+                .challengeRewardPoint(challenge.changeRewardPoint(challenge.getChallengeRewardPoint()))
+                .challengeParticipantPoint(challenge.getChallengeParticipantPoint())
+                .build();
+
+
+    }
 }
 

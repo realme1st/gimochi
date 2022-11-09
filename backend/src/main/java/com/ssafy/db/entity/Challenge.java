@@ -22,6 +22,9 @@ public class Challenge {
     @Column(nullable = false,name="challenge_leader_id")
     private Long challengeLeaderId;
 
+    @Column(nullable=false,name="challenge_leader_name")
+    private String challengeLeaderName;
+
     @Column(nullable = false,name="challenge_title")
     private String challengeTitle;
 
@@ -36,9 +39,6 @@ public class Challenge {
 
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
-
-    @Column(nullable = false,name="challenge_leader_name")
-    private String challengeLeaderName;
 
     @Column(name="challenge_reward_point")
     private int challengeRewardPoint;
@@ -97,4 +97,10 @@ public class Challenge {
         }
 
     }
+
+    public int changeRewardPoint(int challengeRewardPoint){
+        this.challengeRewardPoint=challengeRewardPoint+getChallengeParticipantPoint();
+        return this.challengeRewardPoint;
+    }
 }
+
