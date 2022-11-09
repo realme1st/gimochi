@@ -33,7 +33,6 @@ public class Challenge {
 
     @Column(nullable = false,name="challenge_start_time")
     private LocalDate challengeStartTime;
-
     @Column(nullable = false,name="challenge_end_time")
     private LocalDate challengeEndTime;
 
