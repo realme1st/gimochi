@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ChallengeService {
                 .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
 
-                .challengeStartTime(challengeReqDto.getChallengeStartTime())
+                .challengeStartTime(LocalDate.now())
                 .challengeEndTime(challengeReqDto.getChallengeEndTime())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .challengeLeaderName(user.getUserNickname())

@@ -199,7 +199,7 @@ public class KakaoService {
                     Optional<User> user = userRepository.findByUserKakaoId(friend.getId());
                     FriendDto friendDto = null;
                     if(user.isPresent()){
-                        List<User> userList = userService.getFollowerList(user.get().getUserId());
+                        List<FriendDto> userList = userService.getFollowerList(user.get().getUserId());
 
                         if(userList.stream().anyMatch(el-> el.getUserId() == me.get().getUserId())){
                             friendDto = FriendDto.builder()
