@@ -162,14 +162,49 @@ public class UserService {
 		List<FriendDto> friendDtoList = new ArrayList<>();
 		friendDtoList = friendsList.stream().map(friend ->{
 			User user = userRepository.findByUserId(friend.getFollowerId()).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
-			FriendDto friendDto = FriendDto.builder()
-					.userId(friend.getFollowerId())
-					.userName(user.getUserNickname())
-					.isFriend(friend.isFriend())
-					.build();
-			return friendDto;
+			if(friend.isFriend()){
+				FriendDto friendDto = FriendDto.builder()
+						.userId(friend.getFollowerId())
+						.userName(user.getUserNickname())
+						.isFriend(friend.isFriend())
+						.build();
+				return friendDto;
+			}else{
+				return null;
+			}
+		}).collect(Collectors.toList());
+		friendDtoList = friendDtoList.stream().filter(el-> el != null).collect(Collectors.toList());
+		return friendDtoList;
+
+	}
+
+	/*
+	 * description : 팔로워 목록을 불러오는 메소드
+	 * @param userId : 확인하고자 하는 사용자의 id
+	 * @return List<User> : user를 팔로우 하고있는 사용자들의 목록(리스트)
+	 * */
+	public List<FriendDto> getFollowRequestList(Long userId) {
+		// 유효한 user인지 확인
+		isVaildUser(userId);
+		// 팔로워 리스트 조회
+		List<User> followerList = new ArrayList<>();
+		List<FriendsList> friendsList = friendsListRepository.findAllByFollowingId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+		List<FriendDto> friendDtoList = new ArrayList<>();
+		friendDtoList = friendsList.stream().map(friend ->{
+			User user = userRepository.findByUserId(friend.getFollowerId()).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+			if(!friend.isFriend()){
+				FriendDto friendDto = FriendDto.builder()
+						.userId(friend.getFollowerId())
+						.userName(user.getUserNickname())
+						.isFriend(friend.isFriend())
+						.build();
+				return friendDto;
+			}else{
+				return null;
+			}
 		}).collect(Collectors.toList());
 
+		friendDtoList = friendDtoList.stream().filter(el-> el != null).collect(Collectors.toList());
 		return friendDtoList;
 
 	}
