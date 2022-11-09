@@ -2,6 +2,8 @@ package com.ssafy.api.service;
 
 import com.ssafy.api.request.SessionMessageReqDto;
 import com.ssafy.api.request.SessionReqDto;
+import com.ssafy.api.response.SessionDetailResDto;
+import com.ssafy.api.response.SessionMessageResDto;
 import com.ssafy.api.response.SessionResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service("SessionService")
 @Transactional(readOnly = true)
@@ -73,9 +74,20 @@ public class SessionService {
      * return: Session
      * */
 
-    public Session getSession(Long sessionId) {
-        return sessionRepository.findById(sessionId)
+    public SessionDetailResDto getSession(Long sessionId) {
+        // Sesison 조회
+        Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+
+        return SessionDetailResDto.builder()
+                .sessionId(session.getSessionId())
+                .name(session.getName())
+                .sessionTypeId(session.getSessionTypeId())
+                .expireTime(session.getExpireTime())
+                .anniversary(session.getAnniversary())
+                .sessionMessageResDtoList(SessionMessageResDto.toDtoList(sessionMessageRepository.findMessageList(sessionId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND))))
+                .build();
     }
 
     /*
@@ -84,6 +96,7 @@ public class SessionService {
      * @return : user가 작성한 세션 메세지 목록
      */
     public List<Session> getSessionByUserId(Long userId) {
+
         return sessionRepository.findAllByUserUserIdOrderByAnniversary(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
     }

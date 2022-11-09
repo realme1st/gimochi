@@ -1,9 +1,7 @@
 package com.ssafy.api.response;
 
 import com.ssafy.api.request.SessionReqDto;
-import com.ssafy.common.response.BasicResponse;
 import com.ssafy.db.entity.Session;
-import com.ssafy.db.entity.SessionType;
 import com.ssafy.db.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,8 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SessionResDto {
     private Long userId;
-    private String name;
 
+    private String name;
     private Long sessionId;
     private Long sessionTypeId;
     private LocalDate expireTime;
@@ -35,7 +33,6 @@ public class SessionResDto {
 
     public static Session createSessionEntity(SessionReqDto sessionReqDto, User user){
         return Session.builder()
-                .name(sessionReqDto.getName())
                 .anniversary(sessionReqDto.getAnniversary())
                 .expireTime(sessionReqDto.getAnniversary().plusDays(7))
                 .user(user)
@@ -46,10 +43,11 @@ public class SessionResDto {
         // userId + name , sessionTypeId + anniversary 를 각 객체에서 받아와 파라미터를 줄여라
         return SessionResDto.builder()
                 .userId(user.getUserId())
-                .name(user.getUserNickname())
+                .name(session.getName())
                 .sessionId(session.getSessionId())
                 .sessionTypeId(session.getSessionTypeId())
                 .anniversary(session.getAnniversary())
                 .build();
     }
+
 }

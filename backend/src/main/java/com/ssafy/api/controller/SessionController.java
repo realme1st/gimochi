@@ -2,11 +2,11 @@ package com.ssafy.api.controller;
 
 import com.ssafy.api.request.SessionMessageReqDto;
 import com.ssafy.api.request.SessionReqDto;
+import com.ssafy.api.response.SessionDetailResDto;
 import com.ssafy.api.response.SessionResDto;
 import com.ssafy.api.service.SessionService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.entity.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class SessionController {
 
     @GetMapping("/{sessionId}")
     @ApiOperation(value = "sessionId 기반 세션 조회", notes = "<strong>세션 id를 입력하여</strong> 세션을 조회한다.")
-    public ResponseEntity<? extends BasicResponse> getSession(@PathVariable Long sessionId) {
+    public ResponseEntity<CommonResponseEntity<SessionDetailResDto>> getSession(@PathVariable Long sessionId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSession(sessionId)));
     }
 
