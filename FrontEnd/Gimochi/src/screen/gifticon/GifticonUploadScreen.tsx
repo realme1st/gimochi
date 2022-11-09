@@ -12,11 +12,11 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/reducer';
+import { RootState } from '../../store/reducer';
 import Config from 'react-native-config';
-import DismissKeyboardView from '../components/DismissKeyboardView';
+import DismissKeyboardView from '../../components/DismissKeyboardView';
 
-function GifticonScreen() {
+function GifticonUploadScreen() {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
   const [preview, setPreview] = useState<{ uri: string }>();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
@@ -148,4 +148,4 @@ function GifticonScreen() {
   );
 }
 
-export default GifticonScreen;
+export default GifticonUploadScreen;

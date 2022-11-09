@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MypageScreen from '../screen/mypage/MypageScreen';
 import FriendRecomScreen from '../screen/mypage/FriendRecomScreen';
 

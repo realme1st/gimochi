@@ -8,6 +8,8 @@ import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
+import NotificationScreen from '../screen/NotificationScreen';
+import { Icon } from '@rneui/themed';
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
@@ -16,6 +18,7 @@ export type HomeStackParamList = {
   PlayScreen: undefined;
   RollingpaperScreen: undefined;
   ScheduleScreen: undefined;
+  NotificationScreen: undefined;
   HomeModal: undefined;
 };
 export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeModal'>;
@@ -48,6 +51,14 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         component={HomeScreen}
         options={{
           title: '기모치',
+          headerRight: () => (
+            <Icon
+              name='bell'
+              type='evilicon'
+              onPress={() => navigation.navigate('NotificationScreen')}
+              size={30}
+            />
+          ),
         }}
       ></Home.Screen>
       <Home.Screen
@@ -55,6 +66,14 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         component={AttendanceScreen}
         options={{
           title: '출석 체크',
+          headerRight: () => (
+            <Icon
+              name='bell'
+              type='evilicon'
+              onPress={() => navigation.navigate('NotificationScreen')}
+              size={30}
+            />
+          ),
         }}
       ></Home.Screen>
       <Home.Screen
@@ -71,7 +90,17 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
       <Home.Screen
         name='ScheduleScreen'
         component={ScheduleScreen}
-        options={{ title: '일정 관리' }}
+        options={{
+          title: '일정 관리',
+          headerRight: () => (
+            <Icon
+              name='bell'
+              type='evilicon'
+              onPress={() => navigation.navigate('NotificationScreen')}
+              size={30}
+            />
+          ),
+        }}
       ></Home.Screen>
       <Home.Screen
         name='HomeModal'
@@ -81,6 +110,11 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
           headerShown: false,
           gestureEnabled: true,
         }}
+      ></Home.Screen>
+      <Home.Screen
+        name='NotificationScreen'
+        component={NotificationScreen}
+        options={{ title: '알림' }}
       ></Home.Screen>
     </Home.Navigator>
   );

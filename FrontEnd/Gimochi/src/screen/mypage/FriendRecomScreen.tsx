@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
@@ -24,17 +26,17 @@ function FriendRecomScreen() {
         },
       })
       .then(function (response) {
-        console.log(response);
-        setFriends(response.data.data.elements);
+        console.log(response.data.data);
+        setFriends(response.data.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   }, [reload]);
 
-  const addFriend = async (id: number) => {
+  const requestFriend = async (id: number) => {
     await axios
-      .post(`${Config.API_URL}/user/follow`, { followerUserId: userId, followingUserId: id })
+      .post(`${Config.API_URL}/user/follow-request`, { followerUserId: userId, followingUserId: id })
       .then(function (response) {
         console.log(response);
         dispatch(
@@ -51,7 +53,14 @@ function FriendRecomScreen() {
     <EntireContainer>
       <Text>알 수도 있는 친구들</Text>
       {friends.map((friend, index) => (
-        <Text key={index}>{friend.profile_nickname}</Text>
+        <View key={index}>
+          <Text>{friend.userName}</Text>
+          {!friend.friend && (
+            <TouchableOpacity onPress={() => requestFriend(friend.userId)}>
+              <Text>친구요청</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       ))}
     </EntireContainer>
   );
