@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/* SessionId 기반 Session 정보 조회 결과 */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SessionDetailResDto {
@@ -31,7 +32,7 @@ public class SessionDetailResDto {
         this.sessionMessageResDtoList = sessionMessageResDtoList;
     }
 
-    public static SessionDetailResDto toDto(User user, Session session, List<SessionMessage> mList){
+    public static SessionDetailResDto toDto(Session session, List<SessionMessage> mList){
         // userId + name , sessionTypeId + anniversary 를 각 객체에서 받아와 파라미터를 줄여라
         return SessionDetailResDto.builder()
                 .sessionId(session.getSessionId())

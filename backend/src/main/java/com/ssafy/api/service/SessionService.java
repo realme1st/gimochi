@@ -3,6 +3,7 @@ package com.ssafy.api.service;
 import com.ssafy.api.request.SessionMessageReqDto;
 import com.ssafy.api.request.SessionReqDto;
 import com.ssafy.api.response.SessionDetailResDto;
+import com.ssafy.api.response.SessionDetailListResDto;
 import com.ssafy.api.response.SessionMessageResDto;
 import com.ssafy.api.response.SessionResDto;
 import com.ssafy.common.exception.CustomException;
@@ -78,16 +79,9 @@ public class SessionService {
         // Sesison 조회
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        List<SessionMessage> sessionMessageList = session.getSessionMessagesList();
 
-        return SessionDetailResDto.builder()
-                .sessionId(session.getSessionId())
-                .name(session.getName())
-                .sessionTypeId(session.getSessionTypeId())
-                .expireTime(session.getExpireTime())
-                .anniversary(session.getAnniversary())
-                .sessionMessageResDtoList(SessionMessageResDto.toDtoList(sessionMessageRepository.findMessageList(sessionId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND))))
-                .build();
+        return SessionDetailResDto.toDto(session, sessionMessageList);
     }
 
     /*
@@ -95,10 +89,11 @@ public class SessionService {
      * @param : userId - 메세지를 보낸 유저의 id
      * @return : user가 작성한 세션 메세지 목록
      */
-    public List<Session> getSessionByUserId(Long userId) {
 
-        return sessionRepository.findAllByUserUserIdOrderByAnniversary(userId)
+    public SessionDetailListResDto getSessionByUserId(Long userId) {
+        List<Session> sessionList = sessionRepository.findAllByUserUserIdOrderByAnniversary(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_NOT_FOUND));
+        return new SessionDetailListResDto(SessionDetailListResDto.toDtoList(sessionList));
     }
 
     /*
@@ -121,10 +116,10 @@ public class SessionService {
      * description: sessionId에 해당하는 세션메세지 리스트 조회
      * return: 세션메세지 리스트 반환
      * */
-    public List<SessionMessage> getSessionMessage(Long sessionId) {
+    public List<SessionMessageResDto> getSessionMessage(Long sessionId) {
         Session session = findSession(sessionId);
         List<SessionMessage> sessionMessageList = session.getSessionMessagesList();
-        return sessionMessageList;
+        return SessionMessageResDto.toDtoList(sessionMessageList);
     }
 
     /*
@@ -153,7 +148,6 @@ public class SessionService {
 
         // sessionMessage 저장
         sessionMessageRepository.save(sessionMessage);
-
         return sessionMessage;
     }
     /*
