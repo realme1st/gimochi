@@ -4,9 +4,9 @@ import { View, Image, TouchableOpacity } from 'react-native';
 import { getFocusedRouteNameFromRoute, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MypageScreen from '../screen/MypageScreen';
-import GifticonScreen from '../screen/GifticonScreen';
 import HomeNavigation from './HomeNavigation';
+import MypageNavigation, { MypageStackParamList } from './MypageNavigation';
+import GifticonNavigation, { GifticonStackParamList } from './GifticonNavigation';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBarcode, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
 import { HomeStackParamList } from './HomeNavigation';
@@ -14,13 +14,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducer';
 
 type TabParamList = {
-  GifticonScreen: undefined;
-  MypageScreen: undefined;
+  Gifticon: NavigatorScreenParams<GifticonStackParamList>;
+  Mypage: NavigatorScreenParams<MypageStackParamList>;
   Main: NavigatorScreenParams<HomeStackParamList>;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
 type HomeStackScreenProps = NativeStackScreenProps<HomeStackParamList>;
+// type MypageStackScreenProps = NativeStackScreenProps<MypageStackParamList>;
 
 function TabNavigation({ navigation, route }: HomeStackScreenProps) {
   // 화면에 보여주는 화면의 name값 받아오기
@@ -43,10 +44,10 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
       }}
     >
       <Tab.Screen
-        name='GifticonScreen'
-        component={GifticonScreen}
+        name='Gifticon'
+        component={GifticonNavigation}
         options={{
-          title: '티콘모아',
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View>
               <FontAwesomeIcon icon={faBarcode} size={30} color={focused ? '#ffa401' : '#686868'} />
@@ -122,10 +123,10 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
         }}
       ></Tab.Screen>
       <Tab.Screen
-        name='MypageScreen'
-        component={MypageScreen}
+        name='Mypage'
+        component={MypageNavigation}
         options={{
-          title: '마이페이지',
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View>
               <FontAwesomeIcon icon={faUser} size={30} color={focused ? '#ffa401' : '#686868'} />

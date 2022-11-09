@@ -4,12 +4,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
-import { List } from 'reselect/es/types';
 import Modal from 'react-native-modal';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -81,35 +80,44 @@ function RPDetailScreen({ navigation, route }) {
 
   return (
     <RPDetailContainer>
-      <Text>{sessionId}번 추카포카</Text>
-      <MessageListContainer>
-        {messageList.map((message, index) => (
-          <MessageItemButton key={index} onPress={() => goMessageDetail(index)}>
-            <Text>{index}번 메시지</Text>
-          </MessageItemButton>
-        ))}
-      </MessageListContainer>
-      <CreateButton onPress={onPress}>
-        <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
-      </CreateButton>
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={modal}
-        // presentationStyle={'pageSheet'}
-        onRequestClose={() => {
-          // setModalVisible(!modalVisible);
-          setModal(false);
-        }}
-        onBackdropPress={() => setModal(false)}
+      <ImageBackground
+        source={require('../../assets/images/birthday1.jpg')}
+        style={{ width: '100%', height: '100%', opacity: 0.5 }}
       >
-        <ModalContainer>
-          <ModalText>{nickname}님이 보낸 선물</ModalText>
-          <ModalText>대충 선물</ModalText>
-          <ModalText>{nickname}님이 보낸 메시지</ModalText>
-          <ModalText>{text}</ModalText>
-        </ModalContainer>
-      </Modal>
+        <Text>{sessionId}번 추카포카</Text>
+        <MessageListContainer>
+          {messageList.map((message, index) => (
+            <MessageItemButton key={index} onPress={() => goMessageDetail(index)}>
+              <Text>{index}번 메시지</Text>
+            </MessageItemButton>
+          ))}
+        </MessageListContainer>
+        <CreateButton onPress={onPress}>
+          <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
+        </CreateButton>
+        <Modal
+          animationType='fade'
+          transparent={true}
+          visible={modal}
+          // presentationStyle={'pageSheet'}
+          onRequestClose={() => {
+            // setModalVisible(!modalVisible);
+            setModal(false);
+          }}
+          onBackdropPress={() => setModal(false)}
+        >
+          <ModalContainer>
+            <ModalTitleText>{nickname}님이 보낸 선물</ModalTitleText>
+            <ModalGifticonContainer>
+              <ModalText>대충 선물</ModalText>
+            </ModalGifticonContainer>
+            <ModalTitleText>{nickname}님이 보낸 메시지</ModalTitleText>
+            <ModalTextContainer>
+              <ModalText>{text}</ModalText>
+            </ModalTextContainer>
+          </ModalContainer>
+        </Modal>
+      </ImageBackground>
     </RPDetailContainer>
   );
 }
@@ -132,17 +140,38 @@ const CreateButton = styled.TouchableOpacity`
 const ModalContainer = styled.View`
   margin: 15%;
   width: 70%;
-  height: 70%;
+  height: 65%;
   background-color: #ffe7bc;
   border-radius: 15px;
   border: 1px solid #000;
   align-items: center;
 `;
 
-const ModalText = styled.Text`
+const ModalTitleText = styled.Text`
   margin: 5% auto 5% 10%;
   font-family: 'Regular';
   font-size: 15px;
+`;
+
+const ModalTextContainer = styled.View`
+  background-color: #ffffff;
+  width: 80%;
+  height: 60%;
+  border-radius: 10px;
+`;
+
+const ModalGifticonContainer = styled.View`
+  background-color: #ffffff;
+  width: 80%;
+  border-radius: 10px;
+  height: 10%;
+  justify-content: center;
+`;
+
+const ModalText = styled.Text`
+  font-family: 'Regular';
+  font-size: 10px;
+  margin: 5%;
 `;
 
 export default RPDetailScreen;
