@@ -1,12 +1,12 @@
 package com.ssafy.api.controller;
 
+import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.MultiMessageReqDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
 import com.ssafy.api.service.NotificationService;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.entity.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class NotificationController {
     @PostMapping("/message/muliti")
     @ApiOperation(value = "여러 디바이스에 메세지 전송", notes = "알림 타입에 따른 단체 알림 전송\n1 : 추카포카함 개설")
     public ResponseEntity<? extends BasicResponse> sendMultiMessage(@RequestBody MultiMessageReqDto multiMessageReqDto){
-        List<User> userList = userService.getFollowerList(multiMessageReqDto.getUserId());
+        List<FriendDto> userList = userService.getFollowerList(multiMessageReqDto.getUserId());
         return ResponseEntity.ok().body(new CommonResponseEntity<>(notificationService.sendToUserList(multiMessageReqDto, userList)));
     }
 

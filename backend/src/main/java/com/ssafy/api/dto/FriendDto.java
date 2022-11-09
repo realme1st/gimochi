@@ -7,7 +7,6 @@ import lombok.Getter;
 public class FriendDto {
     private String userName;
     private Long userId;
-
     private boolean isFriend;
 
     @Builder
