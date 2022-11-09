@@ -4,7 +4,6 @@ import com.ssafy.api.dto.FollowReqDto;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.repository.FriendsListRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,25 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     // 팔로우
-    @PostMapping("/follow")
-    @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우", notes = "팔로우")
-    public ResponseEntity<? extends BasicResponse> follow(@Validated @RequestBody FollowReqDto followReqDto) {
+    @PostMapping("/follow-request")
+    @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)에게 친구 요청 전송", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> followRequest(@Validated @RequestBody FollowReqDto followReqDto) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new CommonResponseEntity<>(userService.follow(followReqDto)));
+                .body(new CommonResponseEntity<>(userService.followRequest(followReqDto)));
+    }
+
+    @PostMapping("/follow-accept")
+    @ApiOperation(value = "followingId(팔로잉)이 followerId(팔로워)의 친구 요청 수락", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> acceptFollow(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.acceptFollow(followReqDto)));
+    }
+
+    @PostMapping("/follow-reject")
+    @ApiOperation(value = "followingId(팔로잉)이 followerId(팔로워)의 친구 요청 거절", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> rejectFollow(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.rejectFollow(followReqDto)));
     }
 
     // userId를 기반으로 본인이 팔로우 한 목록 조회

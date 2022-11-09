@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.api.dto.*;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,15 +18,19 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("kakaoService")
+@RequiredArgsConstructor
 @Slf4j
 //@Transactional(readOnly = true)
 public class KakaoService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     public OauthToken getAccessToken(String code) {
 
@@ -162,7 +169,7 @@ public class KakaoService {
 
     }
 
-    public KakaoFriends getKakaoFriends(String token) {
+    public List<FriendDto> getKakaoFriends(String token) {
 
         RestTemplate rt = new RestTemplate();
 
@@ -181,14 +188,42 @@ public class KakaoService {
                 kakaoFriendsRequest,
                 String.class
         );
+        List<FriendDto> friendDtoList = new ArrayList<>();
+
         try {
             kakaoFriends = objectMapper.readValue(kakaoFriendsResponse.getBody(), KakaoFriends.class);
+            Optional<User> me = userRepository.findByUserSocialToken(token);
+            if(me.isPresent()){
+                log.info("나 있다");
+                friendDtoList = kakaoFriends.getElements().stream().map(friend -> {
+                    Optional<User> user = userRepository.findByUserKakaoId(friend.getId());
+                    FriendDto friendDto = null;
+                    if(user.isPresent()){
+                        List<User> userList = userService.getFollowerList(user.get().getUserId());
+
+                        if(userList.stream().anyMatch(el-> el.getUserId() == me.get().getUserId())){
+                            friendDto = FriendDto.builder()
+                                    .userId(user.get().getUserId())
+                                    .userName(friend.getProfile_nickname())
+                                    .isFriend(true)
+                                    .build();
+                        }else{
+                            friendDto = FriendDto.builder()
+                                    .userId(user.get().getUserId())
+                                    .userName(friend.getProfile_nickname())
+                                    .isFriend(false)
+                                    .build();
+                        }
+                    }
+                    return  friendDto;
+                }).collect(Collectors.toList());
+                friendDtoList = friendDtoList.stream().filter(el-> el != null).collect(Collectors.toList());
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
-
-        return kakaoFriends;
+        return friendDtoList;
 
     }
 

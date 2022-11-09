@@ -27,10 +27,10 @@ public class UserService {
 	/*
 	* description : 팔로우 요청을 처리하는 메소드
 	* @param followReqDto : 팔로우 요청을 위한 Dto
-	* @return boolean : 팔로우 성공 여부
+	* @return boolean : 팔로우 요청 성공 여부
 	* */
 	@Transactional
-	public boolean follow(FollowReqDto followReqDto) {
+	public boolean followRequest(FollowReqDto followReqDto) {
 		// 유효한 사용자들인지 확인
 		if (!userRepository.existsByUserId(followReqDto.getFollowerUserId()) || !userRepository.existsByUserId(followReqDto.getFollowingUserId())) {
 			throw new CustomException(ErrorCode.INVALID_USER);
@@ -43,9 +43,61 @@ public class UserService {
 		FriendsList friendsList = FriendsList.builder()
 				.followerId(followReqDto.getFollowerUserId())
 				.followingId(followReqDto.getFollowingUserId())
+				.isFriend(false)
 				.build();
 		friendsListRepository.save(friendsList);
 		return true;
+	}
+
+	/*
+	 * description : 팔로우 요청을 수락하는 메소드
+	 * @param followReqDto : 팔로우 요청 수락을 위한 Dto
+	 * @return boolean : 팔로우 요청 수락 성공 여부
+	 * */
+	@Transactional
+	public boolean acceptFollow(FollowReqDto followReqDto) {
+		// 유효한 사용자들인지 확인
+		if (!userRepository.existsByUserId(followReqDto.getFollowerUserId()) || !userRepository.existsByUserId(followReqDto.getFollowingUserId())) {
+			throw new CustomException(ErrorCode.INVALID_USER);
+		}
+		// 이미 팔로우 했는지 확인
+		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+			FriendsList friendsList = friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get();
+			// 친구 상태 업데이트
+			friendsList.acceptRequest(true);
+			friendsListRepository.save(friendsList);
+
+			FriendsList friendsListEntity = FriendsList.builder()
+					.followerId(followReqDto.getFollowingUserId())
+					.followingId(followReqDto.getFollowerUserId())
+					.isFriend(true)
+					.build();
+			friendsListRepository.save(friendsListEntity);
+			return true;
+		}else{
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
+	}
+
+	/*
+	 * description : 팔로우 요청을 거절하는 메소드
+	 * @param followReqDto : 팔로우 요청 거절을 위한 Dto
+	 * @return boolean : 팔로우 요청 거절 성공 여부
+	 * */
+	@Transactional
+	public boolean rejectFollow(FollowReqDto followReqDto) {
+		// 유효한 사용자들인지 확인
+		if (!userRepository.existsByUserId(followReqDto.getFollowerUserId()) || !userRepository.existsByUserId(followReqDto.getFollowingUserId())) {
+			throw new CustomException(ErrorCode.INVALID_USER);
+		}
+		// 이미 팔로우 했는지 확인
+		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+			FriendsList friendsList = friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get();
+			friendsListRepository.delete(friendsList);
+			return true;
+		}else{
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
 	}
 
 	/*
