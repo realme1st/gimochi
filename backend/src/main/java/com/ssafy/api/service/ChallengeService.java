@@ -205,14 +205,11 @@ public class ChallengeService {
                 .build());
 
         // ChallengeInvite 삭제
+
+        challenge.changeRewardPoint(challenge.getChallengeRewardPoint());
+
         challengeInviteRepository.delete(challengeInvite);
 
-        updateChallenge(challenge);
-
-        //challenge 수정
-
-
-        //challengeRepository.save(challenge);
         return true;
     }
 
@@ -308,20 +305,6 @@ public class ChallengeService {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public void updateChallenge(Challenge challenge){
-        Challenge updateChallenge = Challenge.builder()
-                .challengeTitle(challenge.getChallengeTitle())
-                .challengeLeaderId(challenge.getChallengeLeaderId())
-                .challengeDescription(challenge.getChallengeDescription())
-                .challengeLeaderName(challenge.getChallengeLeaderName())
-                .challengeStartTime(challenge.getChallengeStartTime())
-                .challengeEndTime(challenge.getChallengeEndTime())
-                .challengeRewardType(challenge.getChallengeRewardType())
-                .challengeRewardPoint(challenge.changeRewardPoint(challenge.getChallengeRewardPoint()))
-                .challengeParticipantPoint(challenge.getChallengeParticipantPoint())
-                .build();
 
-
-    }
 }
 
