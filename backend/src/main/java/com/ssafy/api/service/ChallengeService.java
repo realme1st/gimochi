@@ -44,9 +44,8 @@ public class ChallengeService {
                 .challengeTitle(challengeReqDto.getChallengeTitle())
                 .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
-
-                .challengeStartTime(LocalDate.now())
-                .challengeEndTime(challengeReqDto.getChallengeEndTime())
+                .challengeStartDate(challengeReqDto.getChallengeStartDate())
+                .challengeEndDate(challengeReqDto.getChallengeEndDate())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .challengeLeaderName(user.getUserNickname())
                 .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())

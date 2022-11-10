@@ -19,9 +19,11 @@ public class ChallengeReqDto {
     private String challengeLeaderName;
 
     // 프론트에서 시간 처리 방식을 정함(String or localDateTime)
+    @ApiModelProperty(name="챌린지 시작 날짜", example="2021-10-28")
+    private LocalDate challengeStartDate;
 
     @ApiModelProperty(name="챌린지 종료 시간", example="2022-10-30")
-    private LocalDate challengeEndTime;
+    private LocalDate challengeEndDate;
 
     @ApiModelProperty(name="챌린지 보상 타입", example="1")
     private int challengeRewardType;
