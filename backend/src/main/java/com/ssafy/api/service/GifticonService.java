@@ -7,6 +7,7 @@ import com.ssafy.api.dto.OcrResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.common.util.AmazonS3Util;
+//import com.ssafy.common.util.VisionApiUtil;
 import com.ssafy.common.util.VisionApiUtil;
 import com.ssafy.db.entity.Gifticon;
 import com.ssafy.db.entity.User;

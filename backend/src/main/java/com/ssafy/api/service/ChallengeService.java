@@ -1,9 +1,13 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.*;
-import com.ssafy.api.response.ChallengeInviteRes;
-import com.ssafy.api.response.ChallengeListRes;
-import com.ssafy.api.response.UserListRes;
+import com.ssafy.api.request.ChallengeAuthReqDto;
+import com.ssafy.api.request.ChallengeInviteReqDto;
+import com.ssafy.api.request.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeInviteResDto;
+import com.ssafy.api.response.ChallengeListResDto;
+import com.ssafy.api.response.ChallengeDetailResDto;
+import com.ssafy.api.response.UserListResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.*;
@@ -13,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +32,8 @@ public class ChallengeService {
     private final ChallengeInviteRepository challengeInviteRepository;
     private final VoteRepository voteRepository;
 
+
+
     @Transactional
     public boolean createChllenge(ChallengeReqDto challengeReqDto) {
 
@@ -38,17 +45,47 @@ public class ChallengeService {
                 .challengeTitle(challengeReqDto.getChallengeTitle())
                 .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
                 .challengeDescription(challengeReqDto.getChallengeDescription())
-
-                .challengeStartTime(challengeReqDto.getChallengeStartTime())
-                .challengeEndTime(challengeReqDto.getChallengeEndTime())
+                .challengeStartDate(challengeReqDto.getChallengeStartDate())
+                .challengeEndDate(challengeReqDto.getChallengeEndDate())
                 .challengeRewardType(challengeReqDto.getChallengeRewardType())
                 .challengeLeaderName(user.getUserNickname())
+                .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
+                .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
+                .challengeActive(challengeReqDto.getChallengeActive())
                 .build();
+
+        if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
+            challengeRepository.save(challenge);
+        }else{
+            throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
+        }
+        createChallengeInfoFirst(challenge);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean updateChallenge(Long challengeId) {
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        if(challenge.getChallengeStartDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(0);
+        } else if(challenge.getChallengeEndDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(1);
+        } else if(challenge.getChallengeEndDate().isBefore(LocalDate.now())){
+            challenge.changeActive(2);
+        }
 
         challengeRepository.save(challenge);
 
-        createChallengeInfoFirst(challenge);
+        return true;
+    }
 
+    public boolean isValidTime(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            return false;
+        }
         return true;
     }
 
@@ -57,7 +94,7 @@ public class ChallengeService {
     public boolean deleteChallenge(Long challengeId) {
 
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         try {
             challengeInfoRepository.delete(challengeInfoRepository.findByChallenge(challenge));
@@ -82,41 +119,41 @@ public class ChallengeService {
     }
 
 
-    public List<UserListRes> findUserListByChallengeId(Long challengeId) {
+    public List<UserListResDto> findUserListByChallengeId(Long challengeId) {
 
         Challenge challenge = findChallengeByChallengeId(challengeId);
-        List<UserListRes> listRes = new ArrayList<>();
+        List<UserListResDto> listRes = new ArrayList<>();
         List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         challengeInfoList.stream().forEach(challengeInfo -> {
-            UserListRes userListRes = UserListRes.builder()
+            UserListResDto userListResDto = UserListResDto.builder()
                     .userId(challengeInfo.getUser().getUserId())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
-            listRes.add(userListRes);
+            listRes.add(userListResDto);
         });
 
         return listRes;
     }
 
     //userId로 챌린지 List 가져오기
-    public List<ChallengeListRes> findChallengeListByUserId(Long userId) {
+    public List<ChallengeListResDto> findChallengeListByUserId(Long userId) {
 
         User user = findUserByUserId(userId);
         List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
-        List<ChallengeListRes> listRes = new ArrayList<>();
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+        List<ChallengeListResDto> listRes = new ArrayList<>();
 
         userInfoList.stream().forEach(challengeInfo -> {
-            ChallengeListRes challengeListRes = ChallengeListRes.builder()
+            ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
-                    .challengeName(challengeInfo.getChallenge().getChallengeTitle())
+                    .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
-            listRes.add(challengeListRes);
+            listRes.add(challengeListResDto);
         });
         return listRes;
     }
@@ -160,7 +197,7 @@ public class ChallengeService {
 
     //vote table 생성
     @Transactional
-    public List<ChallengeInviteRes> findChallengeInviteList(Long userId) {
+    public List<ChallengeInviteResDto> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
         if (challengeInviteList.isEmpty()){
@@ -168,7 +205,7 @@ public class ChallengeService {
         }
         // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
         List<Long> challengeIdList = new ArrayList<>();
-        List<ChallengeInviteRes> result = new ArrayList<>();
+        List<ChallengeInviteResDto> result = new ArrayList<>();
 
         challengeInviteList.stream().forEach(challengeInvite -> {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
@@ -176,7 +213,7 @@ public class ChallengeService {
 
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
-            result.add(ChallengeInviteRes.builder()
+            result.add(ChallengeInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())
@@ -199,11 +236,16 @@ public class ChallengeService {
                 .user(challengeInvite.getUser())
                 .successCnt(0)
                 .build());
+
         // ChallengeInvite 삭제
+
+        challenge.changeRewardPoint(challenge.getChallengeRewardPoint());
+
         challengeInviteRepository.delete(challengeInvite);
 
         return true;
     }
+
 
 
     @Transactional
@@ -239,7 +281,7 @@ public class ChallengeService {
         findUserByUserId(updateChallengeAuthReqDto.getVoteUserId());
 
         // 두 사용자 모두 해당 챌린지에 속해있는지에 대한 유효성 검사
-        List<UserListRes> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
+        List<UserListResDto> userList = findUserListByChallengeId(challengeAuth.getChallengeInfo().getChallenge().getChallengeId());
         List<Long> userIdList = new ArrayList<>();
 
         userList.stream().forEach(list -> userIdList.add(list.getUserId()));
@@ -289,12 +331,20 @@ public class ChallengeService {
     }
 
     public Challenge findChallengeByChallengeId(Long challengeId) {
-        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+    }
+
+    public ChallengeDetailResDto getChallenge(Long challengeId){
+        //Challenge 조회
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+        return ChallengeDetailResDto.toDto(challenge);
     }
 
     public User findUserByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
 
 }
 

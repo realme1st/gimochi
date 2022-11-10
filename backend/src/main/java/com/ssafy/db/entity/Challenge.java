@@ -22,29 +22,31 @@ public class Challenge {
     @Column(nullable = false,name="challenge_leader_id")
     private Long challengeLeaderId;
 
+    @Column(nullable=false,name="challenge_leader_name")
+    private String challengeLeaderName;
+
     @Column(nullable = false,name="challenge_title")
     private String challengeTitle;
 
     @Column(nullable = false,name="challenge_description")
     private String challengeDescription;
 
-    @Column(nullable = false,name="challenge_start_time")
-    private LocalDate challengeStartTime;
-
-    @Column(nullable = false,name="challenge_end_time")
-    private LocalDate challengeEndTime;
+    @Column(nullable = false,name="challenge_start_date")
+    private LocalDate challengeStartDate;
+    @Column(nullable = false,name="challenge_end_date")
+    private LocalDate challengeEndDate;
 
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
 
-    @Column(nullable = false,name="challenge_leader_name")
-    private String challengeLeaderName;
-
-    @Column(name="challenge_reward_point")
+    @Column(nullable = false,name="challenge_reward_point")
     private int challengeRewardPoint;
 
-    @Column(name="challenge_participant_point")
+    @Column(nullable = false,name="challenge_participant_point")
     private int challengeParticipantPoint;
+
+    @Column(nullable = false,name="challenge_active")
+    private int challengeActive;
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
@@ -65,17 +67,19 @@ public class Challenge {
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, LocalDate challengeStartTime,
-                     LocalDate challengeEndTime, int challengeRewardType,String challengeLeaderName,int challengeRewardPoint,int challengeParticipantPoint) {
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, LocalDate challengeStartDate,
+                     LocalDate challengeEndDate, int challengeRewardType,String challengeLeaderName,int challengeRewardPoint,int challengeParticipantPoint
+                     ,int challengeActive) {
         this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
-        this.challengeStartTime = challengeStartTime;
-        this.challengeEndTime = challengeEndTime;
+        this.challengeStartDate = challengeStartDate;
+        this.challengeEndDate = challengeEndDate;
         this.challengeRewardType = challengeRewardType;
         this.challengeLeaderName = challengeLeaderName;
         this.challengeRewardPoint = challengeRewardPoint;
         this.challengeParticipantPoint = challengeParticipantPoint;
+        this.challengeActive = challengeActive;
     }
 
 
@@ -97,4 +101,14 @@ public class Challenge {
         }
 
     }
+
+    public int changeRewardPoint(int challengeRewardPoint){
+        this.challengeRewardPoint=challengeRewardPoint+getChallengeParticipantPoint();
+        return this.challengeRewardPoint;
+    }
+
+    public void changeActive(int challengeActive){
+        this.challengeActive=challengeActive;
+    }
 }
+

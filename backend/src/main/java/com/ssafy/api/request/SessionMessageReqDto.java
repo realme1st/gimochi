@@ -1,4 +1,4 @@
-package com.ssafy.api.dto;
+package com.ssafy.api.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
