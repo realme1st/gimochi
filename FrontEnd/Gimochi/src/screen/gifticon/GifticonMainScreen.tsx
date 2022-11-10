@@ -51,8 +51,8 @@ function GifticonMainScreen({ navigation }) {
 
 const CreateButton = styled.TouchableOpacity`
   position: absolute;
-  left: 320px;
-  top: 480px;
+  left: 80%;
+  top: 85%;
 `;
 
 export default GifticonMainScreen;

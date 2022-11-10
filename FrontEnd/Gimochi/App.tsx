@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,6 +12,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppInner from './AppInner';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import CodePush, { CodePushOptions } from 'react-native-code-push';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log('Message handled in the background!', remoteMessage);
@@ -23,7 +27,7 @@ PushNotification.configure({
   // (required) 리모트 노티를 수신하거나, 열었거나 로컬 노티를 열었을 때 실행
   onNotification: function (notification: any) {
     console.log('NOTIFICATION:', notification);
-    if (notification.channelId === 'riders') {
+    if (notification.channelId === 'gifticon') {
       // if (notification.message || notification.data.message) {
       //   store.dispatch(
       //     userSlice.actions.showPushPopup(
@@ -33,6 +37,7 @@ PushNotification.configure({
       // }
     }
     // process the notification
+    notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
 
   // (optional) 등록한 액션을 누렀고 invokeApp이 false 상태일 때 실행됨, true면 onNotification이 실행됨 (Android)
@@ -46,6 +51,13 @@ PushNotification.configure({
   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
   onRegistrationError: function (err: Error) {
     console.error(err.message, err);
+  },
+
+  // IOS ONLY (optional): default: all - Permissions to register.
+  permissions: {
+    alert: true,
+    badge: true,
+    sound: true,
   },
 
   // Should the initial notification be popped automatically
@@ -84,7 +96,42 @@ PushNotification.createChannel(
   (created: boolean) => console.log(`createChannel gifticon returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
 );
 
+const codePushOptions: CodePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.MANUAL,
+  // 언제 업데이트를 체크하고 반영할지를 정한다.
+  // ON_APP_RESUME은 Background에서 Foreground로 오는 것을 의미
+  // ON_APP_START은 앱이 실행되는(켜지는) 순간을 의미
+
+  installMode: CodePush.InstallMode.IMMEDIATE,
+  mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+  // 업데이트를 어떻게 설치할 것인지 (IMMEDIATE는 강제설치를 의미)
+};
+
 function App() {
+  useEffect(() => {
+    CodePush.sync(
+      {
+        installMode: CodePush.InstallMode.IMMEDIATE,
+        mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+        updateDialog: {
+          mandatoryUpdateMessage: '필수 업데이트가 있어 설치 후 앱을 재시작합니다.',
+          mandatoryContinueButtonLabel: '재시작',
+          optionalIgnoreButtonLabel: '나중에',
+          optionalInstallButtonLabel: '재시작',
+          optionalUpdateMessage: '업데이트가 있습니다. 설치하시겠습니까?',
+          title: '업데이트 안내',
+        },
+      },
+      (status) => {
+        console.log(`Changed ${status}`);
+      },
+      (downloadProgress) => {
+        // 여기서 몇 % 다운로드되었는지 체크 가능
+      },
+    ).then((status) => {
+      console.log(`CodePush ${status}`);
+    });
+  }, []);
   return (
     <SafeAreaProvider>
       <Provider store={store}>
@@ -94,4 +141,4 @@ function App() {
   );
 }
 
-export default App;
+export default CodePush(codePushOptions)(App);
