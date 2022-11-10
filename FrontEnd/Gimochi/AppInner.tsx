@@ -95,6 +95,7 @@ function AppInner() {
         .catch(function (error) {
           console.log(error);
         });
+      console.log(`푸시알림토큰 ${token}`);
     }
     getToken();
   }, [dispatch, aToken]);

@@ -38,8 +38,8 @@ function LoginScreen() {
   const signInWithKakao = async (): Promise<void> => {
     setLoading(true);
     const token: KakaoOAuthToken = await login();
-    console.log(token.accessToken);
-    console.log(token.refreshToken);
+    // console.log(token.accessToken);
+    // console.log(token.refreshToken);
     await axios
       .get(`${URL}/kakao/oauth/login`, {
         headers: {
@@ -48,8 +48,8 @@ function LoginScreen() {
         },
       })
       .then(function (response) {
-        console.log(response);
-        console.log(response.data.data.userId);
+        // console.log(response);
+        // console.log(response.data.data.userId);
         redux(
           token.accessToken,
           String(token.accessTokenExpiresAt),

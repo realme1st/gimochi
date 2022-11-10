@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'Gimochi' do
+target 'gimochi' do
   config = use_native_modules!
 
   use_react_native!(
@@ -16,7 +16,7 @@ target 'Gimochi' do
 
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
 
-  target 'GimochiTests' do
+  target 'gimochiTests' do
     inherit! :complete
     # Pods for testing
   end

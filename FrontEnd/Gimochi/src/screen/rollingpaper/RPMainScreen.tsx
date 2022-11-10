@@ -40,8 +40,8 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
     axios
       .get(`${Config.API_URL}/session/user/${userId}`)
       .then(function (response) {
-        console.log(response.data.data);
-        setMyRPList(response.data.data);
+        console.log(response.data.data.sessionDetailResDtoList);
+        setMyRPList(response.data.data.sessionDetailResDtoList);
       })
       .catch(function (error) {
         console.log(error);
@@ -90,6 +90,7 @@ const RPContainer = styled.View`
 const RPTitle = styled.Text`
   font-family: 'Regular';
   font-size: 30px;
+  color: #000000;
 `;
 const RPTitleContainer = styled.View``;
 
@@ -106,12 +107,13 @@ const RPListText = styled.Text`
   font-family: 'Regular';
   font-size: 20px;
   margin-left: 5%;
+  color: #000000;
 `;
 
 const CreateButton = styled.TouchableOpacity`
   position: absolute;
-  left: 320px;
-  top: 480px;
+  left: 80%;
+  top: 85%;
 `;
 
 export default RPMainScreen;
