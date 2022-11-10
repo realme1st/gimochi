@@ -5,6 +5,7 @@ import com.ssafy.api.dto.*;
 import com.ssafy.api.request.ChallengeAuthReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeDetailResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -45,8 +46,8 @@ public class ChallengeController {
 
     @GetMapping("/{challengeId}")
     @ApiOperation(value = "챌린지 조회(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 해당챌린지를 상세 조회한다.")
-    public ResponseEntity<? extends BasicResponse> getChallengeByChallengeId(@PathVariable Long challengeId){
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeByChallengeId(challengeId)));
+    public ResponseEntity<CommonResponseEntity<ChallengeDetailResDto>> getChallengeByChallengeId(@PathVariable Long challengeId){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallenge(challengeId)));
     }
 
     @PutMapping("/{challengeId}")

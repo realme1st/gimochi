@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class ChallengeResDto {
+public class ChallengeDetailResDto {
     private Long challengeId;
 
     private Long challengeLeaderId;
@@ -31,9 +31,9 @@ public class ChallengeResDto {
     private int challengeActive;
 
     @Builder
-    public ChallengeResDto(Long challengeId, Long challengeLeaderId, String challengeLeaderName,
-                           String challengeTitle, String challengeDescription, LocalDate challengeStartDate,
-                           LocalDate challengeEndDate, int challengeRewardType, int challengeRewardPoint, int challengeParticipantPoint, int challengeActive) {
+    public ChallengeDetailResDto(Long challengeId, Long challengeLeaderId, String challengeLeaderName,
+                                 String challengeTitle, String challengeDescription, LocalDate challengeStartDate,
+                                 LocalDate challengeEndDate, int challengeRewardType, int challengeRewardPoint, int challengeParticipantPoint, int challengeActive) {
         this.challengeId = challengeId;
         this.challengeLeaderId = challengeLeaderId;
         this.challengeLeaderName = challengeLeaderName;
@@ -48,8 +48,8 @@ public class ChallengeResDto {
     }
 
 
-    public static ChallengeResDto toDto(Challenge challenge) {
-        return ChallengeResDto.builder()
+    public static ChallengeDetailResDto toDto(Challenge challenge) {
+        return ChallengeDetailResDto.builder()
                 .challengeId(challenge.getChallengeId())
                 .challengeLeaderId(challenge.getChallengeLeaderId())
                 .challengeLeaderName(challenge.getChallengeLeaderName())

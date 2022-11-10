@@ -6,6 +6,7 @@ import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeInviteResDto;
 import com.ssafy.api.response.ChallengeListResDto;
+import com.ssafy.api.response.ChallengeDetailResDto;
 import com.ssafy.api.response.UserListResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -332,6 +332,13 @@ public class ChallengeService {
 
     public Challenge findChallengeByChallengeId(Long challengeId) {
         return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+    }
+
+    public ChallengeDetailResDto getChallenge(Long challengeId){
+        //Challenge 조회
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+        return ChallengeDetailResDto.toDto(challenge);
     }
 
     public User findUserByUserId(Long userId) {
