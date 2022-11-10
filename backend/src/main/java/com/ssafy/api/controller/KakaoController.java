@@ -58,7 +58,7 @@ public class KakaoController {
     }
 
     @GetMapping("/none-friends/{userId}")
-    @ApiOperation(value = "userId를 팔로우한 목록 조회", notes = "팔로우한 목록 조회")
+    @ApiOperation(value = "userId를 팔로우 하지 않은/ 팔로우 요청을 보내지 않은 사용자 목록 조회", notes = "논팔로우 사용자 목록 조회")
     public ResponseEntity<? extends BasicResponse> getNoneFriendList(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseEntity<>(kakaoService.getNoneFollowerList(userId)));
