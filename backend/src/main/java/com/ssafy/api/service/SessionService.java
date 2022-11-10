@@ -5,10 +5,7 @@ import com.ssafy.api.request.SessionReqDto;
 import com.ssafy.api.response.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
-import com.ssafy.db.entity.Session;
-import com.ssafy.db.entity.SessionMessage;
-import com.ssafy.db.entity.SessionType;
-import com.ssafy.db.entity.User;
+import com.ssafy.db.entity.*;
 import com.ssafy.db.repository.SessionMessageRepository;
 import com.ssafy.db.repository.SessionRepository;
 import com.ssafy.db.repository.SessionTypeRepository;
@@ -32,7 +29,8 @@ public class SessionService {
     private final SessionTypeRepository sessionTypeRepository;
     private final SessionMessageRepository sessionMessageRepository;
     private final UserRepository userRepository;
-    private final GifticonService gifiticonService;
+
+    private final GifticonService gifticonService;
 
     /*
      * description: 세션 생성
@@ -130,28 +128,20 @@ public class SessionService {
     public boolean createSessionMessage(SessionMessageReqDto sessionMessageReqDto) {
         Session session = findSession(sessionMessageReqDto.getSessionId());
         SessionMessage sessionMessage = SessionMessageResDto.toDto(sessionMessageReqDto);
-
-        // img를 첨부하지 않은 경우
-        if (sessionMessageReqDto.getImg() == null) {
-            SessionMessageReqDto.builder()
-                    .img("noImg")
-                    .build();
-        }
+        /* sessionMessage 설정 */
         sessionMessage.setSession(session);
         // 기프티콘 아이디로 기프티콘 조회 후 세션메세지에 추가
-//        sessionMessage.setGifticon(gifiticonService.createGifticon(sessionMessageReqDto.getGifticonId()));
-        // img가 gifticon이 아닌 경우 (판별은 gifticonService에서 구현)
-
-        // gifticon인 경우 gifticonService에서 처리 (기프티콘 저장)
-
-
-
+        if(sessionMessageReqDto.getGifticonId() != null){
+            Gifticon gifticon = gifticonService.getGifticonByGifticonId(sessionMessageReqDto.getGifticonId());
+            sessionMessage.setGifticon(gifticon);
+        }else{
+            sessionMessage.setGifticon(null);
+        }
         // sessionMessage 저장
         try{
             sessionMessageRepository.save(sessionMessage);
-//          return sessionMessage;
         }catch (NullPointerException e){
-
+            throw new CustomException(ErrorCode.SESSION_MESSAGE_CREATE_SAVE_ERROR);
         }
          return true;
     }

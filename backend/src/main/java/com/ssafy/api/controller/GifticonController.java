@@ -61,7 +61,7 @@ public class GifticonController {
             " <strong>기프티콘 정보</strong> 를 반환한다.")
 
     public ResponseEntity<? extends BasicResponse> getGifticonByGifticonId(@PathVariable Long gifticonId) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.getGifticonByGifticond(gifticonId)));
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.getGifticonByGifticonId(gifticonId)));
     }
 
     @DeleteMapping("/{userId}/{gifticonId}")

@@ -109,17 +109,16 @@ public class GifticonService {
 
     public List<Gifticon> getGifticonByUserId(Long userId) {
         return gifticonRepository.findAllByUserUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID)); // 수정 필요
     }
 
-    public List<Gifticon> getGifticonByGifticond(Long gifticonId) {
-        return gifticonRepository.findAllByGifticonId(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+    public Gifticon getGifticonByGifticonId(Long gifticonId) {
+        return gifticonRepository.findByGifticonId(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID)); // 수정 필요
     }
 
     @Transactional
     public boolean deleteGifticon(Long userId, Long gifticonId) {
-
         // 유저 존재하는지 확인
         User user = userRepository.findByUserId(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

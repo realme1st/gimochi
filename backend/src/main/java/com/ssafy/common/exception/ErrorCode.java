@@ -55,7 +55,10 @@ public enum ErrorCode {
     INVALID_AUTH_USER(HttpStatus.BAD_REQUEST, "해당 투표를 요청한 유저 본인이 아닙니다." ),
     CHALLENGEINVITE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대장 사용자입니다." ),
     SESSION_SAVE_ERROR(HttpStatus.BAD_REQUEST, "세션 생성중 에러 발생. 세션이 생성되지 않았습니다." ),
-    CHALLENGE_DATE_ERROR(HttpStatus.BAD_REQUEST, "챌린지 시작일이 종료일보다 늦습니다." ), ;
+    CHALLENGE_DATE_ERROR(HttpStatus.BAD_REQUEST, "챌린지 시작일이 종료일보다 늦습니다." ),
+    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 아이디 입니다." ),
+    INVALID_GIFTICON_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 기프티콘 아이디 입니다." ), 
+    SESSION_MESSAGE_CREATE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "세션 메세지 생성 중 서버 오류가 발생했습니다. 관리자에게 문의하세요" );
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -20,11 +20,4 @@ public class SessionMessageReqDto {
     @ApiModelProperty(name ="기프티콘 id" , example = "1", required = false)
     Long gifticonId;
 
-    @ApiModelProperty(name = "첨부이미지", example = "첨부이미지")
-    String img;
-
-    @Builder
-    public SessionMessageReqDto(String img) {
-        this.img = img;
-    }
 }
