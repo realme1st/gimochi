@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Tab, Text, TabView, ThemeProvider, createTheme } from '@rneui/themed';
+import { Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Tab, TabView, ThemeProvider, createTheme, SpeedDial } from '@rneui/themed';
+import { Icon } from '@rneui/themed';
 
-function ChallengeCreateScreen({ navigation }) {
+function ChallengeCreateScreen1({ navigation }) {
   const [index, setIndex] = useState(0);
   console.log(index);
+
+  const goWrite2 = (index2) => {
+    // index 0 :포인트  1 :기프티콘
+    navigation.navigate('ChallengeCreateScreen2', { indexOfGP: index2 + 1 });
+  };
 
   return (
     <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
       <Tab
+        // index 0 :포인트  1 :기프티콘
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
@@ -107,26 +114,37 @@ function ChallengeCreateScreen({ navigation }) {
       <TabView value={index} onChange={setIndex} animationType='spring'>
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
-            <Text h1>포인트 도움말 스크린 왼쪽 끝 왜 짤려 어떻게 바꿔~~ㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴ ~~~</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
-            <Text h1>진행중 목록</Text>
+            <Text>포인트 도움말 ㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴ ~~~</Text>
+            <Text>1</Text>
+            <Text>2</Text>
+            <Text>3</Text>
+            <Text>4</Text>
           </ScrollView>
         </TabView.Item>
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
-            <Text h1>종료된 목록</Text>
-            <Text h1>Favorite</Text>
+            <Text>기프티콘 도움말</Text>
+            <Text>1</Text>
+            <Text>2</Text>
+            <Text>3</Text>
+            <Text>4</Text>
           </ScrollView>
         </TabView.Item>
       </TabView>
+
+      <Icon
+        name='navigate-next'
+        type='material'
+        color='#FFE7BC'
+        size={25}
+        reverse
+        reverseColor='#FFA401'
+        onPress={() => goWrite2(index)}
+        iconStyle={{ fontSize: 43 }}
+        containerStyle={{ position: 'absolute', top: 480, left: 330 }}
+      />
     </View>
   );
 }
 
-export default ChallengeCreateScreen;
+export default ChallengeCreateScreen1;
