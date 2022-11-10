@@ -106,5 +106,9 @@ public class Challenge {
         this.challengeRewardPoint=challengeRewardPoint+getChallengeParticipantPoint();
         return this.challengeRewardPoint;
     }
+
+    public void changeActive(int challengeActive){
+        this.challengeActive=challengeActive;
+    }
 }
 

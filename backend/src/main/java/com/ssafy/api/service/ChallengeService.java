@@ -6,6 +6,7 @@ import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeInviteResDto;
 import com.ssafy.api.response.ChallengeListResDto;
+import com.ssafy.api.response.ChallengeDetailResDto;
 import com.ssafy.api.response.UserListResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -53,10 +54,38 @@ public class ChallengeService {
                 .challengeActive(challengeReqDto.getChallengeActive())
                 .build();
 
-        challengeRepository.save(challenge);
-
+        if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
+            challengeRepository.save(challenge);
+        }else{
+            throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
+        }
         createChallengeInfoFirst(challenge);
 
+        return true;
+    }
+
+    @Transactional
+    public boolean updateChallenge(Long challengeId) {
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        if(challenge.getChallengeStartDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(0);
+        } else if(challenge.getChallengeEndDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(1);
+        } else if(challenge.getChallengeEndDate().isBefore(LocalDate.now())){
+            challenge.changeActive(2);
+        }
+
+        challengeRepository.save(challenge);
+
+        return true;
+    }
+
+    public boolean isValidTime(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            return false;
+        }
         return true;
     }
 
@@ -65,7 +94,7 @@ public class ChallengeService {
     public boolean deleteChallenge(Long challengeId) {
 
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         try {
             challengeInfoRepository.delete(challengeInfoRepository.findByChallenge(challenge));
@@ -95,7 +124,7 @@ public class ChallengeService {
         Challenge challenge = findChallengeByChallengeId(challengeId);
         List<UserListResDto> listRes = new ArrayList<>();
         List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         challengeInfoList.stream().forEach(challengeInfo -> {
             UserListResDto userListResDto = UserListResDto.builder()
@@ -114,13 +143,13 @@ public class ChallengeService {
 
         User user = findUserByUserId(userId);
         List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         List<ChallengeListResDto> listRes = new ArrayList<>();
 
         userInfoList.stream().forEach(challengeInfo -> {
             ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
-                    .challengeName(challengeInfo.getChallenge().getChallengeTitle())
+                    .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
@@ -302,7 +331,14 @@ public class ChallengeService {
     }
 
     public Challenge findChallengeByChallengeId(Long challengeId) {
-        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+    }
+
+    public ChallengeDetailResDto getChallenge(Long challengeId){
+        //Challenge 조회
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+        return ChallengeDetailResDto.toDto(challenge);
     }
 
     public User findUserByUserId(Long userId) {

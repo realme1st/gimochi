@@ -31,8 +31,9 @@ public class SessionMessage {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "sessionId")
     private Session session;
-    @JsonIgnore
-    @ManyToOne(fetch = LAZY)
+
+    // @OneToOne(mappedBy = "sessionMessage")
+    @OneToOne
     @JoinColumn(name = "gifticonId")
     private Gifticon gifticon;
 
@@ -45,7 +46,7 @@ public class SessionMessage {
         }
     }
 
-    public void setGifticon(Gifticon gifticon) {
+    public void setGifticon(Gifticon gifticon){
         this.gifticon = gifticon;
     }
 
