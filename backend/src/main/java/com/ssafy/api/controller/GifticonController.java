@@ -1,6 +1,7 @@
 package com.ssafy.api.controller;
 
 import com.ssafy.api.dto.GifticonInfoReqDto;
+import com.ssafy.api.dto.GifticonPresentReq;
 import com.ssafy.api.service.GifticonService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -20,8 +21,8 @@ public class GifticonController {
     GifticonService gifticonService;
 
     @PostMapping("/ocr/{userId}")
-    @ApiOperation(value = "기프티콘 ocr 분석", notes = "<strong>기프티콘 이미지</strong>를 받아" +
-            " <strong>정제된 기프티콘 정보</strong>를 반환한다.")
+    @ApiOperation(value = "기프티콘 ocr 분석", notes = "<strong>기프티콘 이미지</strong> 를 받아" +
+            " <strong>정제된 기프티콘 정보</strong> 를 반환한다.")
 
     public ResponseEntity<? extends BasicResponse> detectText(@PathVariable Long userId,
                                                                @RequestPart("file") MultipartFile file) {
@@ -29,8 +30,8 @@ public class GifticonController {
     }
 
     @PostMapping("/info")
-    @ApiOperation(value = "기프티콘 정보 저장 (정보 먼저 보내고, 이미지 보내주세요)", notes = "<strong>기프티콘 정보</strong>를 받아" +
-            "<strong>기프티콘 정보</strong>를 db에 저장한다." + "<br>" +
+    @ApiOperation(value = "기프티콘 정보 저장 (정보 먼저 보내고, 이미지 보내주세요)", notes = "<strong>기프티콘 정보</strong> 를 받아" +
+            " <strong>기프티콘 정보</strong> 를 db에 저장한다." + "<br>" +
             "store : 사용처, ex) 바나프레소" + "<br>" +
             "period : 유효기간, ex) 2022-12-31")
 
@@ -39,28 +40,44 @@ public class GifticonController {
     }
 
     @PostMapping("/img/{gifticonId}")
-    @ApiOperation(value = "기프티콘 이미지 저장 (정보 먼저 보내고, 이미지 보내주세요)", notes = "<strong>기프티콘 이미지 정보</strong>를 받아" +
-            "<strong>기프티콘 이미지 정보</strong>를 db와 S3에 저장한다.")
+    @ApiOperation(value = "기프티콘 이미지 저장 (정보 먼저 보내고, 이미지 보내주세요)", notes = "<strong>기프티콘 이미지 정보</strong> 를 받아" +
+            " <strong>기프티콘 이미지 정보</strong> 를 db와 S3에 저장한다.")
 
     public ResponseEntity<? extends BasicResponse> createGifticonImg(@PathVariable Long gifticonId,
                                                                      @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.createGifticonImg(gifticonId, file)));
     }
 
-    @GetMapping("/{userId}")
-    @ApiOperation(value = "회원이 등록한 기프티콘 조회", notes = "<strong>유저 아이디</strong>를 받아" +
-            " <strong>기프티콘 정보</strong>를 반환한다.")
+    @GetMapping("/uid/{userId}")
+    @ApiOperation(value = "회원이 등록한 기프티콘 조회", notes = "<strong>유저 아이디</strong> 를 받아" +
+            " <strong>기프티콘 정보</strong> 를 반환한다.")
 
     public ResponseEntity<? extends BasicResponse> getGifticonByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.getGifticonByUserId(userId)));
     }
 
+    @GetMapping("/gid/{gifticonId}")
+    @ApiOperation(value = "기프티콘 식별자로 기프티콘 조회", notes = "<strong>기프티콘 식별자</strong> 를 받아" +
+            " <strong>기프티콘 정보</strong> 를 반환한다.")
+
+    public ResponseEntity<? extends BasicResponse> getGifticonByGifticonId(@PathVariable Long gifticonId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.getGifticonByGifticond(gifticonId)));
+    }
+
     @DeleteMapping("/{userId}/{gifticonId}")
-    @ApiOperation(value = "회원이 선택한 기프티콘 삭제", notes = "<strong>유저 아이디와 기프티콘 아이디</strong>를 받아" +
+    @ApiOperation(value = "회원이 선택한 기프티콘 삭제", notes = "<strong>유저 아이디와 기프티콘 아이디</strong> 를 받아" +
             " <strong>해당 기프티콘을 삭제</strong> 한다.")
 
     public ResponseEntity<? extends BasicResponse> deleteGifticon(@PathVariable Long userId, @PathVariable Long gifticonId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.deleteGifticon(userId, gifticonId)));
+    }
+
+    @PutMapping
+    @ApiOperation(value = "기프티콘 선물", notes = "<strong>선물하는 유저 아이디와 선물받을 유저 아이디, 기프티콘 아이디</strong> 를 받아" +
+            " <strong>해당 기프티콘을 선물</strong> 한다.")
+
+    public ResponseEntity<? extends BasicResponse> presentGifticon(@RequestBody GifticonPresentReq gifticonPresentReq) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticon(gifticonPresentReq)));
     }
 
     /*
