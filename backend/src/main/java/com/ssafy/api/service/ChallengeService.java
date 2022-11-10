@@ -149,7 +149,7 @@ public class ChallengeService {
         userInfoList.stream().forEach(challengeInfo -> {
             ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
-                    .challengeName(challengeInfo.getChallenge().getChallengeTitle())
+                    .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
                     .successCnt(challengeInfo.getSuccessCnt())
                     .build();
 
