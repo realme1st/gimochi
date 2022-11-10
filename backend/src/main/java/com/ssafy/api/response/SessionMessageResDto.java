@@ -1,5 +1,6 @@
 package com.ssafy.api.response;
 
+import com.ssafy.api.request.SessionMessageReqDto;
 import com.ssafy.db.entity.SessionMessage;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,6 +25,14 @@ public class SessionMessageResDto {
         this.nickname = nickname;
         this.field = field;
         this.expireTime = expireTime;
+    }
+
+    public static SessionMessage toDto(SessionMessageReqDto reqDto){
+        return SessionMessage.builder()
+                .nickname(reqDto.getNickname())
+                .field(reqDto.getField())
+                .expireTime(LocalDate.now().plusDays(7))
+                .build();
     }
 
     public static List<SessionMessageResDto> toDtoList(List<SessionMessage> mList){

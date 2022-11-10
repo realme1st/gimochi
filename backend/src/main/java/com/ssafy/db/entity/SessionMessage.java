@@ -45,6 +45,10 @@ public class SessionMessage {
         }
     }
 
+    public void setGifticon(Gifticon gifticon) {
+        this.gifticon = gifticon;
+    }
+
     @Builder
     public SessionMessage(String nickname, String field, LocalDate expireTime, Session session) {
         this.nickname = nickname;
