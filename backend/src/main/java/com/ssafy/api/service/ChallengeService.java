@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,10 +54,38 @@ public class ChallengeService {
                 .challengeActive(challengeReqDto.getChallengeActive())
                 .build();
 
-        challengeRepository.save(challenge);
-
+        if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
+            challengeRepository.save(challenge);
+        }else{
+            throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
+        }
         createChallengeInfoFirst(challenge);
 
+        return true;
+    }
+
+    @Transactional
+    public boolean updateChallenge(Long challengeId) {
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        if(challenge.getChallengeStartDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(0);
+        } else if(challenge.getChallengeEndDate().isAfter(LocalDate.now())) {
+            challenge.changeActive(1);
+        } else if(challenge.getChallengeEndDate().isBefore(LocalDate.now())){
+            challenge.changeActive(2);
+        }
+
+        challengeRepository.save(challenge);
+
+        return true;
+    }
+
+    public boolean isValidTime(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            return false;
+        }
         return true;
     }
 
@@ -65,7 +94,7 @@ public class ChallengeService {
     public boolean deleteChallenge(Long challengeId) {
 
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         try {
             challengeInfoRepository.delete(challengeInfoRepository.findByChallenge(challenge));
@@ -95,7 +124,7 @@ public class ChallengeService {
         Challenge challenge = findChallengeByChallengeId(challengeId);
         List<UserListResDto> listRes = new ArrayList<>();
         List<ChallengeInfo> challengeInfoList = challengeInfoRepository.findUserListByChallengeId(challenge.getChallengeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         challengeInfoList.stream().forEach(challengeInfo -> {
             UserListResDto userListResDto = UserListResDto.builder()
@@ -114,7 +143,7 @@ public class ChallengeService {
 
         User user = findUserByUserId(userId);
         List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         List<ChallengeListResDto> listRes = new ArrayList<>();
 
         userInfoList.stream().forEach(challengeInfo -> {
@@ -302,7 +331,7 @@ public class ChallengeService {
     }
 
     public Challenge findChallengeByChallengeId(Long challengeId) {
-        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENEGE_NOT_FOUND));
+        return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
     }
 
     public User findUserByUserId(Long userId) {
