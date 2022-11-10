@@ -41,6 +41,8 @@ public class VisionApiUtil {
                     return words;
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
         return null;
     }

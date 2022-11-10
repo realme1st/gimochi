@@ -2,6 +2,7 @@ package com.ssafy.api.service;
 
 import com.google.protobuf.ByteString;
 import com.ssafy.api.dto.GifticonInfoReqDto;
+import com.ssafy.api.dto.GifticonPresentReq;
 import com.ssafy.api.dto.OcrResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -111,12 +112,17 @@ public class GifticonService {
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
     }
 
+    public List<Gifticon> getGifticonByGifticond(Long gifticonId) {
+        return gifticonRepository.findAllByGifticonId(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+    }
+
     @Transactional
     public boolean deleteGifticon(Long userId, Long gifticonId) {
 
         // 유저 존재하는지 확인
-        User user = userRepository.findByUserId(userId).
-                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByUserId(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
@@ -139,6 +145,34 @@ public class GifticonService {
             log.error(e.getMessage());
         }
         return false;
+    }
+
+    @Transactional
+    public Gifticon updateGifticon(GifticonPresentReq gifticonPresentReq) {
+
+        Long senderId = gifticonPresentReq.getUserIdSend();
+        Long receiverId = gifticonPresentReq.getUserIdReceive();
+        Long gifticonId = gifticonPresentReq.getGifticonId();
+
+        User userSender = userRepository.findByUserId(senderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        User userReceiver = userRepository.findByUserId(receiverId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 기프티콘 존재하는지 확인
+        Gifticon gifticon = gifticonRepository.findById(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+
+        // 넘어온 선물 보내는 유저 정보와 기프티콘의 유저정보가 같은지 비교
+        if(gifticon.getUser().getUserId() != senderId) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+        }
+
+        gifticon.changeGifticonUser(userReceiver); // 기프티콘 소유자를 받는 사람으로 변경
+
+        return gifticon;
+
     }
 
 /*
