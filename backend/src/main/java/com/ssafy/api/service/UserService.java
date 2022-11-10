@@ -1,6 +1,6 @@
 package com.ssafy.api.service;
 
-import com.ssafy.api.dto.FollowReqDto;
+import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
 import com.ssafy.common.exception.CustomException;

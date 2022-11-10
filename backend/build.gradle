@@ -8,7 +8,6 @@ buildscript{
         springDependencyMgmtVer = '1.0.11'
         springLoadedVer = '1.2.8'
         nodePluginVer = '1.3.1'
-        snippetsDir = file('build/generated-snippets')
     }
     repositories {
         mavenCentral()
@@ -127,30 +126,8 @@ sourceSets {
         }
     }
 }
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-bootJar {
-    dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
-}
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-
-    from file("build/asciidoc/html5/")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyDocument
-}
 
 dependencies {
-    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     //implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
@@ -158,11 +135,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+   // implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
-    testImplementation("org.springframework.security:spring-security-test")
+    //testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("mysql:mysql-connector-java")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -204,7 +181,7 @@ dependencies {
 
     testImplementation("com.jayway.jsonpath:json-path:2.4.0")
 
-    implementation("com.auth0:java-jwt:3.10.3")
+    //implementation("com.auth0:java-jwt:3.10.3")
 
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
@@ -228,21 +205,14 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'javax.activation:activation:1.1.1'
 
-
     // 구글 vision api (ocr)
     implementation platform('com.google.cloud:libraries-bom:26.1.3')
     implementation 'com.google.cloud:google-cloud-vision'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
 }
 
-test {
-    useJUnitPlatform()
-    outputs.dir snippetsDir
-}
-
+//test {
+//    useJUnitPlatform()
+//}
 
 jar {
     enabled = false
