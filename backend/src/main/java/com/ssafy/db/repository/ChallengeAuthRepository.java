@@ -15,4 +15,5 @@ public interface ChallengeAuthRepository extends JpaRepository<ChallengeAuth, Lo
 
     Optional<ChallengeAuth> findByChallengeAuthId(Long challengeAuthId);
 
+    Optional<ChallengeAuth> findByChallengeInfo(ChallengeInfo challengeInfo);
 }
