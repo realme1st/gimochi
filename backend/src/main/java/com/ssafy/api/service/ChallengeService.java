@@ -142,15 +142,22 @@ public class ChallengeService {
     public List<ChallengeListResDto> findChallengeListByUserId(Long userId) {
 
         User user = findUserByUserId(userId);
+
         List<ChallengeInfo> userInfoList = challengeInfoRepository.findChallengeListByUserId(user.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         List<ChallengeListResDto> listRes = new ArrayList<>();
+
+
 
         userInfoList.stream().forEach(challengeInfo -> {
             ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
                     .challengeId(challengeInfo.getChallenge().getChallengeId())
                     .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
                     .successCnt(challengeInfo.getSuccessCnt())
+                    .challengeActive(challengeInfo.getChallenge().getChallengeActive())
+                    .challengeLeaderName(challengeInfo.getChallenge().getChallengeLeaderName())
+                    .challengeStartDate(challengeInfo.getChallenge().getChallengeStartDate())
+                    .challengeEndDate(challengeInfo.getChallenge().getChallengeEndDate())
                     .build();
 
             listRes.add(challengeListResDto);
