@@ -35,6 +35,15 @@ public class SessionMessageResDto {
                 .build();
     }
 
+    public static SessionMessageResDto of(SessionMessage sessionMessage){
+        return SessionMessageResDto.builder()
+                .sessionMessageId(sessionMessage.getSessionMessageId())
+                .nickname(sessionMessage.getNickname())
+                .field(sessionMessage.getField())
+                .expireTime(sessionMessage.getExpireTime())
+                .build();
+    }
+
     public static List<SessionMessageResDto> toDtoList(List<SessionMessage> mList){
         List<SessionMessageResDto> sessionMessageResDtoList =new ArrayList<>();
         for(SessionMessage m : mList){

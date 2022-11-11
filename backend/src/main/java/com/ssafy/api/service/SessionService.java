@@ -149,9 +149,10 @@ public class SessionService {
      * description: sessionMessageId에 해당하는 세션메세지 상세 조회
      * return: 조회된 세션메세지 반환
      * */
-    public SessionMessage getSessionMessageById(Long sessionMessageId) {
-        return sessionMessageRepository.findBySessionMessageId(sessionMessageId)
+    public SessionMessageResDto getSessionMessageById(Long sessionMessageId) {
+        SessionMessage sessionMessage = sessionMessageRepository.findById(sessionMessageId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SESSION_MESSAGE_NOT_FOUND));
+        return SessionMessageResDto.of(sessionMessage);
     }
 
     /*
@@ -179,12 +180,7 @@ public class SessionService {
      * */
     public void checkExpireTime(LocalDate expireTime) {
         List<Session> sessionList = sessionRepository.findAll();
-//        for (Session session : sessionList) {
-//            if (session.getExpireTime().isBefore(LocalDate.now())) {
-//                deleteSession(session.getSessionId());
-//            }
-//        }
-        sessionList.stream().forEach(session -> {
+        sessionList.forEach(session -> {
             if (session.getAnniversary().isBefore(LocalDate.now())) {
                 deleteSession(session.getSessionId());
             }
