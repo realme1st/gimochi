@@ -110,5 +110,7 @@ public class Challenge {
     public void changeActive(int challengeActive){
         this.challengeActive=challengeActive;
     }
+
+
 }
 

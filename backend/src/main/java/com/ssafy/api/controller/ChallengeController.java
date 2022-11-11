@@ -6,6 +6,7 @@ import com.ssafy.api.request.ChallengeAuthReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeDetailResDto;
+import com.ssafy.api.response.ChallengeListResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Api(value = "Challenge API", tags = {"Challenges"})
@@ -74,7 +77,7 @@ public class ChallengeController {
 
     @GetMapping("/challengeList/{userId}")
     @ApiOperation(value = "유저가 참여하는 챌린지리스트 조회(userId기반)", notes = "<strong>userId를 입력하여</strong> 해당 유저가 참여하는 챌린지리스트를 조회한다.")
-    public ResponseEntity<? extends BasicResponse> findChallengeListByUserId(@PathVariable Long userId){
+    public ResponseEntity<CommonResponseEntity<List<ChallengeListResDto>>> findChallengeListByUserId(@PathVariable Long userId){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeListByUserId(userId)));
     }
 

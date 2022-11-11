@@ -147,18 +147,9 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         List<ChallengeListResDto> listRes = new ArrayList<>();
 
-
-
         userInfoList.stream().forEach(challengeInfo -> {
-            ChallengeListResDto challengeListResDto = ChallengeListResDto.builder()
-                    .challengeId(challengeInfo.getChallenge().getChallengeId())
-                    .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
-                    .successCnt(challengeInfo.getSuccessCnt())
-                    .challengeActive(challengeInfo.getChallenge().getChallengeActive())
-                    .challengeLeaderName(challengeInfo.getChallenge().getChallengeLeaderName())
-                    .challengeStartDate(challengeInfo.getChallenge().getChallengeStartDate())
-                    .challengeEndDate(challengeInfo.getChallenge().getChallengeEndDate())
-                    .build();
+
+            ChallengeListResDto challengeListResDto = ChallengeListResDto.toDto(challengeInfo);
 
             listRes.add(challengeListResDto);
         });
@@ -241,10 +232,17 @@ public class ChallengeService {
         challengeInfoRepository.save(ChallengeInfo.builder()
                 .challenge(challenge)
                 .user(challengeInvite.getUser())
+
                 .successCnt(0)
                 .build());
 
         // ChallengeInvite 삭제
+
+        //초대 수락 시 해당 챌린지 인원 수 증가가
+//       challengeAuthRepository.save(ChallengeAuth.builder()
+//
+//                .challengerCnt(challengeInfoRepository.findChallegerCntByChallengeId(challenge.getChallengeId()))
+//                .build());
 
         challenge.changeRewardPoint(challenge.getChallengeRewardPoint());
 
