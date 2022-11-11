@@ -141,7 +141,7 @@ function ChallengeCreateScreen1({ navigation }) {
         reverseColor='#FFA401'
         onPress={() => goWrite2(index)}
         iconStyle={{ fontSize: 43 }}
-        containerStyle={{ position: 'absolute', top: 480, left: 330 }}
+        containerStyle={{ position: 'absolute', top: '85%', left: '80%' }}
       />
     </View>
   );

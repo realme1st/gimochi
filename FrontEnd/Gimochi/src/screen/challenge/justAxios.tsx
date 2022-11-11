@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { URL } from '../../api/API';
 import axios from 'axios';
-import styled from 'styled-components/native';
+import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
+import { useAppDispatch } from '../../store';
+import reloadSlice from '../../slices/reload';
 
-function ChallengeDetailScreen({ route, navigation }) {
+function Just({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   console.log(userId);
 
@@ -143,52 +143,6 @@ function ChallengeDetailScreen({ route, navigation }) {
       });
   };
 
-  return (
-    <ScrollView>
-      <Text>챌린지 상세보기</Text>
-      <TouchableOpacity onPress={goMain}>
-        <Text>추카포카 메인으로 </Text>
-      </TouchableOpacity>
-
-      <TButton onPress={() => test1()}>
-        <Text>모든 챌린지 조회 </Text>
-      </TButton>
-      <TButton onPress={() => test2()}>
-        <Text>챌린지 생성 </Text>
-      </TButton>
-
-      <TButton onPress={() => test3(11)}>
-        <Text>챌린지 조회 @challengeId</Text>
-      </TButton>
-      <TButton onPress={() => test4(10)}>
-        <Text>!!챌린지 삭제 @challengeId </Text>
-      </TButton>
-      <TButton onPress={() => test5()}>
-        <Text>초대장 전송 </Text>
-      </TButton>
-      <TButton onPress={() => test6(userId)}>
-        <Text>??참가한 초대장 조회 @userId </Text>
-      </TButton>
-      <TButton onPress={() => test7(1)}>
-        <Text>초대장 수락 @challengeInviteId </Text>
-      </TButton>
-      <TButton onPress={() => test8(userId)}>
-        <Text> 유저 참여 챌린지 조회 @userId </Text>
-      </TButton>
-      <TButton onPress={() => test9(10)}>
-        <Text> 챌린지 참여한 사용자 조회 @challengeId </Text>
-      </TButton>
-    </ScrollView>
-  );
+  return <></>;
 }
-const TButton = styled.TouchableOpacity`
-  background-color: #fee500;
-  border-radius: 18px;
-  width: 60%;
-  padding: 15px;
-  margin: 10px 0px;
-  justify-content: center;
-  align-items: center;
-`;
-
-export default ChallengeDetailScreen;
+export default Just;
