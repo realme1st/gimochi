@@ -1,6 +1,7 @@
 package com.ssafy.api.request;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -36,4 +37,20 @@ public class ChallengeReqDto {
 
     @ApiModelProperty(name="챌린지 활성화 여부", example="0")
     private int challengeActive;
+
+    @Builder
+    public ChallengeReqDto(String challengeTitle, Long challengeLeaderId, String challengeDescription, String challengeLeaderName, LocalDate challengeStartDate, LocalDate challengeEndDate, int challengeRewardType, int challengeRewardPoint, int challengeParticipantPoint, int challengeActive) {
+        this.challengeTitle = challengeTitle;
+        this.challengeLeaderId = challengeLeaderId;
+        this.challengeDescription = challengeDescription;
+        this.challengeLeaderName = challengeLeaderName;
+        this.challengeStartDate = challengeStartDate;
+        this.challengeEndDate = challengeEndDate;
+        this.challengeRewardType = challengeRewardType;
+        this.challengeRewardPoint = challengeRewardPoint;
+        this.challengeParticipantPoint = challengeParticipantPoint;
+        this.challengeActive = challengeActive;
+    }
 }
+
+
