@@ -11,8 +11,8 @@ import {
   createTheme,
   SpeedDial,
   Dialog,
+  Icon,
 } from '@rneui/themed';
-import { Icon } from '@rneui/themed';
 import { format } from 'date-fns';
 import ko from 'date-fns/esm/locale/ko/index.js';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -27,7 +27,7 @@ import reloadSlice from '../../slices/reload';
 function ChallengeCreateScreen2({ route, navigation }) {
   const [chTitle, setChTitle] = useState('');
   const [chDescription, setChDescription] = useState('');
-  const [chPoint, setChPoint] = useState(0);
+  const [chPoint, setChPoint] = useState('');
   const [dateS, setDateS] = useState<Date>(new Date());
   const [dateE, setDateE] = useState<Date>(new Date());
   const [visibleS, setVisibleS] = useState<boolean>(false); // 달력 모달 노출 여부
@@ -49,14 +49,15 @@ function ChallengeCreateScreen2({ route, navigation }) {
   const onSubmit = async () => {
     const finalP = chPoint ? chPoint : 0;
     const jsonData = {
+      challengeActive: 0,
       challengeDescription: chDescription,
-      challengeEndTime: format(dateE, 'yyyy-MM-dd'),
+      challengeEndDate: format(dateE, 'yyyy-MM-dd'),
       challengeLeaderId: userId,
       challengeLeaderName: userNickname,
       challengeParticipantPoint: finalP,
       challengeRewardPoint: 0,
       challengeRewardType: indexOfGP,
-      challengeStartTime: format(dateS, 'yyyy-MM-dd'),
+      challengeStartDate: format(dateS, 'yyyy-MM-dd'),
       challengeTitle: chTitle,
     };
     console.log(jsonData);
@@ -102,13 +103,32 @@ function ChallengeCreateScreen2({ route, navigation }) {
   };
   const onChangeS = (event: void, selectedDate: Date) => {
     const currentDate: Date = selectedDate || dateS;
-    console.log(new Date());
-    setDateS(currentDate);
-    console.log(currentDate);
-    setVisibleS(false);
+    // console.log(currentDate.setDate(currentDate.getDate() - 1));// 하루전 계산
+    // new Date 함수 실행한 시간 | currentDate 스크린 랜더링 한 시간
+    const isBefore24H = currentDate - new Date(); // 86400000 24시간
+    if (isBefore24H >= 86400000) {
+      setDateS(currentDate);
+      console.log(currentDate);
+      setVisibleS(false);
+    } else {
+      console.log('24시간 이전에만 생성가능 합니다');
+      setVisibleS(false);
+    }
   };
   const onChangeE = (event: void, selectedDate: Date) => {
     const currentDate: Date = selectedDate || dateE;
+
+    const isBefore96H = currentDate - new Date(); // 345600000 96시간
+    if (isBefore96H >= 345600000) {
+      // 챌린지 시작후3일 이후
+      setDateE(currentDate);
+      console.log(currentDate);
+      setVisibleE(false);
+    } else {
+      console.log('챌린지는 최소 3일 이상 해야합니다');
+      setVisibleE(false);
+    }
+
     setDateE(currentDate);
     console.log(currentDate);
     setVisibleE(false);
@@ -167,7 +187,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
             marginRight: 60,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>시작일{'  '}:</Text>
+          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>시작일{'  '}(매일):</Text>
 
           <View>
             <TouchableOpacity onPress={onPressDateS}>
@@ -310,7 +330,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
         reverseColor='#FFA401'
         onPress={() => onSubmit()}
         iconStyle={{ fontSize: 33 }}
-        containerStyle={{ position: 'absolute', top: 480, left: 330 }}
+        containerStyle={{ position: 'absolute', top: '85%', left: '80%' }}
       />
     </View>
   );
