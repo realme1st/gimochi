@@ -46,7 +46,7 @@ public class ChallengeListResDto {
         this.challengeEndDate = challengeEndDate;
         this.challenger_cnt = challenger_cnt;
         //this.myRank = myRank;
-        //this.winnerName = winnerName;
+        this.winnerName = winnerName;
 
     }
 
