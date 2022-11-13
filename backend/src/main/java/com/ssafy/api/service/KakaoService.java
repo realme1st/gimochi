@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.api.dto.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
+import com.ssafy.db.entity.FriendsList;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.FriendsListRepository;
 import com.ssafy.db.repository.UserRepository;
@@ -21,7 +22,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("kakaoService")
