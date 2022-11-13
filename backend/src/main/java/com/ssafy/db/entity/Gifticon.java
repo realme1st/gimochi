@@ -1,6 +1,7 @@
 package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import static javax.persistence.FetchType.LAZY;
@@ -31,8 +32,8 @@ public class Gifticon{
     private String gifticonPath;
 
     /* Session Message */
-    @OneToOne(mappedBy = "session")
-    private SessionMessage sessionMessages;
+    @OneToOne(mappedBy = "gifticon")
+    private SessionMessage sessionMessage;
 
     public void setUser(User user){
         this.user =user;
@@ -50,5 +51,20 @@ public class Gifticon{
         this.gifticonPath = gifticonPath;
     }
 
+    public void changeGifticonPath(String path) {
+        this.gifticonPath = path;
+    }
+
+    public void changeGifticonUser(User user) {
+        this.user = user;
+    }
+
+    public void setSessionMessage(SessionMessage sessionMessage) {
+        this.sessionMessage = sessionMessage;
+        //무한 루프 주의
+        if (!sessionMessage.getGifticon().equals(this)) {
+            sessionMessage.setGifticon(this);
+        }
+    }
 
 }

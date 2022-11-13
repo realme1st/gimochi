@@ -1,6 +1,6 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.FollowReqDto;
+import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -48,6 +48,13 @@ public class UserController {
     public ResponseEntity<? extends BasicResponse> getFollowingList(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                     .body(new CommonResponseEntity<>(userService.getFollowingList(userId)));
+    }
+
+    @GetMapping("/following-request/{userId}")
+    @ApiOperation(value = "userId에게 들어온 팔로우 요청 조회", notes = "사용자에게 들어온 팔로우 요청 목록 조회")
+    public ResponseEntity<? extends BasicResponse> getFollowRequestList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.getFollowRequestList(userId)));
     }
 
     // userId를 기반으로 본인을 팔로우 한 목록 조회

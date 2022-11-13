@@ -1,7 +1,9 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.SessionMessageReqDto;
-import com.ssafy.api.dto.SessionReqDto;
+import com.ssafy.api.request.SessionMessageReqDto;
+import com.ssafy.api.request.SessionReqDto;
+import com.ssafy.api.response.SessionDetailResDto;
+import com.ssafy.api.response.SessionResDto;
 import com.ssafy.api.service.SessionService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -29,14 +31,14 @@ public class SessionController {
     /*      Session      */
     @PostMapping()
     @ApiOperation(value = "세션 생성", notes = "<strong>세션 정보를 입력하여</strong> 세션을 만든다.")
-    public ResponseEntity<? extends BasicResponse> createSession(@RequestBody SessionReqDto sessionReqDto) {
+    public ResponseEntity<CommonResponseEntity<SessionResDto>> createSession(@RequestBody SessionReqDto sessionReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.createSession(sessionReqDto)));
     }
 
 
     @GetMapping("/{sessionId}")
     @ApiOperation(value = "sessionId 기반 세션 조회", notes = "<strong>세션 id를 입력하여</strong> 세션을 조회한다.")
-    public ResponseEntity<? extends BasicResponse> getSession(@PathVariable Long sessionId) {
+    public ResponseEntity<CommonResponseEntity<SessionDetailResDto>> getSession(@PathVariable Long sessionId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSession(sessionId)));
     }
 

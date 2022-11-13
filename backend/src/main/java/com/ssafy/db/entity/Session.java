@@ -68,6 +68,9 @@ public class Session {
         }
     }
 
+    public void setSessionId(Long sessionId){
+        this.sessionId = sessionId;
+    }
     @Builder
     public Session(String name, LocalDate expireTime, LocalDate anniversary, User user, Long sessionTypeId) {
         this.name = name;

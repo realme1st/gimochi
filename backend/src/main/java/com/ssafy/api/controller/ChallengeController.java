@@ -2,17 +2,24 @@ package com.ssafy.api.controller;
 
 
 import com.ssafy.api.dto.*;
+import com.ssafy.api.request.ChallengeAuthReqDto;
+import com.ssafy.api.request.ChallengeInviteReqDto;
+import com.ssafy.api.request.ChallengeReqDto;
+import com.ssafy.api.response.ChallengeDetailResDto;
+import com.ssafy.api.response.ChallengeListResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
+import com.ssafy.db.entity.Challenge;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Api(value = "Challenge API", tags = {"Challenges"})
@@ -42,8 +49,14 @@ public class ChallengeController {
 
     @GetMapping("/{challengeId}")
     @ApiOperation(value = "챌린지 조회(challengeId기반)", notes = "<strong>챌린지 ID를 입력하여</strong> 해당챌린지를 상세 조회한다.")
-    public ResponseEntity<? extends BasicResponse> getChallengeByChallengeId(@PathVariable Long challengeId){
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeByChallengeId(challengeId)));
+    public ResponseEntity<CommonResponseEntity<ChallengeDetailResDto>> getChallengeByChallengeId(@PathVariable Long challengeId){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallenge(challengeId)));
+    }
+
+    @PutMapping("/{challengeId}")
+    @ApiOperation(value = "챌린지 수정", notes = "<strong>챌린지 생성 시간과 종료시간에 따라 </strong> 챌린지의 진행여부를 변경한다.")
+    public ResponseEntity<? extends BasicResponse> updateChallenge(@PathVariable Long challengeId){
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.updateChallenge(challengeId)));
     }
 
 
@@ -64,7 +77,7 @@ public class ChallengeController {
 
     @GetMapping("/challengeList/{userId}")
     @ApiOperation(value = "유저가 참여하는 챌린지리스트 조회(userId기반)", notes = "<strong>userId를 입력하여</strong> 해당 유저가 참여하는 챌린지리스트를 조회한다.")
-    public ResponseEntity<? extends BasicResponse> findChallengeListByUserId(@PathVariable Long userId){
+    public ResponseEntity<CommonResponseEntity<List<ChallengeListResDto>>> findChallengeListByUserId(@PathVariable Long userId){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeListByUserId(userId)));
     }
 

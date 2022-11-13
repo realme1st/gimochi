@@ -57,6 +57,13 @@ public class KakaoController {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseEntity<>(kakaoService.getKakaoFriends(tokenInfo.getAccessToken())));
     }
 
+    @GetMapping("/none-friends/{userId}")
+    @ApiOperation(value = "userId를 팔로우 하지 않은/ 팔로우 요청을 보내지 않은 사용자 목록 조회", notes = "논팔로우 사용자 목록 조회")
+    public ResponseEntity<? extends BasicResponse> getNoneFriendList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(kakaoService.getNoneFollowerList(userId)));
+    }
+
     @GetMapping("/oauth/user/info")
     @ApiOperation(value = "사용자 카카오 프로필 조회", notes = "카카오 userId로 카카오프로필을 조회한다.")
     public ResponseEntity<? extends BasicResponse> getUserInfoByKakaoId(

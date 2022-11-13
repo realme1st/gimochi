@@ -6,6 +6,7 @@ import com.ssafy.api.dto.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.User;
+import com.ssafy.db.repository.FriendsListRepository;
 import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("kakaoService")
@@ -33,6 +32,7 @@ public class KakaoService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final FriendsListRepository friendsListRepository;
 
     public OauthToken getAccessToken(String code) {
 
@@ -201,7 +201,7 @@ public class KakaoService {
                     Optional<User> user = userRepository.findByUserKakaoId(friend.getId());
                     FriendDto friendDto = null;
                     if(user.isPresent()){
-                        List<User> userList = userService.getFollowerList(user.get().getUserId());
+                        List<FriendDto> userList = userService.getFollowerList(user.get().getUserId());
 
                         if(userList.stream().anyMatch(el-> el.getUserId() == me.get().getUserId())){
                             friendDto = FriendDto.builder()
@@ -227,6 +227,35 @@ public class KakaoService {
 
         return friendDtoList;
 
+    }
+
+    public List<FriendDto> getNoneFollowerList(Long userId){
+        // 유효한 user인지 확인
+        isVaildUser(userId);
+        // 팔로워 리스트 조회
+        List<User> followerList = new ArrayList<>();
+        List<FriendsList> friendsList = friendsListRepository.findAllByFollowingId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+        List<FriendDto> friendDtoList = new ArrayList<>();
+
+        User me = userRepository.findByUserId(userId).get();
+        List<FriendDto> kakaofriends = getKakaoFriends(me.getUserSocialToken());
+        Set<Long> friendsId = friendsList.stream().map(friend-> friend.getFollowerId()).collect(Collectors.toSet());
+
+        friendDtoList = kakaofriends.stream().map(kakaoFriend ->{
+            User user = userRepository.findByUserId(kakaoFriend.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+            if(!friendsId.contains(kakaoFriend.getUserId())){
+                FriendDto friendDto = FriendDto.builder()
+                        .userId(kakaoFriend.getUserId())
+                        .userName(kakaoFriend.getUserName())
+                        .isFriend(false)
+                        .build();
+                return friendDto;
+            }else{
+                return null;
+            }
+        }).collect(Collectors.toList());
+        friendDtoList = friendDtoList.stream().filter(el-> el != null).collect(Collectors.toList());
+        return friendDtoList;
     }
 
     public KakaoProfile findUserByKakao(Long userKakaoId) {
@@ -393,5 +422,12 @@ public class KakaoService {
         return dto;
 
     }
+
+    public void isVaildUser(Long userId){
+        if (!userRepository.existsByUserId(userId)) {
+            throw new CustomException(ErrorCode.INVALID_USER);
+        }
+    }
+
 
 }
