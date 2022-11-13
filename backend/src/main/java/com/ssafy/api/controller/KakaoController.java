@@ -53,8 +53,8 @@ public class KakaoController {
     @ApiOperation(value = "카카오톡 친구목록 불러오기", notes = "AccessToken 사용해서 카카오 친구목록 호출")
     public ResponseEntity<? extends BasicResponse> getKakaoFriends(
             @RequestHeader(value = "token") String token) {
-        TokenInforamtion tokenInfo = kakaoService.checkToken(token);
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseEntity<>(kakaoService.getKakaoFriends(token)));
+        RefreshedTokenResDto tokenInfo = kakaoService.checkToken(token);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseEntity<>(kakaoService.getKakaoFriends(tokenInfo.getAccessToken())));
     }
 
     @GetMapping("/none-friends/{userId}")

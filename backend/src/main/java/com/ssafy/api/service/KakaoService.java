@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.api.dto.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
-import com.ssafy.db.entity.FriendsList;
 import com.ssafy.db.entity.User;
 import com.ssafy.db.repository.FriendsListRepository;
 import com.ssafy.db.repository.UserRepository;
@@ -294,7 +293,7 @@ public class KakaoService {
 
     }
 
-    public TokenInforamtion checkToken(String token) {
+    public RefreshedTokenResDto checkToken(String token) {
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -306,7 +305,7 @@ public class KakaoService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         TokenInforamtion tokenInforamtion = null;
-
+        RefreshedTokenResDto refreshedTokenResDto = null;
         try {
             ResponseEntity<String> tokenInformationResponse = rt.exchange(
                     "https://kapi.kakao.com/v1/user/access_token_info",
@@ -316,20 +315,30 @@ public class KakaoService {
             );
             try {
                 tokenInforamtion = objectMapper.readValue(tokenInformationResponse.getBody(), TokenInforamtion.class);
+                User user = userRepository.findByUserSocialToken(token).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                refreshedTokenResDto = RefreshedTokenResDto.builder()
+                        .access_token(user.getUserSocialToken())
+                        .refresh_token(user.getUserSocialRefreshToken())
+                        .id_token("")
+                        .token_type("")
+                        .expires_in(tokenInforamtion.getExpires_in())
+                        .refresh_token_expires_in(0)
+                        .build();
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         } catch (HttpClientErrorException e) {
-            refreshToken(token);
+            refreshedTokenResDto = refreshToken(token);
+            return refreshedTokenResDto;
         }
 
-
-        return tokenInforamtion;
+        return refreshedTokenResDto;
     }
     @Transactional
     public RefreshedTokenResDto refreshToken(String token) {
         User user = userRepository.findByUserSocialToken(token).get();
         String refreshToken = user.getUserSocialRefreshToken();
+        log.info("여기 왔당");
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -369,6 +378,7 @@ public class KakaoService {
             }else{
                 user.changeSocialTokenInfo(refreshedToken.getAccess_token(), refreshedToken.getRefresh_token());
             }
+            userRepository.save(user);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
