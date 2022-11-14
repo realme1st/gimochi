@@ -1,13 +1,13 @@
 package com.ssafy.api.service;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.SourceContext;
 import com.ssafy.api.dto.GifticonInfoReqDto;
 import com.ssafy.api.dto.GifticonPresentReq;
 import com.ssafy.api.dto.OcrResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.common.util.AmazonS3Util;
-//import com.ssafy.common.util.VisionApiUtil;
 import com.ssafy.common.util.VisionApiUtil;
 import com.ssafy.db.entity.Gifticon;
 import com.ssafy.db.entity.User;
@@ -15,14 +15,21 @@ import com.ssafy.db.repository.GifticonRepository;
 import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service("GiftconService")
 @Transactional(readOnly = true)
@@ -36,6 +43,8 @@ public class GifticonService {
 
     private final GifticonRepository gifticonRepository;
 
+    private final ResourceLoader resourceLoader;
+
     public OcrResDto detect(Long userId, MultipartFile multipartFile) {
         User user = userRepository.findByUserId(userId).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -48,12 +57,36 @@ public class GifticonService {
 
             /*
             * 분석 로직 들어가야함
+            * 결과가 정규식에 부합하는 경우 vs 부합하지 않는 경우
            * */
+
+            String target = words.get(0);
+            target = target.replaceAll("(\r\n|\r|\n|\n\r)", " ")
+                    .replaceAll(" ", ""); // 줄바꿈, 공백 모두 제거
+
+            List<String> stores = FileUtils.readLines(new File(resourceLoader
+                    .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
+            String store = "";
+            for(String s : stores) {
+                if(target.contains(s)) {
+                    store = s;
+                    break;
+                }
+            }
+
+            Pattern periodPattern = Pattern.compile("((20)([0-9]{2})|([0-9]{2}))(([^ㄱ-ㅎㅏ-ㅣa-zA-Z0-9])([0-9]{2}|[0-9]{1})){2}");
+            Matcher matcher = periodPattern.matcher(target);
+
+            String period = "";
+            if(matcher.find()) {
+                String temp = matcher.group();
+                period = temp.replaceAll("([년]|[월]|[.]|[\\/])", "-");
+            }
 
             OcrResDto ocrResDto = OcrResDto.builder()
                     .user(user)
-                    .gifticonStore(words.get(0))
-                    .gifticonPeriod("2022-12-31(아직 미완성)")
+                    .gifticonStore(store)
+                    .gifticonPeriod(period)
                     .build();
 
             return ocrResDto;

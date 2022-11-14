@@ -22,7 +22,7 @@ public class GifticonController {
 
     @PostMapping("/ocr/{userId}")
     @ApiOperation(value = "기프티콘 ocr 분석", notes = "<strong>기프티콘 이미지</strong> 를 받아" +
-            " <strong>정제된 기프티콘 정보</strong> 를 반환한다.")
+            " <strong>정제된 기프티콘 정보</strong> 를 반환한다. (정보가 없다면 \"\" 값 반환)")
 
     public ResponseEntity<? extends BasicResponse> detectText(@PathVariable Long userId,
                                                                @RequestPart("file") MultipartFile file) {
