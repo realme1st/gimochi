@@ -19,17 +19,23 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 @Service("GiftconService")
 @Transactional(readOnly = true)
@@ -64,8 +70,19 @@ public class GifticonService {
             target = target.replaceAll("(\r\n|\r|\n|\n\r)", " ")
                     .replaceAll(" ", ""); // 줄바꿈, 공백 모두 제거
 
-            List<String> stores = FileUtils.readLines(new File(resourceLoader
-                    .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
+            List<String> stores = null;
+            if(File.separator.equals("\\")) {
+                stores = FileUtils.readLines(new File(resourceLoader
+                        .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
+            } else if(File.separator.equals("/")) {
+                Path path = Paths.get("/store", "/stroes.txt");
+                InputStream in = Model.class.getClassLoader().getResourceAsStream(path.toString());
+                File tempFile = File.createTempFile(String.valueOf(in.hashCode()), ".tmp");
+                tempFile.deleteOnExit();
+                copyInputStreamToFile(in, tempFile);
+                stores = FileUtils.readLines(tempFile, Charset.defaultCharset());
+            }
+
             String store = "";
             for(String s : stores) {
                 if(target.contains(s)) {
