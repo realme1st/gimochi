@@ -122,7 +122,7 @@ public class ChallengeController {
     }
 
     @GetMapping("/challengeInfo/rank/{challengeId}/{userId}")
-    @ApiOperation(value = "챌린지 정보 조회", notes = "<strong>챌린지 ID와 유저 ID를 입력하여</strong> 해당 챌린지에 대한 자신의 순위와 1위 유저를 조회한다.")
+    @ApiOperation(value = "챌린지에서 순위 조회", notes = "<strong>챌린지 ID와 유저 ID를 입력하여</strong> 해당 챌린지에 대한 자신의 순위와 1위 유저를 조회한다.")
     public ResponseEntity<CommonResponseEntity<ChallengeInfoRankResDto>> getChallengeInfo(@PathVariable Long userId, Long challengeId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInfoRankByChallengeIdAndUserId(challengeId, userId)));
     }
