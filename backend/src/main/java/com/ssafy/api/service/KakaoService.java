@@ -54,7 +54,7 @@ public class KakaoService {
         //params.add("redirect_uri", "http://k7a205.p.ssafy.io/kakao/oauth");
 
         //ssl 인증서 설정 후
-        params.add("redirect_uri", "https://k7a205.p.ssafy.io/kakao/oauth");
+        params.add("redirect_uri", "https://k7a205.p.ssafy.io/api/kakao/oauth");
         params.add("code", code);
         params.add("client_secret", "5YBXwlymi8l1I2H57ZObnlrOQ4NNUrnS"); // 생략 가능!
 
