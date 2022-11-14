@@ -37,9 +37,9 @@ public class ChallengeInfo {
     @ColumnDefault("0")
     private int successCnt;
 
-//    @Column(name="my_rank")
-//    @ColumnDefault("0")
-//    private int myRank;
+    @Column(name="my_rank",nullable = false)
+    @ColumnDefault("0")
+    private int myRank;
 
     @Column(name="winner_name")
     @ColumnDefault("''")
@@ -76,11 +76,11 @@ public class ChallengeInfo {
     }
 
     @Builder
-    public ChallengeInfo(User user, Challenge challenge, int successCnt, String winnerName) {
+    public ChallengeInfo(User user, Challenge challenge, int successCnt, int myRank,String winnerName) {
         this.user = user;
         this.challenge = challenge;
         this.successCnt = successCnt;
-        //this.myRank = myRank;
+        this.myRank = myRank;
         this.winnerName = winnerName;
     }
 

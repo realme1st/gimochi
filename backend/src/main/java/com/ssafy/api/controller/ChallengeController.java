@@ -3,9 +3,11 @@ package com.ssafy.api.controller;
 
 import com.ssafy.api.dto.*;
 import com.ssafy.api.request.ChallengeAuthReqDto;
+import com.ssafy.api.request.ChallengeInfoRankReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeDetailResDto;
+import com.ssafy.api.response.ChallengeInfoRankResDto;
 import com.ssafy.api.response.ChallengeListResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
@@ -118,4 +120,11 @@ public class ChallengeController {
     public ResponseEntity<? extends BasicResponse> updateVote(@RequestBody UpdateChallengeAuthReqDto updateChallengeAuthReqDto){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.updateChallengeAuth(updateChallengeAuthReqDto)));
     }
+
+    @GetMapping("/challengeInfo/rank/{challengeId}/{userId}")
+    @ApiOperation(value = "챌린지 정보 조회", notes = "<strong>챌린지 ID와 유저 ID를 입력하여</strong> 해당 챌린지에 대한 자신의 순위와 1위 유저를 조회한다.")
+    public ResponseEntity<CommonResponseEntity<ChallengeInfoRankResDto>> getChallengeInfo(@PathVariable Long userId, Long challengeId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInfoRankByChallengeIdAndUserId(challengeId, userId)));
+    }
+
 }

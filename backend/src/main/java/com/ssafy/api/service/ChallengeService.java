@@ -1,13 +1,8 @@
 package com.ssafy.api.service;
 
 import com.ssafy.api.dto.*;
-import com.ssafy.api.request.ChallengeAuthReqDto;
-import com.ssafy.api.request.ChallengeInviteReqDto;
-import com.ssafy.api.request.ChallengeReqDto;
-import com.ssafy.api.response.ChallengeInviteResDto;
-import com.ssafy.api.response.ChallengeListResDto;
-import com.ssafy.api.response.ChallengeDetailResDto;
-import com.ssafy.api.response.UserListResDto;
+import com.ssafy.api.request.*;
+import com.ssafy.api.response.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.*;
@@ -154,6 +149,27 @@ public class ChallengeService {
             listRes.add(challengeListResDto);
         });
         return listRes;
+    }
+
+    public ChallengeInfoRankResDto findChallengeInfoRankByChallengeIdAndUserId(Long challengeId,Long userId) {
+
+        List<RankInterface> challengeInfoList = findChallengeInfoListByChallengeId(challengeId);
+
+        String winnerName = userRepository.findByUserId(challengeInfoList.get(0).getUserId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND)).getUserNickname();
+
+        int myRank = 0;
+
+        for(RankInterface challengeInfo : challengeInfoList){
+            if(challengeInfo.getUserId()==userId){
+                myRank= challengeInfo.getMyRank();
+            }
+        }
+        return ChallengeInfoRankResDto.toDto(winnerName, myRank, userId);
+    }
+
+    public List<RankInterface> findChallengeInfoListByChallengeId(Long challengeId) {
+        return challengeInfoRepository.findChallengeInfoListByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_INFO_NOT_FOUND));
     }
 
     @Transactional
@@ -349,6 +365,7 @@ public class ChallengeService {
     public User findUserByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
+
 
 
 }
