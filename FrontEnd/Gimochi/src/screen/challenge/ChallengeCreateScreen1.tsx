@@ -114,11 +114,12 @@ function ChallengeCreateScreen1({ navigation }) {
       <TabView value={index} onChange={setIndex} animationType='spring'>
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
-            <Text>포인트 도움말 ㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴㅇㄴ ~~~</Text>
-            <Text>1</Text>
-            <Text>2</Text>
-            <Text>3</Text>
-            <Text>4</Text>
+            <>
+              <Text>1</Text>
+              <Text>2</Text>
+              <Text>3</Text>
+              <Text>4</Text>
+            </>
           </ScrollView>
         </TabView.Item>
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>

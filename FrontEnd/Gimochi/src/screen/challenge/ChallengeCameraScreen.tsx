@@ -9,7 +9,6 @@ import {
   TabView,
   ThemeProvider,
   createTheme,
-  Slider,
   SpeedDial,
   Dialog,
   Icon,
@@ -21,15 +20,9 @@ import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
 
-function ChallengeDetailScreen0({ route, navigation }) {
+function ChallengeCameraScreen({ navigation }) {
   const [time, setTime] = useState(new Date());
   const [caltime, setCalTime] = useState();
-  const [visibleDialogF, setVisibleDialogF] = useState(false);
-  const [index, setIndex] = useState(0);
-
-  const toggleDialogF = () => {
-    setVisibleDialogF(!visibleDialogF);
-  };
   // useEffect(() => {
   //   console.log('10초');
   //   setTimeout(() => {
@@ -57,23 +50,19 @@ function ChallengeDetailScreen0({ route, navigation }) {
   // var result = parseInt(13 / 5); // 값은 2
   // var remainder = 13 % 5; // 값은 3
 
-  const dd = parseInt(caltime / 86400000);
-  const d = parseInt(caltime / 86400000) + 1;
-  var tt = caltime - dd * 86400000;
+  const d = parseInt(caltime / 86400000);
+  var tt = caltime - d * 86400000;
   const h = parseInt(tt / 3600000);
-  var tt = caltime - dd * 86400000 - h * 3600000;
+  var tt = caltime - d * 86400000 - h * 3600000;
   const m = parseInt(tt / 60000);
-  var tt = caltime - dd * 86400000 - h * 3600000 - m * 60000;
+  var tt = caltime - d * 86400000 - h * 3600000 - m * 60000;
   const t = parseInt(tt / 1000);
-  console.log(dd, h, m, t);
+  console.log(d, h, m, t);
 
   console.log(h);
 
   const userId = useSelector((state: RootState) => state.user.userId);
   // console.log(userId);
-
-  const challegneId = route.params.challengeId;
-  // console.log(challegneId);
 
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
@@ -87,7 +76,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
           {time.getHours()}시 {time.getMinutes()}분 {time.getSeconds()}초
         </Text>
         <Text>
-          SSTT | D-{d ? d : ''} | {h ? h : ''} | {m ? m : ''} | {t ? t : ''}
+          SSTT | D-{d + 1} | {h} | {m} | {t}
         </Text>
         <View
           style={{
@@ -116,99 +105,9 @@ function ChallengeDetailScreen0({ route, navigation }) {
             marginRight: 60,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }} onPress={() => toggleDialogF()}>
+          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
             참가 인원 1명 | 친구초대(친구목록(보내기/취소하기)|초대현황(대기중/참가중/취소아이콘)):
           </Text>
-          <Dialog isVisible={visibleDialogF} onBackdropPress={toggleDialogF} overlayStyle={{ height: 300 }}>
-            {/* <Dialog.Title title='친구친구' />
-            <Text>참가 인원 1명 |</Text>
-            <Text>참가 인원 1명 |</Text> */}
-
-            <Tab
-              // index 0 :포인트  1 :기프티콘
-              value={index}
-              onChange={(e) => setIndex(e)}
-              indicatorStyle={{
-                height: 0,
-              }}
-              style={{
-                borderRadius: 21,
-                backgroundColor: '#F6F6F6',
-                marginTop: 21,
-                marginHorizontal: 10,
-                height: 42,
-              }}
-              variant='primary'
-            >
-              <Tab.Item
-                title='초대 현황'
-                containerStyle={{
-                  borderRadius: 20,
-                  backgroundColor: index == 0 ? 'white' : '#F6F6F6',
-                  margin: 2,
-                  height: 38,
-                  padding: 0,
-                }}
-                titleStyle={{
-                  fontSize: 20,
-                  color: index == 0 ? '#FFA401' : '#686868',
-                  paddingHorizontal: 0,
-                  paddingVertical: 0,
-                  fontWeight: '900',
-                }}
-              />
-              <Tab.Item
-                title='친구 목록'
-                containerStyle={{
-                  borderRadius: 20,
-                  backgroundColor: index == 1 ? 'white' : '#F6F6F6',
-                  margin: 2,
-                  height: 38,
-                  padding: 0,
-                }}
-                titleStyle={{
-                  fontSize: 20,
-                  color: index == 1 ? '#FFA401' : '#686868',
-                  paddingHorizontal: 0,
-                  paddingVertical: 0,
-                }}
-              />
-            </Tab>
-
-            <TabView value={index} onChange={setIndex} animationType='spring'>
-              {index == 0 ? (
-                <TabView.Item style={{ backgroundColor: 'red', width: '100%', height: 100 }}>
-                  <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
-                    <>
-                      <Text>대기중</Text>
-                      <Text>수락완료</Text>
-                      <Icon
-                        name='close'
-                        type='fontisto'
-                        color='#FFE7BC'
-                        size={25}
-                        iconStyle={{ fontSize: 33 }}
-                      />
-                    </>
-                  </ScrollView>
-                </TabView.Item>
-              ) : (
-                <TabView.Item></TabView.Item>
-              )}
-              {index == 1 ? (
-                <TabView.Item style={{ backgroundColor: 'blue', width: '100%', height: 100 }}>
-                  <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
-                    <>
-                      <Text>초대하기</Text>
-                      <Text>취소하기</Text>
-                    </>
-                  </ScrollView>
-                </TabView.Item>
-              ) : (
-                <TabView.Item></TabView.Item>
-              )}
-            </TabView>
-          </Dialog>
         </View>
         <View
           style={{
@@ -260,4 +159,4 @@ function ChallengeDetailScreen0({ route, navigation }) {
   );
 }
 
-export default ChallengeDetailScreen0;
+export default ChallengeCameraScreen;
