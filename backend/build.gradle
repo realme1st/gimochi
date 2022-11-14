@@ -208,6 +208,10 @@ dependencies {
     // 구글 vision api (ocr)
     implementation platform('com.google.cloud:libraries-bom:26.1.3')
     implementation 'com.google.cloud:google-cloud-vision'
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
 }
 
 //test {
