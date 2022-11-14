@@ -16,13 +16,14 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken, String expiresIn) {
         this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
         this.userSocialToken = userSocialToken;
         this.userSocialRefreshToken = userSocialRefreshToken;
+        this.expiresIn = expiresIn;
     }
 
     @Id
@@ -46,6 +47,8 @@ public class User{
     private String userSocialRefreshToken;
     @Column(nullable = true)
     private String userFbToken;
+    @Column(nullable = true)
+    private String expiresIn;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
