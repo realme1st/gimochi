@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import Config from 'react-native-config';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 function GifticonUploadScreen() {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
@@ -65,6 +66,7 @@ function GifticonUploadScreen() {
       .catch(console.log);
   }, [onResponse]);
 
+  // 백으로 사진파일 보내서 OCR 처리 후 얻은 텍스트값 받음
   const postOCR = useCallback(async () => {
     if (!image) {
       Alert.alert('알림', '파일을 업로드해주세요.');
@@ -90,6 +92,7 @@ function GifticonUploadScreen() {
       });
   }, [image, accessToken, userId]);
 
+  // OCR 처리 후 텍스트 전처리된 값 받아와서 필요시 수정
   const postInfo = async () => {
     const formData = new FormData();
     formData.append('file', image);
@@ -109,6 +112,7 @@ function GifticonUploadScreen() {
       });
   };
 
+  // 이미지 서버에 post
   const postImage = async (id: number, formData: FormData) => {
     await axios
       .post(`${Config.API_URL}/gifticon/img/${id}`, formData, {

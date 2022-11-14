@@ -94,7 +94,8 @@ function HomeModal({ navigation, route }: HomeModalProps) {
           centerContent={
             <TouchableOpacity onPress={goHome}>
               <Image
-                source={require('../assets/images/homeMochi.png')}
+                // source={require('../assets/images/homeMochi.png')}
+                source={require('../../android/app/src/main/assets/images/homeMochi.png')}
                 resizeMode='contain'
                 style={{ width: 80, height: 80 }}
               />

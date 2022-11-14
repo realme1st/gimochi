@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import { logout, getProfile, unlink, KakaoProfile } from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../slices/user';
@@ -39,15 +38,12 @@ function MypageScreen({ navigation }) {
   }, []);
 
   const signOutWithKakao = async (): Promise<void> => {
-    // 1. logout() 메서드 실행
-    const message = await logout();
     // 2. AsyncStorage 'Login'값 변경, UserId 삭제
-    await AsyncStorage.setItem('login', 'false');
     await AsyncStorage.removeItem('userId');
     await AsyncStorage.removeItem('userNickname');
     await EncryptedStorage.removeItem('accessToken');
     await EncryptedStorage.removeItem('accessTokenExpiresAt');
-    console.log(message);
+    console.log(accessToken);
     // 3. back에 로그아웃 axios 요청
     axios
       .get(`${Config.API_URL}/kakao/oauth/logout`, {
@@ -72,18 +68,6 @@ function MypageScreen({ navigation }) {
     );
   };
 
-  const getKakaoProfile = async (): Promise<void> => {
-    const profile: KakaoProfile = await getProfile();
-
-    setResult(JSON.stringify(profile));
-  };
-
-  const unlinkKakao = async (): Promise<void> => {
-    const message = await unlink();
-
-    setResult(message);
-  };
-
   const goFriendRecom = () => {
     navigation.navigate('FriendRecomScreen');
   };
@@ -93,12 +77,6 @@ function MypageScreen({ navigation }) {
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={goFriendRecom}>
           <Text style={styles.text}>친구목록</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => getKakaoProfile()}>
-          <Text style={styles.text}>프로필 조회</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => unlinkKakao()}>
-          <Text style={styles.text}>카카오 언링크</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => signOutWithKakao()}>
           <Text style={styles.text}>카카오 로그아웃</Text>
