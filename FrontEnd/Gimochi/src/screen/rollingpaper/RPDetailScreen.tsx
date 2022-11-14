@@ -81,7 +81,8 @@ function RPDetailScreen({ navigation, route }) {
   return (
     <RPDetailContainer>
       <ImageBackground
-        source={require('../../assets/images/birthday1.jpg')}
+        // source={require('../../assets/images/birthday1.jpg')}
+        source={require('../../../android/app/src/main/assets/images/birthday1.jpg')}
         style={{ width: '100%', height: '100%', opacity: 0.5 }}
       >
         <Text>{sessionId}번 추카포카</Text>

@@ -7,31 +7,25 @@ const initialState = {
   accessToken: '',
   accessTokenExpiresAt: '',
   userId: '',
-  isFriendAccess: false,
 };
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     setLogin(state, action) {
-      state.userNickname = action.payload.userNickname;
       state.accessToken = action.payload.accessToken;
       state.accessTokenExpiresAt = action.payload.accessTokenExpiresAt;
       state.userId = action.payload.userId;
-      state.isFriendAccess = action.payload.isFriendAccess;
+      state.userNickname = action.payload.userNickname;
     },
     setLogout(state) {
-      state.userNickname = '';
       state.accessToken = '';
       state.accessTokenExpiresAt = '';
       state.userId = '';
-      state.isFriendAccess = false;
+      state.userNickname = '';
     },
     setToken(state, action) {
       state.accessToken = action.payload.accessToken;
-    },
-    setFriendAccess(state) {
-      state.isFriendAccess = true;
     },
   },
   extraReducers: (builder) => {},

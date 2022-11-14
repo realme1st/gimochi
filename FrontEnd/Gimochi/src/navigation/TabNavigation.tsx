@@ -74,42 +74,48 @@ function TabNavigation({ navigation, route }: HomeStackScreenProps) {
               <TouchableOpacity style={{ position: 'absolute', bottom: 1 }} onPress={() => homeModal()}>
                 {currentScreen === 'HomeScreen' && (
                   <Image
-                    source={require('../assets/images/homeMochi.png')}
+                    // source={require('../assets/images/homeMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/homeMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'AttendanceScreen' && (
                   <Image
-                    source={require('../assets/images/attendMochi.png')}
+                    // source={require('../assets/images/attendMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/attendMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'PlayScreen' && (
                   <Image
-                    source={require('../assets/images/playMochi.png')}
+                    // source={require('../assets/images/playMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/playMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'RollingpaperScreen' && (
                   <Image
-                    source={require('../assets/images/chukapokaMochi.png')}
+                    // source={require('../assets/images/chukapokaMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/chukapokaMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'ScheduleScreen' && (
                   <Image
-                    source={require('../assets/images/scheduleMochi.png')}
+                    // source={require('../assets/images/scheduleMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/scheduleMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />
                 )}
                 {currentScreen === 'ChallengeScreen' && (
                   <Image
-                    source={require('../assets/images/challengeMochi.png')}
+                    // source={require('../assets/images/challengeMochi.png')}
+                    source={require('../../android/app/src/main/assets/images/challengeMochi.png')}
                     resizeMode='contain'
                     style={{ width: 80, height: 80 }}
                   />

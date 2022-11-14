@@ -9,8 +9,6 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from './src/navigation/TabNavigation';
-import LoginScreen from './src/screen/LoginScreen';
-import AccessFriendsScreen from './src/screen/AccessFriendsScreen';
 import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -22,11 +20,13 @@ import { format } from 'date-fns';
 import axios from 'axios';
 import Config from 'react-native-config';
 import messaging from '@react-native-firebase/messaging';
+import LoginNavigation from './src/navigation/LoginNavigation';
 
 const Stack = createNativeStackNavigator();
 
 function AppInner() {
   const dispatch = useAppDispatch();
+  const isUserNickname = useSelector((state: RootState) => !!state.user.userNickname);
   const isUserId = useSelector((state: RootState) => !!state.user.userId);
   const date = new Date();
   const [aToken, setAToken] = useState('');
@@ -97,14 +97,20 @@ function AppInner() {
         });
       console.log(`푸시알림토큰 ${token}`);
     }
-    getToken();
+    if (aToken) {
+      getToken();
+    }
   }, [dispatch, aToken]);
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
         {!isUserId ? (
-          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen
+            name='Login'
+            component={LoginNavigation}
+            options={{ headerShown: false }}
+          ></Stack.Screen>
         ) : (
           <Stack.Screen name='Home' component={TabNavigation} options={{ headerShown: false }}></Stack.Screen>
         )}
