@@ -6,6 +6,7 @@ import ChallengeDetailScreen1 from '../screen/challenge/ChallengeDetailScreen1';
 import ChallengeDetailScreen2 from '../screen/challenge/ChallengeDetailScreen2';
 import ChallengeCreateScreen1 from '../screen/challenge/ChallengeCreateScreen1';
 import ChallengeCreateScreen2 from '../screen/challenge/ChallengeCreateScreen2';
+import ChallengeCameraScreen from '../screen/challenge/ChallengeCameraScreen';
 
 export type ChallengeStackParamList = {
   ChallengeMainScreen: undefined;
@@ -14,6 +15,7 @@ export type ChallengeStackParamList = {
   ChallengeDetailScreen2: undefined;
   ChallengeCreateScreen1: undefined;
   ChallengeCreateScreen2: undefined;
+  ChallengeCameraScreen: undefined;
 };
 
 const Challenge = createNativeStackNavigator<ChallengeStackParamList>();
@@ -50,7 +52,11 @@ function ChallengeNavigation() {
         component={ChallengeDetailScreen2}
         options={{ title: '종료된 챌린지 상세보기' }}
       ></Challenge.Screen>
-
+      <Challenge.Screen
+        name='ChallengeCameraScreen'
+        component={ChallengeCameraScreen}
+        options={{ title: '챌린지 카메라 인증' }}
+      ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeCreateScreen1'
         component={ChallengeCreateScreen1}

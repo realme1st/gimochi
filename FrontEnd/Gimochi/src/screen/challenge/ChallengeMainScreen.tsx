@@ -19,7 +19,7 @@ function ChallengeMainScreen({ navigation, route }) {
   const [my1ChIdList, setmy1ChIdList] = useState([]);
   const [my2ChIdList, setmy2ChIdList] = useState([]);
   console.log(index);
-
+  console.log('JMJ1');
   // console.log('M');
   // const myList = route.params.myList ? route.params.myList : [];
   // console.log(myList);
@@ -31,6 +31,9 @@ function ChallengeMainScreen({ navigation, route }) {
   };
   const goDetail2 = (id) => {
     navigation.navigate('ChallengeDetailScreen2', { challengeId: id });
+  };
+  const goCamera = () => {
+    navigation.navigate('ChallengeCameraScreen');
   };
 
   const goWrite1 = () => {
@@ -49,7 +52,7 @@ function ChallengeMainScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    console.log('랜더링');
+    console.log('JMJ2');
     // let myChIdList = [16, 19, 20, 21, 22, 23, 24];
     async function myList() {
       const response = await axios.get(`${Config.API_URL}/challenge/challengeList/` + userId);
@@ -222,6 +225,12 @@ function ChallengeMainScreen({ navigation, route }) {
               onPress={() => goDetail2(1)}
             >
               <Text>챌린지 종료된 상세보기</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ marginVertical: 10, backgroundColor: 'yellow' }}
+              onPress={() => goCamera()}
+            >
+              <Text>챌린지 카메라</Text>
             </TouchableOpacity>
             <Text>대기중 진행중 여기서 표시 삭제는 각 챌린지 들어가서</Text>
             <Text>챌린지 진행중</Text>
