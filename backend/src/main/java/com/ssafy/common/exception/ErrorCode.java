@@ -58,7 +58,8 @@ public enum ErrorCode {
     CHALLENGE_DATE_ERROR(HttpStatus.BAD_REQUEST, "챌린지 시작일이 종료일보다 늦습니다." ),
     INVALID_USER_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 아이디 입니다." ),
     INVALID_GIFTICON_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 기프티콘 아이디 입니다." ), 
-    SESSION_MESSAGE_CREATE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "세션 메세지 생성 중 서버 오류가 발생했습니다. 관리자에게 문의하세요" );
+    SESSION_MESSAGE_CREATE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "세션 메세지 생성 중 서버 오류가 발생했습니다. 관리자에게 문의하세요" ),
+    CHALLENGE_INFO_NOT_FOUND( HttpStatus.NOT_FOUND, "해당 챌린지 ID에 해당하는 챌린지 INFO를 찾을 수 없습니다." );
 
     private final HttpStatus httpStatus;
     private final String message;
