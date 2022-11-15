@@ -27,12 +27,16 @@ public class ChallengeListResDto {
 
     private int challenger_cnt;
 
+    private int myRank;
+
+    private String winnerName;
+
 
     @Builder
     public ChallengeListResDto(Long challengeId, int successCnt, String challengeTitle,
                                String challengeLeaderName, int challengeRewardType, int challengeActive,
                                LocalDate challengeStartDate, LocalDate challengeEndDate,
-                               int challenger_cnt) {
+                               int challenger_cnt, int myRank, String winnerName) {
         this.challengeId = challengeId;
         this.successCnt = successCnt;
         this.challengeTitle = challengeTitle;
@@ -42,10 +46,12 @@ public class ChallengeListResDto {
         this.challengeStartDate = challengeStartDate;
         this.challengeEndDate = challengeEndDate;
         this.challenger_cnt = challenger_cnt;
+        this.myRank = myRank;
+        this.winnerName = winnerName;
 
     }
 
-    public static ChallengeListResDto toDto(ChallengeInfo challengeInfo) {
+    public static ChallengeListResDto toDto(ChallengeInfo challengeInfo, int myRank, String winnerName) {
         return ChallengeListResDto.builder()
                 .challengeId(challengeInfo.getChallenge().getChallengeId())
                 .challengeTitle(challengeInfo.getChallenge().getChallengeTitle())
@@ -56,6 +62,10 @@ public class ChallengeListResDto {
                 .challengeEndDate(challengeInfo.getChallenge().getChallengeEndDate())
                 .challengeRewardType(challengeInfo.getChallenge().getChallengeRewardType())
                 .challenger_cnt(challengeInfo.getChallenge().getChallengeInfoList().size())
+                .myRank(myRank)
+                .winnerName(winnerName)
                 .build();
     }
+
+
 }

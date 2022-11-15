@@ -142,10 +142,14 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         List<ChallengeListResDto> listRes = new ArrayList<>();
 
+
+
         userInfoList.stream().forEach(challengeInfo -> {
 
-            ChallengeListResDto challengeListResDto = ChallengeListResDto.toDto(challengeInfo);
+            Long challengeId = challengeInfo.getChallenge().getChallengeId();
+            ChallengeInfoRankResDto resDto= findChallengeInfoRankByChallengeIdAndUserId(challengeId,userId);
 
+            ChallengeListResDto challengeListResDto = ChallengeListResDto.toDto(challengeInfo, resDto.getMyRank(), resDto.getWinnerName());
             listRes.add(challengeListResDto);
         });
         return listRes;
