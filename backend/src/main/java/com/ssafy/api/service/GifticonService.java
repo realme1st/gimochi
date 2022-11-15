@@ -207,7 +207,7 @@ public class GifticonService {
     }
 
     public List<Gifticon> getGifticonByUserId(Long userId) {
-        return gifticonRepository.findAllByUserUserId(userId)
+        return gifticonRepository.findAllByUserUserIdOrderByGifticonPeriod(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID)); // 수정 필요
     }
 
