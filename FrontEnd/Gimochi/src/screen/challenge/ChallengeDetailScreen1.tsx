@@ -58,6 +58,10 @@ function ChallengeDetailScreen1({ route, navigation }) {
     return `rgb(${r},${g},${b})`;
   };
 
+  const goCamera = (id) => {
+    navigation.navigate('ChallengeCameraScreen', { chId: id }); //adasd[0].id
+  };
+
   return (
     <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
       <Tab
@@ -153,21 +157,21 @@ function ChallengeDetailScreen1({ route, navigation }) {
             <Text style={{ marginVertical: 20 }} onPress={() => toggleDialogG()}>
               총상금 or 기프티콘 누르면 설명
             </Text>
-            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
+            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG} overlayStyle={{ height: 300 }}>
               <Dialog.Title title='기프티콘/ 포인트 총상금 관련' />
               <Text>두두두둗</Text>
             </Dialog>
             <Text style={{ marginVertical: 20 }} onPress={() => toggleDialogF()}>
               현재 나의 순위 / 모달 랭킹
             </Text>
-            <Dialog isVisible={visibleDialogF} onBackdropPress={toggleDialogF}>
+            <Dialog isVisible={visibleDialogF} onBackdropPress={toggleDialogF} overlayStyle={{ height: 300 }}>
               <Dialog.Title title='랭킹 화면 ' />
               <Text>두두두둗</Text>
-              {/* <Image
+              <Image
                 source={require('../../assets/images/leader.png')}
                 resizeMode='contain'
-                style={{ width: 80, height: 80 }}
-              /> */}
+                style={{ width: 280, height: 280 }}
+              />
             </Dialog>
           </ScrollView>
         </TabView.Item>
@@ -179,7 +183,7 @@ function ChallengeDetailScreen1({ route, navigation }) {
               size={20}
               // containerStyle={{ bottom: 20, right: 20 }}
             />
-            <Text>인증하기</Text>
+            <Text onPress={() => goCamera(1)}>인증하기</Text>
             <Icon name='question' type='octicon' size={20} color='black' onPress={() => toggleDialogQ()} />
 
             <Dialog isVisible={visibleDialogQ} onBackdropPress={toggleDialogQ}>
