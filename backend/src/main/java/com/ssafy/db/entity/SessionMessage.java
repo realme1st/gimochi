@@ -27,6 +27,9 @@ public class SessionMessage {
     @Column(nullable = false, name = "expire_time")
     private LocalDate expireTime;
 
+    @Column(name="message_type")
+    private int messageType;
+
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "sessionId")
@@ -51,20 +54,22 @@ public class SessionMessage {
     }
 
     @Builder
-    public SessionMessage(String nickname, String field, LocalDate expireTime, Session session) {
+    public SessionMessage(String nickname, String field, LocalDate expireTime, Session session, int messageType) {
         this.nickname = nickname;
         this.field = field;
         this.session = session;
         this.expireTime = expireTime;
+        this.messageType = messageType;
     }
 
     @Builder
-    public SessionMessage(String nickname, String field, LocalDate expireTime, Session session, Gifticon gifticon) {
+    public SessionMessage(String nickname, String field, LocalDate expireTime, Session session, Gifticon gifticon, int messageType) {
         this.nickname = nickname;
         this.field = field;
         this.session = session;
         this.gifticon = gifticon;
         this.expireTime = expireTime;
+        this.messageType = messageType;
     }
 
 }

@@ -130,6 +130,7 @@ public class SessionService {
         SessionMessage sessionMessage = SessionMessageResDto.toDto(sessionMessageReqDto);
         /* sessionMessage 설정 */
         sessionMessage.setSession(session);
+
         // 기프티콘 아이디로 기프티콘 조회 후 세션메세지에 추가
         if(sessionMessageReqDto.getGifticonId() != null){
             Gifticon gifticon = gifticonService.getGifticonByGifticonId(sessionMessageReqDto.getGifticonId());
