@@ -274,7 +274,7 @@ const ModalButtonContainer = styled.View`
 const ModalButton = styled.TouchableOpacity`
   background-color: #ffa401;
   width: 30%;
-  border-radius: 10;
+  border-radius: 10px;
   align-items: center;
   justify-content: center;
   margin: 5%;
