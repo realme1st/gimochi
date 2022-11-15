@@ -61,7 +61,7 @@ public class GifticonService {
         System.out.println("Current dir:" + currentPath);
         System.out.println("=============================");
         Map<String, String> env = new HashMap<>();
-        env.put("GOOGLE_APPLICATION_CREDENTIALS", "/home/ubuntu/gimochi-cd8bdea6fd58.json");
+        env.put("GOOGLE_APPLICATION_CREDENTIALS", System.getProperty("user.dir")+"/gimochi-cd8bdea6fd58.json");
         setEnv(env);
     }
 
