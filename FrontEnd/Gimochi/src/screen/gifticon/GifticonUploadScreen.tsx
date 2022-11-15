@@ -13,6 +13,8 @@ import ImageResizer from 'react-native-image-resizer';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
+import { useAppDispatch } from '../../store';
+import reloadSlice from '../../slices/reload';
 import Config from 'react-native-config';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
 import { format } from 'date-fns';
@@ -22,15 +24,16 @@ import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
-function GifticonUploadScreen() {
+function GifticonUploadScreen({ navigation }) {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
   const [preview, setPreview] = useState<{ uri: string }>();
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const userId = useSelector((state: RootState) => state.user.userId);
   const [store, setStore] = useState('');
-  const [period, setPeriod] = useState('');
+  // const [period, setPeriod] = useState('');
   const [date, onChangeDate] = useState<Date>(new Date());
   const [visible, setVisible] = useState<boolean>(false); // 달력 모달 노출 여부
+  const dispatch = useAppDispatch();
 
   // ImageCropPicker에서 crop된 사진을 resizing한 후 객체 형태(경로, 파일이름, 타입)로 이미지 파일 저장하는 메서드
   const onResponse = useCallback(async (response) => {
@@ -102,7 +105,7 @@ function GifticonUploadScreen() {
     formData.append('file', image);
     await axios
       .post(`${Config.API_URL}/gifticon/info`, {
-        gifticonPeriod: period,
+        gifticonPeriod: format(date, 'yyyy-MM-dd'),
         gifticonStore: store,
         userId: userId,
       })
@@ -125,6 +128,12 @@ function GifticonUploadScreen() {
       })
       .then(function (response) {
         console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        navigation.goBack();
       })
       .catch(function (error) {
         console.log(error);
