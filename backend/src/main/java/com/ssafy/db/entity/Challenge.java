@@ -111,6 +111,9 @@ public class Challenge {
         this.challengeActive=challengeActive;
     }
 
+    public void setChallengeId(Long challengeId){
+        this.challengeId = challengeId;
+    }
 
 }
 

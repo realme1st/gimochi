@@ -36,39 +36,26 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         //challenge id가 없는 경우(challenge 만들면서 info도 (방장이추가)
-//        Challenge challenge = Challenge.builder()
-//                .challengeTitle(challengeReqDto.getChallengeTitle())
-//                .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
-//                .challengeDescription(challengeReqDto.getChallengeDescription())
-//                .challengeStartDate(challengeReqDto.getChallengeStartDate())
-//                .challengeEndDate(challengeReqDto.getChallengeEndDate())
-//                .challengeRewardType(challengeReqDto.getChallengeRewardType())
-//                .challengeLeaderName(user.getUserNickname())
-//                .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
-//                .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
-//                .challengeActive(challengeReqDto.getChallengeActive())
-//                .build();
-//        Challenge challenge = ChallengeResDto.createChallenge(challengeReqDto);
-//        if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
-//            challengeRepository.save(challenge);
-//        }else{
-//            throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
-//        }
-//        ChallengeResDto challengeResDto = null;
-//        try{
-//            Long challengeId = challengeRepository.save(challenge).getChallengeId();
-//            session.setSessionId(sessionId);
-//            sessionResDto = ChallengeResDto.toDto(user, challenge);
-//        }catch (IllegalArgumentException e){
-//            throw new CustomException(ErrorCode.SESSION_SAVE_ERROR);
-//        }
-//        return sessionResDto;
 
+        Challenge challenge = ChallengeResDto.createChallenge(challengeReqDto);
+        if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
+            challengeRepository.save(challenge);
+        }else{
+            throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
+        }
+        ChallengeResDto challengeResDto = null;
+        try{
+            Long challengeId = challengeRepository.save(challenge).getChallengeId();
+            challenge.setChallengeId(challengeId);
+            challengeResDto = ChallengeResDto.toDto(user, challenge);
+        }catch (IllegalArgumentException e){
+            throw new CustomException(ErrorCode.SESSION_SAVE_ERROR);
+        }
 
-//        createChallengeInfoFirst(challenge);
-//
-//        return true;
-        return null;
+        createChallengeInfoFirst(challenge);
+
+        return challengeResDto;
+
     }
 
     @Transactional
