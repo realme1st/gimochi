@@ -4,7 +4,6 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import RPMainScreen from '../screen/rollingpaper/RPMainScreen';
 import RPDetailScreen from '../screen/rollingpaper/RPDetailScreen';
 import RPWriteScreen from '../screen/rollingpaper/RPWriteScreen';
-import RPMessageWriteScreen from '../screen/rollingpaper/RPMessageWriteScreen';
 
 export type RPStackParamList = {
   RPMainScreen: undefined;
@@ -33,11 +32,6 @@ function RPNavigation() {
         name='RPWriteScreen'
         component={RPWriteScreen}
         options={{ title: '추카포카 작성' }}
-      ></RP.Screen>
-      <RP.Screen
-        name='RPMessageWriteScreen'
-        component={RPMessageWriteScreen}
-        options={{ title: '추카포카 메시지 작성' }}
       ></RP.Screen>
     </RP.Navigator>
   );

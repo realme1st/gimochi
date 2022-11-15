@@ -25,8 +25,8 @@ function PlayScreen() {
   }, []);
 
   return (
-    <View>
-      <Text>놀이터</Text>
+    <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
+      <Text style={{ fontFamily: 'Regular', color: '#000000' }}>추후 업데이트 예정입니다</Text>
     </View>
   );
 }
