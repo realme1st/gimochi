@@ -10,12 +10,17 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Alert, Image, Dimensions, TextInput } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import Config from 'react-native-config';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
+import { format } from 'date-fns';
+import ko from 'date-fns/esm/locale/ko/index.js';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import styled from 'styled-components/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
 function GifticonUploadScreen() {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
@@ -24,9 +29,8 @@ function GifticonUploadScreen() {
   const userId = useSelector((state: RootState) => state.user.userId);
   const [store, setStore] = useState('');
   const [period, setPeriod] = useState('');
-  const [gifticonId, setGifticonId] = useState(1);
-
-  // console.log(preview);
+  const [date, onChangeDate] = useState<Date>(new Date());
+  const [visible, setVisible] = useState<boolean>(false); // 달력 모달 노출 여부
 
   // ImageCropPicker에서 crop된 사진을 resizing한 후 객체 형태(경로, 파일이름, 타입)로 이미지 파일 저장하는 메서드
   const onResponse = useCallback(async (response) => {
@@ -74,18 +78,18 @@ function GifticonUploadScreen() {
     }
     console.log(preview);
     const formData = new FormData();
-    // const info = { userId: userId, gifticonScore: 'testStore', gifticonPeriod: '2022-11-08' };
     formData.append('file', image);
-    // formData.append('gifticon', info);
-    // console.log(formData);
+    console.log(formData);
     await axios
       .post(`${Config.API_URL}/gifticon/ocr/${userId}`, formData, {
         headers: {
-          'content-type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(function (response) {
         console.log(response);
+        // setPeriod(response.data.data.period);
+        // setStore(response.data.data.store);
       })
       .catch(function (error) {
         console.log(error);
@@ -104,7 +108,6 @@ function GifticonUploadScreen() {
       })
       .then(function (response) {
         console.log(response);
-        // setGifticonId(response.data.data.gifticonId);
         postImage(response.data.data.gifticonId, formData);
       })
       .catch(function (error) {
@@ -128,6 +131,29 @@ function GifticonUploadScreen() {
       });
   };
 
+  const onPressDate = () => {
+    // 날짜 클릭 시
+    setVisible(true); // 모달 open
+  };
+
+  const onChange = (event: void, selectedDate: Date) => {
+    const currentDate: Date = selectedDate || date;
+    onChangeDate(currentDate);
+    console.log(currentDate);
+    setVisible(false);
+  };
+
+  const onConfirm = (selectedDate: Date) => {
+    // 날짜 또는 시간 선택 시
+    setVisible(false); // 모달 close
+    onChangeDate(selectedDate); // 선택한 날짜 변경
+  };
+
+  const onCancel = () => {
+    // 취소 시
+    setVisible(false); // 모달 close
+  };
+
   return (
     <DismissKeyboardView style={{ backgroundColor: '#ffffff' }}>
       <Text>티콘모아</Text>
@@ -144,12 +170,64 @@ function GifticonUploadScreen() {
         <Text>1차 이미지 제출(OCR)</Text>
       </TouchableOpacity>
       <TextInput placeholder='대충 사용처' value={store} onChangeText={setStore}></TextInput>
-      <TextInput placeholder='대충 기간' value={period} onChangeText={setPeriod}></TextInput>
-      <TouchableOpacity onPress={postInfo}>
-        <Text>정보 제출</Text>
-      </TouchableOpacity>
+      <FormContainer>
+        <DateButton onPress={onPressDate}>
+          <DateButtonContainer>
+            <FontAwesomeIcon icon={faCalendar} size={20} />
+            <DateText>{format(new Date(date), 'PPP', { locale: ko })}</DateText>
+          </DateButtonContainer>
+        </DateButton>
+        {visible && (
+          <DateTimePicker
+            mode={'date'}
+            display='spinner'
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+            onChange={onChange}
+            value={date}
+            locale='ko'
+          />
+        )}
+      </FormContainer>
+      <SubmitButton onPress={postInfo}>
+        <SubmitText>제출</SubmitText>
+      </SubmitButton>
     </DismissKeyboardView>
   );
 }
+
+const FormContainer = styled.View`
+  margin: 5% 10%;
+`;
+
+const DateButton = styled.TouchableOpacity`
+  width: 60%;
+`;
+
+const DateButtonContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+`;
+
+const DateText = styled.Text`
+  font-size: 20px;
+  font-family: 'Regular';
+  margin-left: 5%;
+`;
+
+const SubmitButton = styled.TouchableOpacity`
+  width: 20%;
+  border-radius: 10px;
+  background-color: #ffa401;
+  align-items: center;
+  margin-left: 70%;
+`;
+
+const SubmitText = styled.Text`
+  font-family: 'Regular';
+  font-size: 20px;
+  color: #ffffff;
+  margin: 5%;
+`;
 
 export default GifticonUploadScreen;

@@ -45,7 +45,6 @@ function RPWriteScreen({ navigation }) {
   const onPressDate = () => {
     // 날짜 클릭 시
     setVisible(true); // 모달 open
-    console.log('why');
   };
 
   const onChange = (event: void, selectedDate: Date) => {
@@ -178,6 +177,7 @@ function RPWriteScreen({ navigation }) {
 
 const EntireContainer = styled.View`
   flex: 1;
+  background-color: #ffffff;
 `;
 
 const TitleContainer = styled.View`
@@ -187,6 +187,7 @@ const TitleContainer = styled.View`
 const TitleText = styled.Text`
   font-size: 30px;
   font-family: 'Regular';
+  color: #000000;
 `;
 const DropdownContainer = styled.View`
   margin: 0% 10%;
@@ -209,6 +210,7 @@ const DateText = styled.Text`
   font-size: 20px;
   font-family: 'Regular';
   margin-left: 5%;
+  color: #000000;
 `;
 
 const SubmitButton = styled.TouchableOpacity`
