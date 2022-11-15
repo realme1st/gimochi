@@ -55,6 +55,10 @@ public class GifticonService {
         User user = userRepository.findByUserId(userId).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        System.out.println("=============================");
+        System.out.println(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        System.out.println("=============================");
+
         try {
             VisionApiUtil visionApiUtil = new VisionApiUtil();
             ByteString imgBytes = ByteString.readFrom(multipartFile.getInputStream());
