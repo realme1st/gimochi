@@ -1,9 +1,9 @@
 package com.ssafy.api.controller;
 
 
-import com.ssafy.api.dto.*;
+import com.ssafy.api.dto.UpdateChallengeAuthReqDto;
+import com.ssafy.api.dto.VoteReqDto;
 import com.ssafy.api.request.ChallengeAuthReqDto;
-import com.ssafy.api.request.ChallengeInfoRankReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeDetailResDto;
@@ -12,13 +12,11 @@ import com.ssafy.api.response.ChallengeListResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.entity.Challenge;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -123,7 +121,7 @@ public class ChallengeController {
 
     @GetMapping("/challengeInfo/rank/{challengeId}/{userId}")
     @ApiOperation(value = "챌린지에서 순위 조회", notes = "<strong>챌린지 ID와 유저 ID를 입력하여</strong> 해당 챌린지에 대한 자신의 순위와 1위 유저를 조회한다.")
-    public ResponseEntity<CommonResponseEntity<ChallengeInfoRankResDto>> getChallengeInfo(@PathVariable Long userId, Long challengeId) {
+    public ResponseEntity<CommonResponseEntity<ChallengeInfoRankResDto>> getChallengeInfo(@PathVariable Long userId, @PathVariable Long challengeId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInfoRankByChallengeIdAndUserId(challengeId, userId)));
     }
 
