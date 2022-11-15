@@ -263,28 +263,6 @@ public class ChallengeService {
     }
 
 
-
-    @Transactional
-    public Vote createVote(VoteReqDto voteReqDto) {
-
-        ChallengeAuth challengeAuth = challengeAuthRepository.findByChallengeAuthId(voteReqDto.getChallengeAuthId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
-        Vote vote = Vote.builder()
-                .challengeAuth(challengeAuth)
-                .authUserId(voteReqDto.getAuthUserId())
-                .voteUserId(voteReqDto.getVoteUserId())
-                .build();
-
-        // Vote 저장
-        try {
-            voteRepository.save(vote);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
-        }
-
-        return vote;
-    }
-
     @Transactional
     public ChallengeAuth updateChallengeAuth(UpdateChallengeAuthReqDto updateChallengeAuthReqDto) {
 
@@ -292,6 +270,7 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
         Long authUserId = updateChallengeAuthReqDto.getAuthUserId();
         Long voteUserId = updateChallengeAuthReqDto.getVoteUserId();
+        Long challengeAuthId = updateChallengeAuthReqDto.getChallengeAuthId();
         // User 유효성 검사
         findUserByUserId(updateChallengeAuthReqDto.getAuthUserId());
         findUserByUserId(updateChallengeAuthReqDto.getVoteUserId());
@@ -319,7 +298,7 @@ public class ChallengeService {
         try {
             // 1
             voteRepository.findByAuthUserIdAndVoteUserId(authUserId, voteUserId);
-            voteRepository.save(Vote.builder().authUserId(authUserId).voteUserId(voteUserId).build());
+            voteRepository.save(Vote.builder().authUserId(authUserId).voteUserId(voteUserId).challengeAuth(challengeAuth).build());
             // 2
             challengeAuth.voteCntUp();
             // 3
