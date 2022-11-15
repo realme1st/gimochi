@@ -55,7 +55,7 @@ public class GifticonService {
     @PostConstruct
     public void init() throws Exception {
         Map<String, String> env = new HashMap<>();
-        env.put("GOOGLE_APPLICATION_CREDENTIALS", "/var/lib/jenkins/gimochi-cd8bdea6fd58.json");
+        env.put("GOOGLE_APPLICATION_CREDENTIALS", "/home/ubuntu/gimochi-cd8bdea6fd58.json");
         setEnv(env);
     }
 
