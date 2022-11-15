@@ -1,5 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+} from 'react-native';
 import {
   BottomSheet,
   Button,
@@ -13,6 +24,8 @@ import {
   Dialog,
   Icon,
 } from '@rneui/themed';
+import ImagePicker from 'react-native-image-crop-picker';
+import ImageResizer from 'react-native-image-resizer';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -20,128 +33,127 @@ import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
 
-function ChallengeCameraScreen({ navigation }) {
-  const [time, setTime] = useState(new Date());
-  const [caltime, setCalTime] = useState();
-  // useEffect(() => {
-  //   console.log('10초');
-  //   setTimeout(() => {
-  //     setTime(new Date());
-  //   }, 10000);
-  // });
-
-  const interval = useRef(null);
-  useEffect(() => {
-    console.log('5초');
-    interval.current = setInterval(() => {
-      console.log(new Date());
-      console.log(SSTT - new Date() - 32400000);
-      setTime(new Date());
-      setCalTime(SSTT - new Date() - 32400000);
-    }, 5000);
-    // 타이머 컴포넌트가 언마운트 될 때 실행
-    return () => clearInterval(interval.current);
-  });
-  // Start End Time 테스트용  !! 한국 표준시 9시간 빼줘야함 -32400000
-  // 86400000 24시간 3600000 1시간  60000 1분  1000 1초
-  const SSTT = new Date('2022-11-16');
-  const EETT = new Date('2022-11-09');
-
-  // var result = parseInt(13 / 5); // 값은 2
-  // var remainder = 13 % 5; // 값은 3
-
-  const d = parseInt(caltime / 86400000);
-  var tt = caltime - d * 86400000;
-  const h = parseInt(tt / 3600000);
-  var tt = caltime - d * 86400000 - h * 3600000;
-  const m = parseInt(tt / 60000);
-  var tt = caltime - d * 86400000 - h * 3600000 - m * 60000;
-  const t = parseInt(tt / 1000);
-  console.log(d, h, m, t);
-
-  console.log(h);
-
+function ChallengeCameraScreen({ navigation, route }) {
+  const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
+  const [preview, setPreview] = useState<{ uri: string }>();
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const userId = useSelector((state: RootState) => state.user.userId);
-  // console.log(userId);
+
+  const chId = route.params.chId ? route.params.chId : '';
+  const dispatch = useAppDispatch();
+
+  console.log(chId);
+
+  // axios
+  // const onComplete = useCallback(async () => {
+  //   if (!image) {
+  //     Alert.alert('알림', '파일을 업로드해주세요.');
+  //     return;
+  //   }
+  //   if (!chId) {
+  //     Alert.alert('알림', '유효하지 않은 주문입니다.');
+  //     return;
+  //   }
+  //   const formData = new FormData();
+
+  //   formData.append('chId', chId);
+  //   formData.append('image', image);
+  //   // 이미지 서버에 트큰이랑 보내줌?
+  //   try {
+  //     await axios.post(`${Config.API_URL}/complete`, formData, {
+  //       headers: {
+  //         authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+  //     Alert.alert('알림', '완료처리 되었습니다.');
+  //     navigation.goBack(); // 뒤로가기  스택관리
+  //     // navigation.navigate('Settings');
+  //     dispatch(orderSlice.actions.rejectOrder(chId));
+  //   } catch (error) {
+  //     const errorResponse = (error as AxiosError).response;
+  //     if (errorResponse) {
+  //       Alert.alert('알림', errorResponse.data.message);
+  //     }
+  //   }
+  // }, [dispatch, navigation, image, chId, accessToken]);
 
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
   };
+  // ImageCropPicker에서 crop된 사진을 resizing한 후 객체 형태(경로, 파일이름, 타입)로 이미지 파일 저장하는 메서드
+  const onResponse = useCallback(async (response) => {
+    console.log(response.width, response.height, response.exif);
+    setPreview({ uri: `data:${response.mime};base64,${response.data}` });
+    const orientation = (response.exif as any)?.Orientation;
+    console.log('orientation', orientation);
+    return ImageResizer.createResizedImage(
+      response.path, // 파일 경로
+      600,
+      600,
+      response.mime.includes('jpeg') ? 'JPEG' : 'PNG',
+      100,
+      0,
+      // orientation === 3 ? -90 : 0, // 이미지 돌아가있을때
+    ).then((r) => {
+      console.log(r.uri, r.name);
+
+      setImage({
+        uri: r.uri,
+        name: r.name,
+        type: response.mime,
+        // type: 'image/jpeg',
+      });
+    });
+  }, []);
+  // 권한 설정 된 상태에서 카메라 촬영
+  const onTakePhoto = useCallback(() => {
+    return ImagePicker.openCamera({
+      includeBase64: true,
+      includeExif: true,
+      saveToPhotos: true,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      mediaType: 'photo',
+    })
+      .then(onResponse)
+      .catch(console.log);
+  }, [onResponse]);
+  // 갤러리에서 사진 파일을 골라서 crop하는 메서드
+  const onChangeFile = useCallback(() => {
+    return ImagePicker.openPicker({
+      includeExif: true,
+      includeBase64: true,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      mediaType: 'photo',
+    })
+      .then(onResponse)
+      .catch(console.log);
+  }, [onResponse]);
 
   return (
     <View style={{ backgroundColor: '#fff', flex: 1 }}>
       <ScrollView>
-        <Text>Current Date Time</Text>
-        <Text>
-          {time.getHours()}시 {time.getMinutes()}분 {time.getSeconds()}초
-        </Text>
-        <Text>
-          SSTT | D-{d + 1} | {h} | {m} | {t}
-        </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 80,
-            padding: 20,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>제목{'  '}:</Text>
+        <View style={styles.orderId}>
+          <Text>챌린지번호: {chId}</Text>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 80,
-            padding: 20,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>기간{'  '}: S~E매일</Text>
+        <View style={styles.preview}>
+          {preview && <Image style={styles.previewImage} source={preview} />}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 150,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-            참가 인원 1명 | 친구초대(친구목록(보내기/취소하기)|초대현황(대기중/참가중/취소아이콘)):
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 80,
-            padding: 20,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-            누적 상금|기프티콘 /?아이콘
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 80,
-            padding: 20,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>인증 방법 확인하기 (모달)</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 80,
-            padding: 20,
-            marginRight: 60,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-            타임스탬프 00되면 자동시작
-          </Text>
+        <View style={styles.buttonWrapper}>
+          <Pressable style={styles.button} onPress={onTakePhoto}>
+            <Text style={styles.buttonText}>이미지 촬영</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={onChangeFile}>
+            <Text style={styles.buttonText}>이미지 선택</Text>
+          </Pressable>
+          {/* 업로드시 버튼 광클 방지 로직 해보기   | 디스에이블, 로딩*/}
+          <Pressable
+            style={image ? styles.button : StyleSheet.compose(styles.button, styles.buttonDisabled)}
+            // onPress={onComplete}
+          >
+            <Text style={styles.buttonText}>완료</Text>
+          </Pressable>
         </View>
       </ScrollView>
       <Icon
@@ -159,4 +171,59 @@ function ChallengeCameraScreen({ navigation }) {
   );
 }
 
+const styles = StyleSheet.create({
+  orderId: {
+    padding: 20,
+  },
+  preview: {
+    marginHorizontal: 10,
+    width: Dimensions.get('window').width - 20,
+    height: Dimensions.get('window').height / 3,
+    backgroundColor: '#D2D2D2',
+    marginBottom: 10,
+  },
+  previewImage: {
+    height: Dimensions.get('window').height / 3,
+    resizeMode: 'contain',
+    // resizeMode: 'cover','center',
+  },
+  buttonWrapper: { flexDirection: 'row', justifyContent: 'center' },
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    width: 120,
+    alignItems: 'center',
+    backgroundColor: 'yellow',
+    borderRadius: 5,
+    margin: 5,
+  },
+  buttonText: {
+    color: 'black',
+  },
+  buttonDisabled: {
+    backgroundColor: 'gray',
+  },
+});
+
 export default ChallengeCameraScreen;
+
+// import {
+//   NavigationProp,
+//   RouteProp,
+//   useNavigation,
+//   useRoute,
+// } from '@react-navigation/native';
+// import {LoggedInParamList} from '../../AppInner';
+// import axios, {AxiosError} from 'axios';
+// import Config from 'react-native-config';
+// import {useSelector} from 'react-redux';
+// import {RootState} from '../store/reducer';
+// import orderSlice from '../slices/order';
+// import {useAppDispatch} from '../store';
+
+// function Complete() {
+
+//   const route = useRoute<RouteProp<LoggedInParamList>>();
+//   const navigation = useNavigation<NavigationProp<LoggedInParamList>>();
+
+//   const accessToken = useSelector((state: RootState) => state.user.accessToken);

@@ -14,13 +14,17 @@ function ChallengeMainScreen({ navigation, route }) {
   const reload = useSelector((state: RootState) => state.reload.reload);
   const dispatch = useAppDispatch();
   const [index, setIndex] = useState(0);
-  const [myChIdList, setmyChIdList] = useState([]);
-  const [my0ChIdList, setmy0ChIdList] = useState([]);
-  const [my1ChIdList, setmy1ChIdList] = useState([]);
-  const [my2ChIdList, setmy2ChIdList] = useState([]);
-  console.log(index);
+  const [loading, setLoading] = useState(1);
+
+  const [myChList, setmyChList] = useState([]);
+  const [myChListC, setmyChListC] = useState([]);
+
+  var temp = [];
+  const [my0ChList, setmy0ChList] = useState([]);
+  const [my1ChList, setmy1ChList] = useState([]);
+  const [my2ChList, setmy2ChList] = useState([]);
   console.log('JMJ1');
-  // console.log('M');
+  //  console.log('M');
   // const myList = route.params.myList ? route.params.myList : [];
   // console.log(myList);
   const goDetail0 = (id) => {
@@ -32,13 +36,26 @@ function ChallengeMainScreen({ navigation, route }) {
   const goDetail2 = (id) => {
     navigation.navigate('ChallengeDetailScreen2', { challengeId: id });
   };
-  const goCamera = () => {
-    navigation.navigate('ChallengeCameraScreen');
-  };
 
   const goWrite1 = () => {
     navigation.navigate('ChallengeCreateScreen1');
   };
+
+  // const create012List = (chall) => {
+  //         // response.data.data.forEach((chall) => {
+  //         if (chall.challengeActive === 0) {
+  //           my0ChList.push(chall.challengeActive);
+  //         } else if (chall.challengeActive === 1) {
+  //           my1ChList.push(chall.challengeActive);
+  //         } else if (chall.challengeActive === 2) {
+  //           my2ChList.push(chall.challengeActive);
+  //         }
+  //         console.log(myChList, my0ChList, my1ChList, my2ChList);
+  //       };
+
+  //   let pensByColors = pens.sort((a,b) => (a.price - b.price));
+  // console.log(pensByColors);
+
   useEffect(() => {
     dispatch(
       screenSlice.actions.addScreen({
@@ -52,213 +69,200 @@ function ChallengeMainScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    console.log('JMJ2');
-    // let myChIdList = [16, 19, 20, 21, 22, 23, 24];
+    console.log('e1');
     async function myList() {
       const response = await axios.get(`${Config.API_URL}/challenge/challengeList/` + userId);
-      // console.log(response.data.data);
-      setmyChIdList(response.data.data);
-      // response.data.data.forEach((chall) => {
-      //   // console.log(chall.challengeId);
-      //   myChIdList.push(chall.challengeId);
-      // });
-      // console.log(myChIdList);
+      console.log(response.data.data);
+      setmyChList(response.data.data);
     }
     myList();
-    // console.log(myChIdList);
   }, [reload]);
 
   useEffect(() => {
-    // console.log(myChIdList);
-    myChIdList.forEach((chId, i) => {
-      // console.log(chId);
-      // console.log(chId.challengeId);
-      axios
-        .all([
-          axios.get(`${Config.API_URL}/challenge/challengeList/` + userId),
-          axios.get(`${Config.API_URL}/challenge/` + chId.challengeId),
-        ])
-        .then(
-          axios.spread((response1, response2) => {
-            console.log('L');
-            // console.log(response1.data.data);
-            // console.log(response1.data.data[i]);0
-            // console.log(response2.data.data);
-            const temp = { ...response1.data.data[i], ...response2.data.data };
-            console.log(temp);
-            // setmy0ChIdList(temp);
-            my0ChIdList.push(temp);
-            console.log(my0ChIdList);
-          }),
-        )
-        .catch(function (error) {
-          console.log(error);
-        });
-    });
+    console.log('e2');
+    console.log(myChList);
 
-    // async function myList() {
-    //   await axios
-    //     .get(`${Config.API_URL}/challenge/challengeList/` + userId)
-    //     .then(function (response) {
-    //       console.log('ttt');
-    //       console.log(response.data.data);
-    //       console.log(response.data.data[0]);
-    //       setmyChIdList(response.data.data);
-    //       TT = response.data.data[0];
-    //       // console.log(myChIdList);
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // }
-    // myList();
-    // await axios
-    // .get(`${Config.API_URL}/challenge/` + 16)
-    // .then(function (response) {
-    //   console.log('ttt2');
-    //   console.log(response.data.data);
-    //   console.log(myChIdList[0]);
-    //   const temp = { ...TT, ...response.data.data };
-    //   const temp2 = { ...{ a: 1, b: 2 }, ...response.data.data };
-
-    //   console.log(temp);
-    //   console.log(temp2);
-    //   setmy0ChIdList(temp);
-    // })
-    // .catch(function (error) {
+    async function myList2() {
+      myChList.forEach((chId, i) => {
+        // console.log(chId, i);
+        axios
+          .all([
+            axios.get(`${Config.API_URL}/challenge/challengeList/` + userId),
+            axios.get(`${Config.API_URL}/challenge/challengeInfo/rank/${chId.challengeId}/${userId}`),
+          ])
+          .then(
+            axios.spread((response1, response2) => {
+              console.log('T');
+              console.log(response1.data.data);
+              console.log(response1.data.data[i]);
+              console.log(chId.challengeId, response2.data.data);
+              var temp = { ...response1.data.data[i], ...response2.data.data };
+              console.log(temp);
+              myChListC.push(temp);
+            }),
+          )
+          .catch(function (error) {
+            console.log(error);
+          });
+      });
+      setLoading(false);
+    }
+    // try {
+    myList2();
+    // if (confirm('에러를 만드시겠습니까?')) 이상한_코드();
+    // } catch (error) {
     //   console.log(error);
-    // });
-  }, [myChIdList]);
-  // console.log(tempList);
-  // setmy0ChIdList(tempList);
-  // console.log(my0ChIdList);
+    // } finally {
+    //   console.log('load');
+    // setLoading(false);
+    // }
 
-  return (
-    <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
-      <Tab
-        value={index}
-        onChange={(e) => setIndex(e)}
-        indicatorStyle={{
-          height: 0,
-        }}
-        style={{
-          borderRadius: 21,
-          backgroundColor: '#F6F6F6',
-          marginTop: 21,
-          marginHorizontal: 10,
-          height: 42,
-        }}
-        // containerStyle={{
-        //   borderRadius: 21,
-        //   backgroundColor: 'red',
-        //   marginTop: 21,
-        //   height: 42,
-        // }}
-        // buttonStyle={{
-        //   borderRadius: 21,
-        //   backgroundColor: 'white',
-        //   marginTop: 21,
-        //   height: 42,
-        // }}
-        // titleStyle={{
-        //   margin: 2,
-        //   height: 38,
-        //   borderRadius: 21,
-        //   color: 'red',
-        // }}
-        variant='primary'
-      >
-        <Tab.Item
-          title='진행중인 챌린지'
-          containerStyle={{
-            borderRadius: 20,
-            backgroundColor: index == 0 ? 'white' : '#F6F6F6',
-            margin: 2,
-            height: 38,
-            padding: 0,
+    console.log('a');
+    console.log(myChListC);
+  }, [myChList]);
+  console.log('aa');
+  console.log(myChListC);
+
+  useEffect(() => {
+    console.log('e3');
+    // myChListC.push(temp);
+    console.log(myChListC);
+  }, [temp]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
+        <Tab
+          value={index}
+          onChange={(e) => setIndex(e)}
+          indicatorStyle={{
+            height: 0,
           }}
-          // buttonStyle={{}}
-          titleStyle={{
-            fontSize: 20,
-            color: index == 0 ? '#FFA401' : '#686868',
-            paddingHorizontal: 0,
-            paddingVertical: 0,
-            fontWeight: '900',
+          style={{
+            borderRadius: 21,
+            backgroundColor: '#F6F6F6',
+            marginTop: 21,
+            marginHorizontal: 10,
+            height: 42,
           }}
+          // containerStyle={{
+          //   borderRadius: 21,
+          //   backgroundColor: 'red',
+          //   marginTop: 21,
+          //   height: 42,
+          // }}
+          // buttonStyle={{
+          //   borderRadius: 21,
+          //   backgroundColor: 'white',
+          //   marginTop: 21,
+          //   height: 42,
+          // }}
+          // titleStyle={{
+          //   margin: 2,
+          //   height: 38,
+          //   borderRadius: 21,
+          //   color: 'red',
+          // }}
+          variant='primary'
+        >
+          <Tab.Item
+            title='진행중인 챌린지'
+            containerStyle={{
+              borderRadius: 20,
+              backgroundColor: index == 0 ? 'white' : '#F6F6F6',
+              margin: 2,
+              height: 38,
+              padding: 0,
+            }}
+            // buttonStyle={{}}
+            titleStyle={{
+              fontSize: 20,
+              color: index == 0 ? '#FFA401' : '#686868',
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+              fontWeight: '900',
+            }}
+          />
+          <Tab.Item
+            title='종료된 챌린지'
+            containerStyle={{
+              borderRadius: 20,
+              backgroundColor: index == 1 ? 'white' : '#F6F6F6',
+              margin: 2,
+              height: 38,
+              padding: 0,
+            }}
+            // buttonStyle={{}}
+            titleStyle={{
+              fontSize: 20,
+              color: index == 1 ? '#FFA401' : '#686868',
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+            }}
+          />
+        </Tab>
+
+        <TabView value={index} onChange={setIndex} animationType='spring'>
+          <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
+            <ScrollView>
+              <TouchableOpacity
+                style={{ marginVertical: 10, backgroundColor: 'red' }}
+                onPress={() => goDetail0(1)}
+              >
+                <Text>챌린지 대기중 상세보기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ marginVertical: 10, backgroundColor: 'green' }}
+                onPress={() => goDetail1(1)}
+              >
+                <Text>챌린지 진행중 상세보기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ marginVertical: 10, backgroundColor: 'blue' }}
+                onPress={() => goDetail2(1)}
+              >
+                <Text>챌린지 종료된 상세보기</Text>
+              </TouchableOpacity>
+
+              <Text>대기중 진행중 여기서 표시 삭제는 각 챌린지 들어가서</Text>
+
+              {/* <Text>{myChList ? myChList : ''} </Text> */}
+              {/* <Text>{myChListC ? myChListC : ''} </Text> */}
+              {/* <Text>{myChList[0] ? myChList[0] : ''} </Text> */}
+              {/* <Text>{myChList[0].challengeId ? myChList[0].challengeId : ''} </Text> */}
+              {/* <Text>{myChListC ? myChListC[0].challengeId : ''} 시</Text> */}
+              <Text>챌린지 진행중</Text>
+              <Text>챌린지 대기중</Text>
+              <Text>챌린지 대기중</Text>
+            </ScrollView>
+          </TabView.Item>
+          <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
+            <ScrollView>
+              <Text>종료된 목록들 표시 삭제는 각 챌린지 들어가서 </Text>
+            </ScrollView>
+          </TabView.Item>
+        </TabView>
+
+        <Icon
+          name='add'
+          type='material'
+          color='#FFE7BC'
+          size={25}
+          reverse
+          reverseColor='#FFA401'
+          onPress={() => goWrite1()}
+          iconStyle={{ fontSize: 43 }}
+          containerStyle={{ position: 'absolute', top: '85%', left: '80%' }}
         />
-        <Tab.Item
-          title='종료된 챌린지'
-          containerStyle={{
-            borderRadius: 20,
-            backgroundColor: index == 1 ? 'white' : '#F6F6F6',
-            margin: 2,
-            height: 38,
-            padding: 0,
-          }}
-          // buttonStyle={{}}
-          titleStyle={{
-            fontSize: 20,
-            color: index == 1 ? '#FFA401' : '#686868',
-            paddingHorizontal: 0,
-            paddingVertical: 0,
-          }}
-        />
-      </Tab>
-
-      <TabView value={index} onChange={setIndex} animationType='spring'>
-        <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-          <ScrollView>
-            <TouchableOpacity
-              style={{ marginVertical: 10, backgroundColor: 'red' }}
-              onPress={() => goDetail0(1)}
-            >
-              <Text>챌린지 대기중 상세보기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ marginVertical: 10, backgroundColor: 'green' }}
-              onPress={() => goDetail1(1)}
-            >
-              <Text>챌린지 진행중 상세보기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ marginVertical: 10, backgroundColor: 'blue' }}
-              onPress={() => goDetail2(1)}
-            >
-              <Text>챌린지 종료된 상세보기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ marginVertical: 10, backgroundColor: 'yellow' }}
-              onPress={() => goCamera()}
-            >
-              <Text>챌린지 카메라</Text>
-            </TouchableOpacity>
-            <Text>대기중 진행중 여기서 표시 삭제는 각 챌린지 들어가서</Text>
-            <Text>챌린지 진행중</Text>
-            <Text>챌린지 진행중</Text>
-            <Text>챌린지 대기중</Text>
-            <Text>챌린지 대기중</Text>
-          </ScrollView>
-        </TabView.Item>
-        <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
-          <ScrollView>
-            <Text>종료된 목록들 표시 삭제는 각 챌린지 들어가서 </Text>
-          </ScrollView>
-        </TabView.Item>
-      </TabView>
-
-      <Icon
-        name='add'
-        type='material'
-        color='#FFE7BC'
-        size={25}
-        reverse
-        reverseColor='#FFA401'
-        onPress={() => goWrite1()}
-        iconStyle={{ fontSize: 43 }}
-        containerStyle={{ position: 'absolute', top: '85%', left: '80%' }}
-      />
-    </View>
-  );
+      </View>
+    );
+  }
 }
 
 export default ChallengeMainScreen;
