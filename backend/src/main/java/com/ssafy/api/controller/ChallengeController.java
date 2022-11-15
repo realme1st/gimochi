@@ -6,10 +6,7 @@ import com.ssafy.api.dto.VoteReqDto;
 import com.ssafy.api.request.ChallengeAuthReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
-import com.ssafy.api.response.ChallengeDetailResDto;
-import com.ssafy.api.response.ChallengeInfoRankResDto;
-import com.ssafy.api.response.ChallengeListResDto;
-import com.ssafy.api.response.ChallengeResDto;
+import com.ssafy.api.response.*;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -73,7 +70,7 @@ public class ChallengeController {
     //challengeId에 속한 UserList 조회
     @GetMapping("/userList/{challengeId}")
     @ApiOperation(value = "챌린지에 참여하는 유저리스트 조회(challengeId기반)", notes = "<strong>challengeId를 입력하여</strong> 해당 챌린지에 참여하는 유저리스트를 조회한다.")
-    public ResponseEntity<? extends BasicResponse> findUserListByChallengeId(@PathVariable Long challengeId){
+    public ResponseEntity<CommonResponseEntity<List<UserListResDto>>> findUserListByChallengeId(@PathVariable Long challengeId){
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findUserListByChallengeId(challengeId)));
     }
 
