@@ -99,6 +99,14 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.acceptChallengeInvite(challengeInviteId)));
     }
 
+    @DeleteMapping("/challengeInvite/{challengeInviteId}")
+    @ApiOperation(value = "챌린지 초대장 삭제", notes = "<strong>챌린지 초대장 ID를 입력하여</strong> 해당 챌린지 초대장을 거절한다.")
+    public ResponseEntity<? extends BasicResponse> rejectChallengeInvite(@PathVariable Long challengeInviteId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.deleteChallengeInvite(challengeInviteId)));
+    }
+
+
+
     @PostMapping("/challengeAuth")
     @ApiOperation(value = "챌린지 인증", notes = "<strong>챌린지 인증 정보를 입력하여</strong> 해당 챌린지 인증을 생성한다.")
     public ResponseEntity<? extends BasicResponse> createChallengeAuth(@RequestBody ChallengeAuthReqDto challengeAuthReqDto) {
