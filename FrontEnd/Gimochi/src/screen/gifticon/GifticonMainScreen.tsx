@@ -59,7 +59,7 @@ function GifticonMainScreen({ navigation }) {
     setModal(true);
   };
 
-  const useGifticon = async (id) => {
+  const useGifticon = async (id: string) => {
     await axios
       .put(`${Config.API_URL}/gifticon/used`, {
         gifticonId: id,
