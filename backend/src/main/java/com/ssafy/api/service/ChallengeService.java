@@ -194,6 +194,18 @@ public class ChallengeService {
     }
 
     @Transactional
+    public boolean deleteChallengeInvite(Long challengeInviteId) {
+        ChallengeInvite challengeInvite = challengeInviteRepository.findByChallengeInviteId(challengeInviteId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_INVITE_NOT_FOUND));
+        try {
+            challengeInviteRepository.delete(challengeInvite);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Transactional
     public ChallengeAuth createChallengeAuth(ChallengeAuthReqDto challengeAuthReqDto) {
 
         ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeAuthReqDto.getChallengeInfoId())
