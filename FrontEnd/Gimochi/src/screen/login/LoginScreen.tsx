@@ -17,8 +17,8 @@ function LoginScreen({ navigation }) {
   return (
     <LoginScreenContainer>
       <Image
-        // source={require('../assets/images/login.png')}
-        source={require('../../../android/app/src/main/assets/images/login.png')}
+        source={require('../../assets/images/login.png')}
+        // source={require('../../../android/app/src/main/assets/images/login.png')}
         style={{ width: '70%', height: '70%' }}
       />
       <LoginButtonContainer onPress={goWebView}>
