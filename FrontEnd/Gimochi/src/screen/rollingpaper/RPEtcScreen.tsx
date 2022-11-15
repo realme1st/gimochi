@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ import { faMessage, faChevronLeft, faChevronRight } from '@fortawesome/free-soli
 import { useAppDispatch } from '../../store';
 import screenSlice from '../../slices/screen';
 
-function RPDetailScreen({ navigation, route }) {
+function RPEtcScreen({ navigation, route }) {
   const sessionId: number = route.params.RPId;
   const sessionTypeId: number = route.params.sessionTypeId;
   const reload = useSelector((state: RootState) => state.reload.reload);
@@ -41,22 +41,6 @@ function RPDetailScreen({ navigation, route }) {
   }, []);
   console.log(page);
 
-  // 세션타입에 따라 스크린을 아예 나눠야
-  useEffect(() => {
-    navigation.setOptions({
-      title:
-        sessionTypeId === 1
-          ? '생일 추카포카'
-          : sessionTypeId === 2
-          ? '졸업 추카포카'
-          : sessionTypeId === 3
-          ? '크리스마스 추카포카'
-          : sessionTypeId === 4
-          ? '설날 추카포카'
-          : '기타 추카포카',
-    });
-  }, [navigation]);
-
   useEffect(() => {
     axios
       .get(`${Config.API_URL}/session/${sessionId}`)
@@ -76,7 +60,7 @@ function RPDetailScreen({ navigation, route }) {
       .finally(() => setLoading(false));
   }, [reload]);
 
-  const goMessageDetail = (index) => {
+  const goMessageDetail = (index: number) => {
     // setIdx(index);
     setNickname(messageList[index].nickname);
     setText(messageList[index].field);
@@ -97,15 +81,7 @@ function RPDetailScreen({ navigation, route }) {
   return (
     <RPDetailContainer>
       <ImageBackground
-        source={
-          sessionTypeId === 1
-            ? require('../../assets/images/birthday1.jpg')
-            : sessionTypeId === 2
-            ? require('../../assets/images/graduation.png')
-            : sessionTypeId === 3
-            ? require('../../assets/images/tree.jpg')
-            : require('../../assets/images/christmas1.jpg')
-        }
+        source={require('../../assets/images/christmas1.jpg')}
         style={{ width: '100%', height: '100%' }}
         imageStyle={{ opacity: 0.5 }}
       >
@@ -490,4 +466,4 @@ const Image10 = styled.Image`
   width: 100%;
 `;
 
-export default RPDetailScreen;
+export default RPEtcScreen;

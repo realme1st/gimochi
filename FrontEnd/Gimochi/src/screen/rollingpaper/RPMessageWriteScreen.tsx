@@ -90,64 +90,32 @@ function RPMessageWriteScreen({ route, navigation }) {
         </TitleContainer>
         <ImageContainer>
           <TouchableOpacity onPress={() => setType(1)}>
-            {type === 1 ? (
-              <Image
-                source={require('../../assets/images/homeMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70 }}
-              />
-            ) : (
-              <Image
-                source={require('../../assets/images/homeMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70, opacity: 0.5 }}
-              />
-            )}
+            <Image
+              source={require('../../assets/images/homeMochi.png')}
+              resizeMode='contain'
+              style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(2)}>
-            {type === 2 ? (
-              <Image
-                source={require('../../assets/images/attendMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70 }}
-              />
-            ) : (
-              <Image
-                source={require('../../assets/images/attendMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70, opacity: 0.5 }}
-              />
-            )}
+            <Image
+              source={require('../../assets/images/attendMochi.png')}
+              resizeMode='contain'
+              style={type === 2 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(3)}>
-            {type === 3 ? (
-              <Image
-                source={require('../../assets/images/challengeMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70 }}
-              />
-            ) : (
-              <Image
-                source={require('../../assets/images/challengeMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70, opacity: 0.5 }}
-              />
-            )}
+            <Image
+              source={require('../../assets/images/challengeMochi.png')}
+              resizeMode='contain'
+              style={type === 3 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(4)}>
-            {type === 4 ? (
-              <Image
-                source={require('../../assets/images/playMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70 }}
-              />
-            ) : (
-              <Image
-                source={require('../../assets/images/playMochi.png')}
-                resizeMode='contain'
-                style={{ height: 70, opacity: 0.5 }}
-              />
-            )}
+            <Image
+              source={require('../../assets/images/playMochi.png')}
+              resizeMode='contain'
+              style={type === 4 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+            />
           </TouchableOpacity>
         </ImageContainer>
       </DismissKeyboardView>

@@ -2,14 +2,20 @@
 import React from 'react';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import RPMainScreen from '../screen/rollingpaper/RPMainScreen';
-import RPDetailScreen from '../screen/rollingpaper/RPDetailScreen';
+import RPBirthdayScreen from '../screen/rollingpaper/RPBirthdayScreen';
+import RPChristmasScreen from '../screen/rollingpaper/RPChristmasScreen';
+import RPGraduateScreen from '../screen/rollingpaper/RPGraduateScreen';
+import RPEtcScreen from '../screen/rollingpaper/RPEtcScreen';
 import RPWriteScreen from '../screen/rollingpaper/RPWriteScreen';
 import RPMessageWriteScreen from '../screen/rollingpaper/RPMessageWriteScreen';
 
 export type RPStackParamList = {
   RPMainScreen: undefined;
   RPWriteScreen: undefined;
-  RPDetailScreen: undefined;
+  RPBirthdayScreen: undefined;
+  RPChristmasScreen: undefined;
+  RPGraduateScreen: undefined;
+  RPEtcScreen: undefined;
   RPMessageWriteScreen: undefined;
   RPId: number;
 };
@@ -28,7 +34,22 @@ function RPNavigation() {
       }}
     >
       <RP.Screen name='RPMainScreen' component={RPMainScreen} options={{ title: '추카포카' }}></RP.Screen>
-      <RP.Screen name='RPDetailScreen' component={RPDetailScreen}></RP.Screen>
+      <RP.Screen
+        name='RPBirthdayScreen'
+        component={RPBirthdayScreen}
+        options={{ title: '생일 추카포카' }}
+      ></RP.Screen>
+      <RP.Screen
+        name='RPChristmasScreen'
+        component={RPChristmasScreen}
+        options={{ title: '크리스마스 추카포카' }}
+      ></RP.Screen>
+      <RP.Screen
+        name='RPGraduateScreen'
+        component={RPGraduateScreen}
+        options={{ title: '졸업 추카포카' }}
+      ></RP.Screen>
+      <RP.Screen name='RPEtcScreen' component={RPEtcScreen} options={{ title: '기타 추카포카' }}></RP.Screen>
       <RP.Screen
         name='RPWriteScreen'
         component={RPWriteScreen}

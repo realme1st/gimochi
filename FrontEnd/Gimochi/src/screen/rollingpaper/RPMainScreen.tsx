@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { RPNavigationProps } from '../../navigation/RPNavigation';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -47,8 +47,16 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
-  const goDetail = (id, sessionTypeId) => {
-    navigation.navigate('RPDetailScreen', { RPId: id, sessionTypeId: sessionTypeId });
+  const goDetail = (id: any, sessionTypeId: any) => {
+    if (sessionTypeId === 1) {
+      navigation.navigate('RPBirthdayScreen', { RPId: id, sessionTypeId: sessionTypeId });
+    } else if (sessionTypeId === 2) {
+      navigation.navigate('RPGraduateScreen', { RPId: id, sessionTypeId: sessionTypeId });
+    } else if (sessionTypeId === 3) {
+      navigation.navigate('RPChristmasScreen', { RPId: id, sessionTypeId: sessionTypeId });
+    } else {
+      navigation.navigate('RPEtcScreen', { RPId: id, sessionTypeId: sessionTypeId });
+    }
   };
 
   const goWrite = () => {
@@ -57,24 +65,26 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
 
   return (
     <RPContainer>
-      <RPTitleContainer>
-        <RPTitle>{userNickname}님의 추카포카</RPTitle>
-      </RPTitleContainer>
-      <RPListContainer>
-        {myRPList.map((RP, index) => (
-          <RPItemButton key={index} onPress={() => goDetail(RP.sessionId, RP.sessionTypeId)}>
-            <RPItemContainer>
-              <FontAwesomeIcon icon={faCalendar} size={20} />
-              <RPListText>{RP.anniversary}</RPListText>
-              {RP.sessionTypeId === 1 && <RPListText>생일</RPListText>}
-              {RP.sessionTypeId === 2 && <RPListText>졸업</RPListText>}
-              {RP.sessionTypeId === 3 && <RPListText>크리스마스</RPListText>}
-              {RP.sessionTypeId === 4 && <RPListText>설날</RPListText>}
-              {RP.sessionTypeId === 5 && <RPListText>{RP.name}</RPListText>}
-            </RPItemContainer>
-          </RPItemButton>
-        ))}
-      </RPListContainer>
+      <ScrollView>
+        <RPTitleContainer>
+          <RPTitle>{userNickname}님의 추카포카</RPTitle>
+        </RPTitleContainer>
+        <RPListContainer>
+          {myRPList.map((RP, index) => (
+            <RPItemButton key={index} onPress={() => goDetail(RP.sessionId, RP.sessionTypeId)}>
+              <RPItemContainer>
+                <FontAwesomeIcon icon={faCalendar} size={20} style={{ marginLeft: '3%' }} />
+                <RPListText>{RP.anniversary}</RPListText>
+                {RP.sessionTypeId === 1 && <RPListText>생일</RPListText>}
+                {RP.sessionTypeId === 2 && <RPListText>졸업</RPListText>}
+                {RP.sessionTypeId === 3 && <RPListText>크리스마스</RPListText>}
+                {RP.sessionTypeId === 4 && <RPListText>설날</RPListText>}
+                {RP.sessionTypeId === 5 && <RPListText>{RP.name}</RPListText>}
+              </RPItemContainer>
+            </RPItemButton>
+          ))}
+        </RPListContainer>
+      </ScrollView>
       <CreateButton onPress={goWrite}>
         <FontAwesomeIcon icon={faCirclePlus} size={50} color={'#ffa401'} />
       </CreateButton>
@@ -91,16 +101,28 @@ const RPTitle = styled.Text`
   font-family: 'Regular';
   font-size: 30px;
   color: #000000;
+  margin-bottom: 2%;
 `;
-const RPTitleContainer = styled.View``;
+const RPTitleContainer = styled.View`
+  margin: 5% 5% 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #ffa401;
+`;
 
-const RPListContainer = styled.View``;
+const RPListContainer = styled.View`
+  margin: 3%;
+`;
 
 const RPItemButton = styled.TouchableOpacity``;
 
 const RPItemContainer = styled.View`
   align-items: center;
   flex-direction: row;
+  border-radius: 10px;
+  background-color: #ffe7bc;
+  margin: 2%;
+  height: 50px;
+  elevation: 10;
 `;
 
 const RPListText = styled.Text`
