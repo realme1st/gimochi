@@ -54,6 +54,10 @@ public class GifticonService {
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         System.out.println("=============================");
+        System.out.println(System.getenv("kdw"));
+        System.out.println("=============================");
+
+        System.out.println("=============================");
         System.out.println(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
         System.out.println("=============================");
 
