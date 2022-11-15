@@ -2,9 +2,7 @@ package com.ssafy.api.service;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.SourceContext;
-import com.ssafy.api.dto.GifticonInfoReqDto;
-import com.ssafy.api.dto.GifticonPresentReq;
-import com.ssafy.api.dto.OcrResDto;
+import com.ssafy.api.dto.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.common.util.AmazonS3Util;
@@ -201,7 +199,7 @@ public class GifticonService {
     }
 
     @Transactional
-    public Gifticon updateGifticon(GifticonPresentReq gifticonPresentReq) {
+    public Gifticon updateGifticonUser(GifticonPresentReq gifticonPresentReq) {
 
         Long senderId = gifticonPresentReq.getUserIdSend();
         Long receiverId = gifticonPresentReq.getUserIdReceive();
@@ -223,6 +221,57 @@ public class GifticonService {
         }
 
         gifticon.changeGifticonUser(userReceiver); // 기프티콘 소유자를 받는 사람으로 변경
+
+        return gifticon;
+
+    }
+
+    @Transactional
+    public Gifticon updateGifticonUsed(GifticonUsedReq gifticonUsedReq) {
+
+        Long userId = gifticonUsedReq.getUserId();
+        Long gifticonId = gifticonUsedReq.getGifticonId();
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 기프티콘 존재하는지 확인
+        Gifticon gifticon = gifticonRepository.findById(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+
+        // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
+        if(gifticon.getUser().getUserId() != userId) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+        }
+
+        gifticon.changeGifticonUsed(); // 기프티콘 사용여부 상태를 변경
+
+        return gifticon;
+
+    }
+
+    @Transactional
+    public Gifticon updateGifticonStorePeriod(GifticonStorePeriodReq gifticonStorePeriodReq) {
+
+        Long userId = gifticonStorePeriodReq.getUserId();
+        Long gifticonId = gifticonStorePeriodReq.getGifticonId();
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 기프티콘 존재하는지 확인
+        Gifticon gifticon = gifticonRepository.findById(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+
+        // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
+        if(gifticon.getUser().getUserId() != userId) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+        }
+
+        String store = gifticonStorePeriodReq.getGifticonStore();
+        LocalDate period = gifticonStorePeriodReq.getGifticonPeriod();
+
+        gifticon.changeGifticonStorePeriod(store, period); // 기프티콘 사용처와 사용 기한을 변경
 
         return gifticon;
 

@@ -59,6 +59,15 @@ public class Gifticon{
         this.user = user;
     }
 
+    public void changeGifticonUsed() {
+        this.gifticonUsed = !this.gifticonUsed;
+    }
+
+    public void changeGifticonStorePeriod(String store, LocalDate period) {
+        this.gifticonStore = store;
+        this.gifticonPeriod = period;
+    }
+
     public void setSessionMessage(SessionMessage sessionMessage) {
         this.sessionMessage = sessionMessage;
         //무한 루프 주의
