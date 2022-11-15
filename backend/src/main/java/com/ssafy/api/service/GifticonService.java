@@ -1,10 +1,6 @@
 package com.ssafy.api.service;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.SourceContext;
 import com.ssafy.api.dto.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
@@ -17,7 +13,6 @@ import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
