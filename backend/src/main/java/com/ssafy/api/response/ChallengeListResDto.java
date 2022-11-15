@@ -27,15 +27,12 @@ public class ChallengeListResDto {
 
     private int challenger_cnt;
 
-    private int myRank;
-
-    private int winnerName;
 
     @Builder
     public ChallengeListResDto(Long challengeId, int successCnt, String challengeTitle,
                                String challengeLeaderName, int challengeRewardType, int challengeActive,
                                LocalDate challengeStartDate, LocalDate challengeEndDate,
-                               int challenger_cnt, int myRank, int winnerName) {
+                               int challenger_cnt) {
         this.challengeId = challengeId;
         this.successCnt = successCnt;
         this.challengeTitle = challengeTitle;
@@ -45,8 +42,6 @@ public class ChallengeListResDto {
         this.challengeStartDate = challengeStartDate;
         this.challengeEndDate = challengeEndDate;
         this.challenger_cnt = challenger_cnt;
-        //this.myRank = myRank;
-        this.winnerName = winnerName;
 
     }
 
@@ -61,8 +56,6 @@ public class ChallengeListResDto {
                 .challengeEndDate(challengeInfo.getChallenge().getChallengeEndDate())
                 .challengeRewardType(challengeInfo.getChallenge().getChallengeRewardType())
                 .challenger_cnt(challengeInfo.getChallenge().getChallengeInfoList().size())
-                //.myRank(challengeAuth.getMyRank())
-                //.winnerName(challengeAuth.getWinnerName())
                 .build();
     }
 }
