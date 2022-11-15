@@ -53,11 +53,11 @@ public class SessionMessageResDto {
         for(SessionMessage m : mList){
             sessionMessageResDtoList.add(
                     SessionMessageResDto.builder()
+                    .messageType(m.getMessageType())
                     .sessionMessageId(m.getSessionMessageId())
                     .nickname(m.getNickname())
                     .field(m.getField())
                     .expireTime(m.getExpireTime())
-                            .messageType(m.getMessageType())
                     .build());
         }
         return sessionMessageResDtoList;
