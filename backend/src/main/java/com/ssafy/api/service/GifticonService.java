@@ -55,7 +55,9 @@ public class GifticonService {
     @PostConstruct
     public void init() throws Exception {
         System.out.println("11111=============================11111");
-        System.out.println(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        File dir = new File(System.getProperty("user.dir"));
+        String[] strs = dir.list();
+        for(String s : strs) System.out.println(s);
         System.out.println("=============================");
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         System.out.println("=============================");
