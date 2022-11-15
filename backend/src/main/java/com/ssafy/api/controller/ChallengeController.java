@@ -9,9 +9,11 @@ import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.api.response.ChallengeDetailResDto;
 import com.ssafy.api.response.ChallengeInfoRankResDto;
 import com.ssafy.api.response.ChallengeListResDto;
+import com.ssafy.api.response.ChallengeResDto;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
+import com.ssafy.db.entity.Challenge;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,7 +35,7 @@ public class ChallengeController {
 
     @PostMapping()
     @ApiOperation(value = "챌린지 생성", notes = "<strong>챌린지 정보를 입력하여</strong> 챌린지와 챌린지유저 정보를 만든다.")
-    public ResponseEntity<? extends BasicResponse> createChallenge
+    public ResponseEntity<CommonResponseEntity<ChallengeResDto>> createChallenge
             (@RequestBody @ApiParam(value = "챌린지") ChallengeReqDto challengeReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChllenge(challengeReqDto)));
     }
