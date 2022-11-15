@@ -18,13 +18,15 @@ public class SessionMessageResDto {
     private String nickname;
     private String field;
     private LocalDate expireTime;
+    private int messageType;
 
     @Builder
-    public SessionMessageResDto(Long sessionMessageId, String nickname, String field, LocalDate expireTime) {
+    public SessionMessageResDto(Long sessionMessageId, String nickname, String field, LocalDate expireTime, int messageType) {
         this.sessionMessageId = sessionMessageId;
         this.nickname = nickname;
         this.field = field;
         this.expireTime = expireTime;
+        this.messageType = messageType;
     }
 
     public static SessionMessage toDto(SessionMessageReqDto reqDto){
@@ -32,6 +34,7 @@ public class SessionMessageResDto {
                 .nickname(reqDto.getNickname())
                 .field(reqDto.getField())
                 .expireTime(LocalDate.now().plusDays(7))
+                .messageType(reqDto.getMessageType())
                 .build();
     }
 
@@ -41,6 +44,7 @@ public class SessionMessageResDto {
                 .nickname(sessionMessage.getNickname())
                 .field(sessionMessage.getField())
                 .expireTime(sessionMessage.getExpireTime())
+                .messageType(sessionMessage.getMessageType())
                 .build();
     }
 
@@ -53,6 +57,7 @@ public class SessionMessageResDto {
                     .nickname(m.getNickname())
                     .field(m.getField())
                     .expireTime(m.getExpireTime())
+                            .messageType(m.getMessageType())
                     .build());
         }
         return sessionMessageResDtoList;

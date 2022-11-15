@@ -54,6 +54,12 @@ public class GifticonService {
 
     @PostConstruct
     public void init() throws Exception {
+        System.out.println("=============================");
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        System.out.println("=============================");
+        String currentPath = new java.io.File(".").getCanonicalPath();
+        System.out.println("Current dir:" + currentPath);
+        System.out.println("=============================");
         Map<String, String> env = new HashMap<>();
         env.put("GOOGLE_APPLICATION_CREDENTIALS", "/home/ubuntu/gimochi-cd8bdea6fd58.json");
         setEnv(env);

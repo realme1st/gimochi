@@ -1,6 +1,8 @@
 package com.ssafy.api.response;
 
+import com.ssafy.api.request.ChallengeReqDto;
 import com.ssafy.db.entity.Challenge;
+import com.ssafy.db.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,18 +47,32 @@ public class ChallengeResDto {
         this.challengeActive = challengeActive;
     }
 
-    public static Challenge createChallenge(ChallengeResDto challengeResDto) {
+    public static Challenge createChallenge(ChallengeReqDto challengeReqDto) {
         return Challenge.builder()
-                .challengeLeaderId(challengeResDto.getChallengeLeaderId())
-                .challengeLeaderName(challengeResDto.getChallengeLeaderName())
-                .challengeTitle(challengeResDto.getChallengeTitle())
-                .challengeDescription(challengeResDto.getChallengeDescription())
-                .challengeStartDate(challengeResDto.getChallengeStartDate())
-                .challengeEndDate(challengeResDto.getChallengeEndDate())
-                .challengeRewardType(challengeResDto.getChallengeRewardType())
-                .challengeRewardPoint(challengeResDto.getChallengeRewardPoint())
-                .challengeParticipantPoint(challengeResDto.getChallengeParticipantPoint())
-                .challengeActive(challengeResDto.getChallengeActive())
+                .challengeLeaderId(challengeReqDto.getChallengeLeaderId())
+                .challengeLeaderName(challengeReqDto.getChallengeLeaderName())
+                .challengeTitle(challengeReqDto.getChallengeTitle())
+                .challengeDescription(challengeReqDto.getChallengeDescription())
+                .challengeStartDate(challengeReqDto.getChallengeStartDate())
+                .challengeEndDate(challengeReqDto.getChallengeEndDate())
+                .challengeRewardType(challengeReqDto.getChallengeRewardType())
+                .challengeRewardPoint(challengeReqDto.getChallengeRewardPoint())
+                .challengeParticipantPoint(challengeReqDto.getChallengeParticipantPoint())
+                .challengeActive(challengeReqDto.getChallengeActive())
+                .build();
+    }
+    public static ChallengeResDto toDto(User user, Challenge challenge) {
+        return ChallengeResDto.builder()
+                .challengeLeaderId(challenge.getChallengeLeaderId())
+                .challengeLeaderName(challenge.getChallengeLeaderName())
+                .challengeTitle(challenge.getChallengeTitle())
+                .challengeDescription(challenge.getChallengeDescription())
+                .challengeStartDate(challenge.getChallengeStartDate())
+                .challengeEndDate(challenge.getChallengeEndDate())
+                .challengeRewardType(challenge.getChallengeRewardType())
+                .challengeRewardPoint(challenge.getChallengeRewardPoint())
+                .challengeParticipantPoint(challenge.getChallengeParticipantPoint())
+                .challengeActive(challenge.getChallengeActive())
                 .build();
     }
 

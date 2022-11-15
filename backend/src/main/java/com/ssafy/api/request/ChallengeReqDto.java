@@ -51,6 +51,8 @@ public class ChallengeReqDto {
         this.challengeParticipantPoint = challengeParticipantPoint;
         this.challengeActive = challengeActive;
     }
+
+
 }
 
 

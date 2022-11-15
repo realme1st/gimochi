@@ -1,5 +1,6 @@
 package com.ssafy.api.request;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +21,6 @@ public class SessionMessageReqDto {
     @ApiModelProperty(name ="기프티콘 id" , example = "1", required = false)
     Long gifticonId;
 
+    @ApiModelProperty(name = "세션 메세지 타입", example = "1", required = false)
+    Integer messageType;
 }
