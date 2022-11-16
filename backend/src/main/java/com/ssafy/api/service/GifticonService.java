@@ -52,61 +52,59 @@ public class GifticonService {
 
     private final ResourceLoader resourceLoader;
 
-//    @PostConstruct
-//    public void init() throws Exception {
-//        System.out.println("11111=============================11111");
-//        File dir = new File(System.getProperty("user.dir"));
-//        String[] strs = dir.list();
-//        for(String s : strs) System.out.println(s);
-//        System.out.println("=============================");
-//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-//        System.out.println("=============================");
-//        String currentPath = new java.io.File(".").getCanonicalPath();
-//        System.out.println("Current dir:" + currentPath);
-//        System.out.println("=============================");
-//        Map<String, String> env = new HashMap<>();
-//        env.put("GOOGLE_APPLICATION_CREDENTIALS", System.getProperty("user.dir")+"/gimochi-cd8bdea6fd58.json");
-//        setEnv(env);
-//    }
-//
-//    protected static void setEnv(Map<String, String> newenv) throws Exception {
-//        try {
-//            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-//            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-//            theEnvironmentField.setAccessible(true);
-//            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-//            env.putAll(newenv);
-//            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
-//            theCaseInsensitiveEnvironmentField.setAccessible(true);
-//            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-//            cienv.putAll(newenv);
-//        } catch (NoSuchFieldException e) {
-//            Class[] classes = Collections.class.getDeclaredClasses();
-//            Map<String, String> env = System.getenv();
-//            for(Class cl : classes) {
-//                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-//                    Field field = cl.getDeclaredField("m");
-//                    field.setAccessible(true);
-//                    Object obj = field.get(env);
-//                    Map<String, String> map = (Map<String, String>) obj;
-//                    map.clear();
-//                    map.putAll(newenv);
-//                }
-//            }
-//        }
-//    }
+/*  시작 시에 환경변수 강제 주입하는 코드 (쓰면 x)
+    @PostConstruct
+    public void init() throws Exception {
+        System.out.println("11111=============================11111");
+        File dir = new File(System.getProperty("user.dir"));
+        String[] strs = dir.list();
+        for(String s : strs) System.out.println(s);
+        System.out.println("=============================");
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        System.out.println("=============================");
+        String currentPath = new java.io.File(".").getCanonicalPath();
+        System.out.println("Current dir:" + currentPath);
+        System.out.println("=============================");
+        Map<String, String> env = new HashMap<>();
+        env.put("GOOGLE_APPLICATION_CREDENTIALS", System.getProperty("user.dir")+"/gimochi-cd8bdea6fd58.json");
+        setEnv(env);
+    }
+
+    protected static void setEnv(Map<String, String> newenv) throws Exception {
+        try {
+            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+            theEnvironmentField.setAccessible(true);
+            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+            env.putAll(newenv);
+            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
+            theCaseInsensitiveEnvironmentField.setAccessible(true);
+            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+            cienv.putAll(newenv);
+        } catch (NoSuchFieldException e) {
+            Class[] classes = Collections.class.getDeclaredClasses();
+            Map<String, String> env = System.getenv();
+            for(Class cl : classes) {
+                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+                    Field field = cl.getDeclaredField("m");
+                    field.setAccessible(true);
+                    Object obj = field.get(env);
+                    Map<String, String> map = (Map<String, String>) obj;
+                    map.clear();
+                    map.putAll(newenv);
+                }
+            }
+        }
+    }
+*/
 
     public OcrResDto detect(Long userId, MultipartFile multipartFile) {
         User user = userRepository.findByUserId(userId).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        System.out.println("=============================");
-        System.out.println(System.getenv("kdw"));
-        System.out.println("=============================");
-
-        System.out.println("=============================");
-        System.out.println(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
-        System.out.println("=============================");
+        log.info("=============================");
+        log.info(System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        log.info("=============================");
 
         try {
             VisionApiUtil visionApiUtil = new VisionApiUtil();
@@ -123,7 +121,14 @@ public class GifticonService {
             target = target.replaceAll("(\r\n|\r|\n|\n\r)", " ")
                     .replaceAll(" ", ""); // 줄바꿈, 공백 모두 제거
 
-            List<String> stores = null;
+            System.out.println("=============================");
+            System.out.println(resourceLoader.getResource("classpath:store/stores.txt").getURI());
+            System.out.println("=============================");
+
+            List<String> stores = FileUtils.readLines(new File(resourceLoader
+                    .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
+
+            /*List<String> stores = null;
             if(File.separator.equals("\\")) {
                 stores = FileUtils.readLines(new File(resourceLoader
                         .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
@@ -134,7 +139,7 @@ public class GifticonService {
                 tempFile.deleteOnExit();
                 copyInputStreamToFile(in, tempFile);
                 stores = FileUtils.readLines(tempFile, Charset.defaultCharset());
-            }
+            }*/
 
             String store = "";
             for(String s : stores) {
