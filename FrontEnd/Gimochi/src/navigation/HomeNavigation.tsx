@@ -8,7 +8,6 @@ import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
 import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
-import NotificationScreen from '../screen/NotificationScreen';
 import { Icon } from '@rneui/themed';
 
 export type HomeStackParamList = {
@@ -18,7 +17,6 @@ export type HomeStackParamList = {
   PlayScreen: undefined;
   RollingpaperScreen: undefined;
   ScheduleScreen: undefined;
-  NotificationScreen: undefined;
   HomeModal: undefined;
 };
 export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeModal'>;
@@ -110,11 +108,6 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
           headerShown: false,
           gestureEnabled: true,
         }}
-      ></Home.Screen>
-      <Home.Screen
-        name='NotificationScreen'
-        component={NotificationScreen}
-        options={{ title: '알림' }}
       ></Home.Screen>
     </Home.Navigator>
   );

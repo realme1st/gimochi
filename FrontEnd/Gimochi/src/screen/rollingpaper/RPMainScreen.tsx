@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { RPNavigationProps } from '../../navigation/RPNavigation';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -16,7 +16,7 @@ import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import screenSlice from '../../slices/screen';
 
-function RPMainScreen({ navigation, route }: RPNavigationProps) {
+function RPMainScreen({ navigation }: RPNavigationProps) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
   const [myRPList, setMyRPList] = useState([]);
@@ -47,7 +47,7 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
-  const goDetail = (id: any, sessionTypeId: any) => {
+  const goDetail = (id: number, sessionTypeId: number, name: string) => {
     if (sessionTypeId === 1) {
       navigation.navigate('RPBirthdayScreen', { RPId: id, sessionTypeId: sessionTypeId });
     } else if (sessionTypeId === 2) {
@@ -55,7 +55,7 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
     } else if (sessionTypeId === 3) {
       navigation.navigate('RPChristmasScreen', { RPId: id, sessionTypeId: sessionTypeId });
     } else {
-      navigation.navigate('RPEtcScreen', { RPId: id, sessionTypeId: sessionTypeId });
+      navigation.navigate('RPEtcScreen', { RPId: id, sessionTypeId: sessionTypeId, name: name });
     }
   };
 
@@ -71,7 +71,7 @@ function RPMainScreen({ navigation, route }: RPNavigationProps) {
         </RPTitleContainer>
         <RPListContainer>
           {myRPList.map((RP, index) => (
-            <RPItemButton key={index} onPress={() => goDetail(RP.sessionId, RP.sessionTypeId)}>
+            <RPItemButton key={index} onPress={() => goDetail(RP.sessionId, RP.sessionTypeId, RP.name)}>
               <RPItemContainer>
                 <FontAwesomeIcon icon={faCalendar} size={20} style={{ marginLeft: '3%' }} />
                 <RPListText>{RP.anniversary}</RPListText>

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground } from 'react-native';
+import { View, Text, ImageBackground, Image } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -50,8 +50,7 @@ function RPChristmasScreen({ navigation, route }) {
         if (lst.length <= 30) {
           setMessageList(lst);
         } else {
-          // 30번째 인자까지만 리스트에 넣는 자바스크립트 문법이 뭐지
-          setMessageList(lst);
+          setMessageList(lst.slice(undefined, 30));
         }
       })
       .catch(function (error) {
@@ -85,7 +84,6 @@ function RPChristmasScreen({ navigation, route }) {
         style={{ width: '100%', height: '100%' }}
         imageStyle={{ opacity: 0.5 }}
       >
-        <Text>{sessionId}번 추카포카</Text>
         <Modal
           animationType='fade'
           transparent={true}
@@ -124,15 +122,15 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[0 + page * 10] && (
         <Image1Container onPress={() => goMessageDetail(0 + page * 10)}>
-          <Image1
+          <Image
             source={
               messageList[0 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[0 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[0 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[0 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -140,15 +138,15 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[1 + page * 10] && (
         <Image2Container onPress={() => goMessageDetail(1 + page * 10)}>
-          <Image2
+          <Image
             source={
               messageList[1 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[1 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[1 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[1 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -156,15 +154,15 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[2 + page * 10] && (
         <Image3Container onPress={() => goMessageDetail(2 + page * 10)}>
-          <Image3
+          <Image
             source={
               messageList[2 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[2 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[3 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[3 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -172,7 +170,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[3 + page * 10] && (
         <Image4Container onPress={() => goMessageDetail(3 + page * 10)}>
-          <Image4
+          <Image
             source={
               messageList[3 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -188,7 +186,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[4 + page * 10] && (
         <Image5Container onPress={() => goMessageDetail(4 + page * 10)}>
-          <Image5
+          <Image
             source={
               messageList[4 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -204,7 +202,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[5 + page * 10] && (
         <Image6Container onPress={() => goMessageDetail(5 + page * 10)}>
-          <Image6
+          <Image
             source={
               messageList[5 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -220,7 +218,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[6 + page * 10] && (
         <Image7Container onPress={() => goMessageDetail(6 + page * 10)}>
-          <Image7
+          <Image
             source={
               messageList[6 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -236,14 +234,14 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[7 + page * 10] && (
         <Image8Container onPress={() => goMessageDetail(7 + page * 10)}>
-          <Image8
+          <Image
             source={
               messageList[7 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[7 + page * 10].messageType === 2
                 ? require('../../assets/images/attendMochi.png')
                 : messageList[7 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
+                ? require('../../assets/images/challengeMochi.png')
                 : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
@@ -252,7 +250,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[8 + page * 10] && (
         <Image9Container onPress={() => goMessageDetail(8 + page * 10)}>
-          <Image9
+          <Image
             source={
               messageList[8 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -268,7 +266,7 @@ function RPChristmasScreen({ navigation, route }) {
       )}
       {messageList[9 + page * 10] && (
         <Image10Container onPress={() => goMessageDetail(9 + page * 10)}>
-          <Image10
+          <Image
             source={
               messageList[9 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
@@ -293,8 +291,8 @@ const RPDetailContainer = styled.View`
 
 const CreateButton = styled.TouchableOpacity`
   position: absolute;
-  left: 320px;
-  top: 480px;
+  left: 80%;
+  top: 85%;
 `;
 
 const ModalContainer = styled.View`
@@ -311,6 +309,7 @@ const ModalTitleText = styled.Text`
   margin: 5% auto 5% 10%;
   font-family: 'Regular';
   font-size: 15px;
+  color: #000000;
 `;
 
 const ModalTextContainer = styled.View`
@@ -332,6 +331,7 @@ const ModalText = styled.Text`
   font-family: 'Regular';
   font-size: 12px;
   margin: 3%;
+  color: #000000;
 `;
 
 const LeftButton = styled.TouchableOpacity`
@@ -350,120 +350,80 @@ const Image1Container = styled.TouchableOpacity`
   position: absolute;
   left: 40%;
   bottom: 80%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image1 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image2Container = styled.TouchableOpacity`
   position: absolute;
   left: 28%;
   bottom: 62%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image2 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image3Container = styled.TouchableOpacity`
   position: absolute;
   left: 52%;
   bottom: 62%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image3 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image4Container = styled.TouchableOpacity`
   position: absolute;
   left: 17%;
   bottom: 44%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image4 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image5Container = styled.TouchableOpacity`
   position: absolute;
   left: 40%;
   bottom: 44%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image5 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image6Container = styled.TouchableOpacity`
   position: absolute;
   left: 65%;
   bottom: 44%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image6 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image7Container = styled.TouchableOpacity`
   position: absolute;
   left: 4%;
   bottom: 26%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image7 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image8Container = styled.TouchableOpacity`
   position: absolute;
   left: 28%;
   bottom: 26%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image8 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image9Container = styled.TouchableOpacity`
   position: absolute;
   left: 52%;
   bottom: 26%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image9 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 const Image10Container = styled.TouchableOpacity`
   position: absolute;
   left: 76%;
   bottom: 26%;
-  width: 18%;
-  height: 18%;
-`;
-
-const Image10 = styled.Image`
-  width: 100%;
+  width: 16%;
+  height: 16%;
 `;
 
 export default RPChristmasScreen;

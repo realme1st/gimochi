@@ -49,7 +49,7 @@ function RPNavigation() {
         component={RPGraduateScreen}
         options={{ title: '졸업 추카포카' }}
       ></RP.Screen>
-      <RP.Screen name='RPEtcScreen' component={RPEtcScreen} options={{ title: '기타 추카포카' }}></RP.Screen>
+      <RP.Screen name='RPEtcScreen' component={RPEtcScreen}></RP.Screen>
       <RP.Screen
         name='RPWriteScreen'
         component={RPWriteScreen}
