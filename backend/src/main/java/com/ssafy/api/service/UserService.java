@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.UserResDto;
 import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
@@ -28,6 +29,25 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final FriendsListRepository friendsListRepository;
 	private final NotificationService notificationService;
+
+	/*
+	 * description : 사용자 정보 조회 메소드
+	 * @param userId : userId
+	 * @return UserResDto :UserDto 객체
+	 * */
+	public UserResDto getUser(Long userId){
+		User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+		UserResDto userResDto = UserResDto.builder()
+				.userId(userId)
+				.userBirthday(user.getUserBirthday())
+				.userEmail(user.getUserEmail())
+				.userKakaoId(user.getUserKakaoId())
+				.userNickname(user.getUserNickname())
+				.userPoint(user.getUserPoint())
+				.build();
+		return userResDto;
+	}
+
 	/*
 	* description : 팔로우 요청을 처리하는 메소드
 	* @param followReqDto : 팔로우 요청을 위한 Dto
@@ -221,6 +241,7 @@ public class UserService {
 		}
 		// 언팔로우 하기
 		friendsListRepository.deleteByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId());
+		friendsListRepository.deleteByFollowerIdAndFollowingId(followReqDto.getFollowingUserId(),followReqDto.getFollowerUserId());
 
 		return true;
 	}
