@@ -13,10 +13,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //new User막음
-@ToString(callSuper=true)
-public class User{
+@ToString(callSuper = true)
+public class User {
     @Builder
-    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken,String userProfile, String expiresIn) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken, String userProfile, String expiresIn) {
         this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
@@ -51,6 +51,9 @@ public class User{
     @Column(nullable = true)
     private String expiresIn;
 
+    @Column(nullable = false)
+    private int usedCount;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Gifticon> gifticonsList = new ArrayList<>();
@@ -63,33 +66,32 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
 
-    public void addGifticon(Gifticon gifticon){
+    public void addGifticon(Gifticon gifticon) {
         this.gifticonsList.add(gifticon);
 
-        if(gifticon.getUser() !=this) { //무한루프 방지
+        if (gifticon.getUser() != this) { //무한루프 방지
             gifticon.setUser(this);
         }
 
     }
 
-    public void addChallengeInfo(ChallengeInfo challengeInfo){
+    public void addChallengeInfo(ChallengeInfo challengeInfo) {
         this.challengeInfoList.add(challengeInfo);
 
-        if(challengeInfo.getUser() !=this) { //무한루프 방지
+        if (challengeInfo.getUser() != this) { //무한루프 방지
             challengeInfo.setUser(this);
         }
 
     }
 
-    public void addChallengeInvite(ChallengeInvite challengeInvite){
+    public void addChallengeInvite(ChallengeInvite challengeInvite) {
         this.challengeInvitesList.add(challengeInvite);
 
-        if(challengeInvite.getUser() !=this) { //무한루프 방지
+        if (challengeInvite.getUser() != this) { //무한루프 방지
             challengeInvite.setUser(this);
         }
 
     }
-
 
 
     @JsonIgnore
@@ -97,15 +99,21 @@ public class User{
     private List<Session> sessionsList = new ArrayList<>();
 
 
-    public void changeSocialTokenInfo(String userSocialToken, String userSocialRefreshToken){
+    public void changeSocialTokenInfo(String userSocialToken, String userSocialRefreshToken) {
         this.userSocialToken = userSocialToken;
         this.userSocialRefreshToken = userSocialRefreshToken;
     }
 
-    public void setFirebaseToken(String FirebaseToken){
+    public void setFirebaseToken(String FirebaseToken) {
         this.userFbToken = FirebaseToken;
     }
 
-    public void setUserProfile(String userProfile){ this.userProfile = userProfile;}
+    public void setUserProfile(String userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public void countUpUsed() {
+        this.usedCount = this.usedCount + 1;
+    }
 
 }

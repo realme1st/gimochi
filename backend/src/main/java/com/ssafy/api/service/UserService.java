@@ -4,6 +4,7 @@ import com.ssafy.api.dto.UserResDto;
 import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
+import com.ssafy.api.response.UserUsageResDto;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
 import com.ssafy.db.entity.FriendsList;
@@ -47,6 +48,33 @@ public class UserService {
 				.userProfile(user.getUserProfile())
 				.build();
 		return userResDto;
+	}
+
+	/*
+	 * description : 사용자 기프티콘 등록/사용 조회 메소드
+	 * @param userId : userId
+	 * @return UserUsageResDto :UserUsageResDto 객체
+	 * */
+	public UserUsageResDto getUsage(Long userId){
+		User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+		UserUsageResDto userUsageResDto = UserUsageResDto.builder()
+				.registCount(user.getGifticonsList().size())
+				.usedCount(user.getUsedCount())
+				.build();
+		return userUsageResDto;
+	}
+
+	/*
+	 * description : 사용 기프티콘 카운트 업 메소드
+	 * @param userId : userId
+	 * @return boolean : 성공 여부
+	 * */
+	@Transactional
+	public boolean countUpUsed(Long userId){
+		User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+		user.countUpUsed();
+		userRepository.save(user);
+		return true;
 	}
 
 	/*
