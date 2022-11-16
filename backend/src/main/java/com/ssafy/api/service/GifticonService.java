@@ -13,6 +13,7 @@ import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -121,25 +123,22 @@ public class GifticonService {
             target = target.replaceAll("(\r\n|\r|\n|\n\r)", " ")
                     .replaceAll(" ", ""); // 줄바꿈, 공백 모두 제거
 
-            System.out.println("=============================");
-            System.out.println(resourceLoader.getResource("classpath:store/stores.txt").getURI());
-            System.out.println("=============================");
+            List<String> stores = null;
+            String filePath = "store/stores.txt";
 
-            List<String> stores = FileUtils.readLines(new File(resourceLoader
-                    .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
-
-            /*List<String> stores = null;
-            if(File.separator.equals("\\")) {
+            if(File.separator.equals("\\")) { // 윈도우 로컬의 경우
                 stores = FileUtils.readLines(new File(resourceLoader
-                        .getResource("classpath:store/stores.txt").getURI()), Charset.defaultCharset());
-            } else if(File.separator.equals("/")) {
-                Path path = Paths.get("/store", "/stroes.txt");
-                InputStream in = Model.class.getClassLoader().getResourceAsStream(path.toString());
-                File tempFile = File.createTempFile(String.valueOf(in.hashCode()), ".tmp");
-                tempFile.deleteOnExit();
-                copyInputStreamToFile(in, tempFile);
-                stores = FileUtils.readLines(tempFile, Charset.defaultCharset());
-            }*/
+                        .getResource("classpath:" + filePath).getURI()), Charset.defaultCharset());
+            } else if(File.separator.equals("/")) { // ec2 배포 환경일 경우
+
+                ClassPathResource classPathResource = new ClassPathResource(filePath);
+                log.info("=============================");
+                log.info("file path exists = {}", classPathResource.exists());
+                log.info("file path = {}", classPathResource.getPath());
+                log.info("=============================");
+
+                stores = FileUtils.readLines(classPathResource.getFile(), Charset.defaultCharset());
+            }
 
             String store = "";
             for(String s : stores) {
