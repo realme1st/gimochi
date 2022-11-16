@@ -47,12 +47,12 @@ public class KakaoService {
         params.add("grant_type", "authorization_code");
         params.add("client_id", "0e3c9cecfd800e2aae8228d69a635959");
         //로컬에서 할 때
-        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
+//        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
         //ssl 인증서 설정 전
         //params.add("redirect_uri", "http://k7a205.p.ssafy.io/kakao/oauth");
 
         //ssl 인증서 설정 후
-//        params.add("redirect_uri", "https://k7a205.p.ssafy.io/api/kakao/oauth");
+        params.add("redirect_uri", "https://k7a205.p.ssafy.io/api/kakao/oauth");
         params.add("code", code);
         params.add("client_secret", "5YBXwlymi8l1I2H57ZObnlrOQ4NNUrnS"); // 생략 가능!
 
