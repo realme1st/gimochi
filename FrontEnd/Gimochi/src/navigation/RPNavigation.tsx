@@ -7,7 +7,6 @@ import RPChristmasScreen from '../screen/rollingpaper/RPChristmasScreen';
 import RPGraduateScreen from '../screen/rollingpaper/RPGraduateScreen';
 import RPEtcScreen from '../screen/rollingpaper/RPEtcScreen';
 import RPWriteScreen from '../screen/rollingpaper/RPWriteScreen';
-import RPMessageWriteScreen from '../screen/rollingpaper/RPMessageWriteScreen';
 
 export type RPStackParamList = {
   RPMainScreen: undefined;
@@ -16,7 +15,6 @@ export type RPStackParamList = {
   RPChristmasScreen: undefined;
   RPGraduateScreen: undefined;
   RPEtcScreen: undefined;
-  RPMessageWriteScreen: undefined;
   RPId: number;
 };
 
@@ -54,11 +52,6 @@ function RPNavigation() {
         name='RPWriteScreen'
         component={RPWriteScreen}
         options={{ title: '추카포카 작성' }}
-      ></RP.Screen>
-      <RP.Screen
-        name='RPMessageWriteScreen'
-        component={RPMessageWriteScreen}
-        options={{ title: '추카포카 메시지 작성' }}
       ></RP.Screen>
     </RP.Navigator>
   );

@@ -8,35 +8,23 @@ import { ScrollView } from 'react-native';
 import { RPNavigationProps } from '../../navigation/RPNavigation';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCirclePlus, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
-import { useAppDispatch } from '../../store';
-import screenSlice from '../../slices/screen';
 
-function RPMainScreen({ navigation }: RPNavigationProps) {
-  const userId = useSelector((state: RootState) => state.user.userId);
-  const userNickname = useSelector((state: RootState) => state.user.userNickname);
+function FriendRPScreen({ navigation, route }: RPNavigationProps) {
+  const userId = route.params.friendId;
+  const userNickname = route.params.friendNickname;
   const [myRPList, setMyRPList] = useState([]);
   // useEffect쓸때 [reload] 무지성 복붙할것
   const reload = useSelector((state: RootState) => state.reload.reload);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(
-      screenSlice.actions.addScreen({
-        screen: 'RollingpaperScreen',
-      }),
-    );
-    return () => {
-      console.log('unmount');
-      dispatch(screenSlice.actions.deleteScreen());
-    };
-  }, []);
-
-  useEffect(() => {
+    navigation.setOptions({
+      title: `${userNickname}님의 추카포카`,
+    });
     axios
       .get(`${Config.API_URL}/session/user/${userId}`)
       .then(function (response) {
@@ -47,41 +35,38 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
+
   const goDetail = (id: number, sessionTypeId: number, name: string) => {
     if (sessionTypeId === 1) {
-      navigation.navigate('RPBirthdayScreen', {
+      navigation.navigate('RPBirthdayScreen1', {
         RPId: id,
         sessionTypeId: sessionTypeId,
         userId: userId,
         userName: userNickname,
       });
     } else if (sessionTypeId === 2) {
-      navigation.navigate('RPGraduateScreen', {
+      navigation.navigate('RPGraduateScreen1', {
         RPId: id,
         sessionTypeId: sessionTypeId,
         userId: userId,
         userName: userNickname,
       });
     } else if (sessionTypeId === 3) {
-      navigation.navigate('RPChristmasScreen', {
+      navigation.navigate('RPChristmasScreen1', {
         RPId: id,
         sessionTypeId: sessionTypeId,
         userId: userId,
         userName: userNickname,
       });
     } else {
-      navigation.navigate('RPEtcScreen', {
+      navigation.navigate('RPEtcScreen1', {
         RPId: id,
         sessionTypeId: sessionTypeId,
-        name: name,
         userId: userId,
+        name: name,
         userName: userNickname,
       });
     }
-  };
-
-  const goWrite = () => {
-    navigation.navigate('RPWriteScreen');
   };
 
   return (
@@ -106,9 +91,6 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
           ))}
         </RPListContainer>
       </ScrollView>
-      <CreateButton onPress={goWrite}>
-        <FontAwesomeIcon icon={faCirclePlus} size={50} color={'#ffa401'} />
-      </CreateButton>
     </RPContainer>
   );
 }
@@ -160,4 +142,4 @@ const CreateButton = styled.TouchableOpacity`
   top: 85%;
 `;
 
-export default RPMainScreen;
+export default FriendRPScreen;

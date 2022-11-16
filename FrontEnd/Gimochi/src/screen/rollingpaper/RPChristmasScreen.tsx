@@ -17,6 +17,9 @@ import { useAppDispatch } from '../../store';
 import screenSlice from '../../slices/screen';
 
 function RPChristmasScreen({ navigation, route }) {
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const friendId = route.params.userId;
+  const userName = route.params.userName;
   const sessionId: number = route.params.RPId;
   const sessionTypeId: number = route.params.sessionTypeId;
   const reload = useSelector((state: RootState) => state.reload.reload);
@@ -29,6 +32,9 @@ function RPChristmasScreen({ navigation, route }) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    navigation.setOptions({
+      title: `${userName}님의 크리스마스 추카포카`,
+    });
     dispatch(
       screenSlice.actions.addScreen({
         screen: 'RollingpaperScreen',
@@ -107,9 +113,11 @@ function RPChristmasScreen({ navigation, route }) {
           </ModalContainer>
         </Modal>
       </ImageBackground>
-      <CreateButton onPress={onPress}>
-        <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
-      </CreateButton>
+      {userId !== friendId && (
+        <CreateButton onPress={onPress}>
+          <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
+        </CreateButton>
+      )}
       {!(page === 0) && (
         <LeftButton onPress={() => setPage(page - 1)}>
           <FontAwesomeIcon icon={faChevronLeft} size={30} color={'#ffa401'} />

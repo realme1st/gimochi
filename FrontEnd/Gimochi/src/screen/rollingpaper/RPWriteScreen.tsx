@@ -65,9 +65,9 @@ function RPWriteScreen({ navigation }) {
     setVisible(false); // 모달 close
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     // 정보 제대로 입력하지 않았을 때 alert띄워야
-    axios
+    await axios
       .post(`${Config.API_URL}/session`, {
         anniversary: format(date, 'yyyy-MM-dd'),
         name: sessionName,
@@ -83,6 +83,17 @@ function RPWriteScreen({ navigation }) {
           }),
         );
         navigation.goBack();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    await axios
+      .post(`${Config.API_URL}/notification/message/multi`, {
+        type: 1,
+        userId: userId,
+      })
+      .then(function (response) {
+        console.log(response);
       })
       .catch(function (error) {
         console.log(error);

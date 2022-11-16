@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'react-native';
+import { Modal, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../slices/user';
@@ -19,7 +19,8 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import styled from 'styled-components/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUserPlus, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faEllipsisVertical, faCircleXmark, faMessage } from '@fortawesome/free-solid-svg-icons';
+import FastImage from 'react-native-fast-image';
 // import Modal from 'react-native-modal';
 
 function MypageScreen({ navigation }) {
@@ -77,6 +78,10 @@ function MypageScreen({ navigation }) {
     );
   };
 
+  const goFriendSession = (id, nickname) => {
+    navigation.navigate('FriendRPScreen', { friendId: id, friendNickname: nickname });
+  };
+
   const goFriendRecom = () => {
     navigation.navigate('FriendRecomScreen');
   };
@@ -103,7 +108,30 @@ function MypageScreen({ navigation }) {
       <FriendListContainer>
         {friendList.map((friend, index) => (
           <FriendItemContainer key={index}>
+            {friend.userProfile ? (
+              <FastImage
+                source={{ uri: friend.userProfile }}
+                style={{ width: 40, height: 40, borderRadius: 6, marginLeft: 8 }}
+                resizeMode='contain'
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/mochi.png')}
+                style={{ width: 40, height: 40, marginLeft: 8 }}
+                resizeMode='contain'
+              />
+            )}
             <FriendItemText>{friend.userName}</FriendItemText>
+            <NotiItemButton1 onPress={() => goFriendSession(friend.userId, friend.userName)}>
+              <FontAwesomeIcon icon={faMessage} size={30} style={{ marginLeft: '3%', color: '#5de11f' }} />
+            </NotiItemButton1>
+            <NotiItemButton2>
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                size={30}
+                style={{ marginLeft: '3%', color: '#f02626' }}
+              />
+            </NotiItemButton2>
           </FriendItemContainer>
         ))}
       </FriendListContainer>
@@ -186,6 +214,12 @@ const FriendItemText = styled.Text`
   margin-left: 5%;
   color: #000000;
 `;
+
+const NotiItemButton1 = styled.TouchableOpacity`
+  margin-left: auto;
+`;
+
+const NotiItemButton2 = styled.TouchableOpacity``;
 
 const SettingMenuContainer = styled.View`
   margin-top: 400px;
