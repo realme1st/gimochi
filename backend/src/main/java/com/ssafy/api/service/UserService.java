@@ -44,6 +44,7 @@ public class UserService {
 				.userKakaoId(user.getUserKakaoId())
 				.userNickname(user.getUserNickname())
 				.userPoint(user.getUserPoint())
+				.userProfile(user.getUserProfile())
 				.build();
 		return userResDto;
 	}
@@ -162,6 +163,7 @@ public class UserService {
 					.userId(friend.getFollowingId())
 					.userName(user.getUserNickname())
 					.isFriend(friend.isFriend())
+					.userProfile(user.getUserProfile())
 					.build();
 			return friendDto;
 		}).collect(Collectors.toList());
@@ -187,6 +189,7 @@ public class UserService {
 						.userId(friend.getFollowerId())
 						.userName(user.getUserNickname())
 						.isFriend(friend.isFriend())
+						.userProfile(user.getUserProfile())
 						.build();
 				return friendDto;
 			}else{
@@ -217,6 +220,7 @@ public class UserService {
 						.userId(friend.getFollowerId())
 						.userName(user.getUserNickname())
 						.isFriend(friend.isFriend())
+						.userProfile(user.getUserProfile())
 						.build();
 				return friendDto;
 			}else{
