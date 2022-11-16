@@ -205,7 +205,10 @@ public class GifticonService {
             log.error(e.getMessage());
         }
 
-        gifticon.changeGifticonPath(url);
+        String prefix = "https://mygimochi.s3.ap-northeast-2.amazonaws.com/";
+        String finalUrl = prefix + url;
+
+        gifticon.changeGifticonPath(finalUrl);
 
         return gifticonRepository.save(gifticon);
     }
