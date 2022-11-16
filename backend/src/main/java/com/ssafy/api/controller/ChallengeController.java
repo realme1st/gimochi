@@ -88,7 +88,7 @@ public class ChallengeController {
 
     @GetMapping("/challengeInvite/{userId}")
     @ApiOperation(value = "user_id가 자신이 받은 Challenge 초대장 조회", notes = "<strong>userId를 입력하여</strong> 해당 유저가 초대받은 챌린지의 정보를 조회한다.")
-    public ResponseEntity<CommonResponseEntity<List<ChallengeListInviteResDto>>> getChallengeInviteLIst(@RequestParam Long userId) {
+    public ResponseEntity<CommonResponseEntity<List<ChallengeListInviteResDto>>> getChallengeInviteLIst(@PathVariable Long userId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInviteList(userId)));
     }
 
