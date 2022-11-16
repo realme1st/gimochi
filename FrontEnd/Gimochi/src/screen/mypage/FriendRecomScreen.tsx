@@ -52,7 +52,21 @@ function FriendRecomScreen() {
       .catch(function (error) {
         console.log(error);
       });
+    await axios
+      .post(`${Config.API_URL}/notification/message/single`, {
+        receiverId: id,
+        senderId: userId,
+        // 타입은 물어봐야
+        type: 1,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
+
   return (
     <EntireContainer>
       <FriendRecomTitleContainer>

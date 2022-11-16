@@ -17,6 +17,9 @@ import { useAppDispatch } from '../../store';
 import screenSlice from '../../slices/screen';
 
 function RPEtcScreen({ navigation, route }) {
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const friendId = route.params.userId;
+  const userName = route.params.userName;
   const sessionId: number = route.params.RPId;
   const sessionTypeId: number = route.params.sessionTypeId;
   const name: string = route.params.name;
@@ -33,7 +36,7 @@ function RPEtcScreen({ navigation, route }) {
 
   useEffect(() => {
     navigation.setOptions({
-      title: `${name} 추카포카`,
+      title: `${userName}님의 ${name} 추카포카`,
     });
     dispatch(
       screenSlice.actions.addScreen({
@@ -113,9 +116,11 @@ function RPEtcScreen({ navigation, route }) {
           </ModalContainer>
         </Modal>
       </ImageBackground>
-      <CreateButton onPress={onPress}>
-        <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
-      </CreateButton>
+      {userId !== friendId && (
+        <CreateButton onPress={onPress}>
+          <FontAwesomeIcon icon={faMessage} size={50} color={'#ffa401'} />
+        </CreateButton>
+      )}
       {!(page === 0) && (
         <LeftButton onPress={() => setPage(page - 1)}>
           <FontAwesomeIcon icon={faChevronLeft} size={30} color={'#ffa401'} />
@@ -133,10 +138,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[0 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[0 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[0 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[0 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -149,10 +154,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[1 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[1 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[1 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[1 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -165,10 +170,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[2 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[2 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[3 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[3 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -181,10 +186,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[3 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[3 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[3 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[3 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -197,10 +202,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[4 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[4 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[4 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[4 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -213,10 +218,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[5 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[5 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[5 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[5 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -229,10 +234,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[6 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[6 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[6 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[6 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -245,10 +250,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[7 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[7 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[7 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[7 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -261,10 +266,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[8 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[8 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[8 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[8 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -277,10 +282,10 @@ function RPEtcScreen({ navigation, route }) {
               messageList[9 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[9 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
-                : messageList[9 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                  ? require('../../assets/images/attendMochi.png')
+                  : messageList[9 + page * 10].messageType === 3
+                    ? require('../../assets/images/challengeMochi.png')
+                    : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
