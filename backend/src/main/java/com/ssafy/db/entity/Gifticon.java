@@ -7,6 +7,8 @@ import lombok.*;
 import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,7 +23,6 @@ public class Gifticon{
     @JoinColumn(name = "userId")
     private User user;
 
-
     @Column(nullable = false)
     private LocalDate gifticonPeriod;
     @Column(nullable = false)
@@ -34,6 +35,9 @@ public class Gifticon{
     /* Session Message */
     @OneToOne(mappedBy = "gifticon")
     private SessionMessage sessionMessage;
+
+    @OneToMany(mappedBy = "gifticon")
+    private List<RewardInfo> rewardInfoList = new ArrayList<>();
 
     public void setUser(User user){
         this.user =user;
@@ -74,6 +78,15 @@ public class Gifticon{
         if (!sessionMessage.getGifticon().equals(this)) {
             sessionMessage.setGifticon(this);
         }
+    }
+
+    public void addChallengeReward(RewardInfo rewardInfo){
+        this.rewardInfoList.add(rewardInfo);
+
+        if(rewardInfo.getGifticon() !=this) { //무한루프 방지
+            rewardInfo.setGifticon(this);
+        }
+
     }
 
 }
