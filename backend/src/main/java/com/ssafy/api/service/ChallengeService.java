@@ -183,7 +183,18 @@ public class ChallengeService {
         ChallengeInvite challengeInvite = ChallengeInvite.builder()
                 .challenge(challenge)
                 .user(user)
+                .inviteStatus(1)
                 .build();
+
+        //challengeInvite에 이미 userId가 있다면
+        if(challengeInviteRepository.findByChallengeAndUser(challenge, user).isPresent()){
+            throw new CustomException(ErrorCode.CHALLENGE_INVITE_DUPLICATE);
+        }
+        //challengeInvite userId가 userLeaderId라면
+        if(challenge.getChallengeLeaderId()==user.getUserId()){
+            throw new CustomException(ErrorCode.CHALLENGE_CANT_INVITE_LEADER);
+        }
+
         // ChallengeInvite 저장
         try {
             challengeInviteRepository.save(challengeInvite);
@@ -191,6 +202,27 @@ public class ChallengeService {
             throw new CustomException(ErrorCode.CHALLENGE_SAVE_ERROR);
         }
         return challengeInvite;
+    }
+
+    //challengeId로 userInviteList 가져오기
+    public List<UserListInviteResDto> findChallengeInviteListByChallengeId(Long challengeId) {
+
+        Challenge challenge = findChallengeByChallengeId(challengeId);
+        List<UserListInviteResDto> listRes = new ArrayList<>();
+        List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteChallengeId(challenge.getChallengeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        challengeInviteList.stream().forEach(challengeInvite -> {
+            UserListInviteResDto userListInviteResDto = UserListInviteResDto.builder()
+                    .userId(challengeInvite.getUser().getUserId())
+                    .userNickname(challengeInvite.getUser().getUserNickname())
+                    .userProfile(challengeInvite.getUser().getUserProfile())
+                    .build();
+
+            listRes.add(userListInviteResDto);
+        });
+
+        return listRes;
     }
 
     @Transactional
@@ -226,7 +258,7 @@ public class ChallengeService {
 
     //vote table 생성
     @Transactional
-    public List<ChallengeInviteResDto> findChallengeInviteList(Long userId) {
+    public List<ChallengeListInviteResDto> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
         if (challengeInviteList.isEmpty()){
@@ -234,7 +266,7 @@ public class ChallengeService {
         }
         // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
         List<Long> challengeIdList = new ArrayList<>();
-        List<ChallengeInviteResDto> result = new ArrayList<>();
+        List<ChallengeListInviteResDto> result = new ArrayList<>();
 
         challengeInviteList.stream().forEach(challengeInvite -> {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
@@ -242,7 +274,7 @@ public class ChallengeService {
 
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
-            result.add(ChallengeInviteResDto.builder()
+            result.add(ChallengeListInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())

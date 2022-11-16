@@ -87,9 +87,15 @@ public class ChallengeController {
     }
 
     @GetMapping("/challengeInvite/{userId}")
-    @ApiOperation(value = "user_id에 해당하는 사용자가 참가한 Challenge 초대장 조회", notes = "<strong>userId를 입력하여</strong> 해당 유저가 참가한 챌린지 리스트를 조회한다.")
+    @ApiOperation(value = "user_id가 자신이 받은 Challenge 초대장 조회", notes = "<strong>userId를 입력하여</strong> 해당 유저가 초대받은 챌린지의 정보를 조회한다.")
     public ResponseEntity<? extends BasicResponse> getChallengeInviteLIst(@RequestParam Long userId) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInviteList(userId)));
+    }
+
+    @GetMapping("/challengeInvite/{challengeId}")
+    @ApiOperation(value = "challenge_id에 해당하는 초대장을 보낸 userList 조회", notes = "<strong>challengeId를 입력하여</strong> 초대장을 보낸 유저들을 조회한다.")
+    public ResponseEntity<? extends BasicResponse> getChallengeInviteUserList(@RequestParam Long challengeId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.findChallengeInviteListByChallengeId(challengeId)));
     }
 
     // 챌린지 수락을 눌렀을 떄 , 챌린지 유저 정보 테이블에 값 추가

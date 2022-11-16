@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -28,10 +29,15 @@ public class ChallengeInvite {
     @ManyToOne(fetch=LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
+
+    @Column(name="invite_status")
+
+    private int inviteStatus;
     @Builder
-    public ChallengeInvite(User user, Challenge challenge) {
+    public ChallengeInvite(User user, Challenge challenge,int inviteStatus) {
         this.user = user;
         this.challenge = challenge;
+        this.inviteStatus = inviteStatus;
     }
 
     public void setUser(User user){
