@@ -20,7 +20,7 @@ public interface ChallengeInviteRepository extends JpaRepository<ChallengeInvite
     Optional<ChallengeInvite> findByChallengeInviteId(Long challengeInviteId);
 
     @Query("select c from ChallengeInvite c where c.challenge.challengeId = ?1")
-    Optional<List<ChallengeInvite>> findAllByChallengeInviteChallengeId(Long challengeId);
+    List<ChallengeInvite> findAllByChallengeInviteChallengeId(Long challengeId);
 
     Optional<ChallengeInvite> findByChallengeAndUser(Challenge challenge, User user);
 }

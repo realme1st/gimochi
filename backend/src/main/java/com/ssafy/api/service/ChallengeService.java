@@ -209,11 +209,11 @@ public class ChallengeService {
     //challengeId로 userInviteList 가져오기
     public List<UserListInviteResDto> findChallengeInviteListByChallengeId(Long challengeId) {
 
-        Challenge challenge = findChallengeByChallengeId(challengeId);
         List<UserListInviteResDto> listRes = new ArrayList<>();
-        List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteChallengeId(challenge.getChallengeId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
-
+        List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteChallengeId(challengeId);
+        if (challengeInviteList.isEmpty()){
+            throw new CustomException(ErrorCode.CHALLENGEINVITE_CHALLENGE_NOT_FOUND);
+        }
         challengeInviteList.stream().forEach(challengeInvite -> {
             UserListInviteResDto userListInviteResDto = UserListInviteResDto.builder()
                     .challengeInviteId(challengeInvite.getChallengeInviteId())

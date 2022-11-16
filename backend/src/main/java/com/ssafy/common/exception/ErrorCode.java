@@ -61,7 +61,8 @@ public enum ErrorCode {
     SESSION_MESSAGE_CREATE_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "세션 메세지 생성 중 서버 오류가 발생했습니다. 관리자에게 문의하세요" ),
     CHALLENGE_INFO_NOT_FOUND( HttpStatus.NOT_FOUND, "해당 챌린지 ID에 해당하는 챌린지 INFO를 찾을 수 없습니다." ),
     CHALLENGE_INVITE_DUPLICATE(HttpStatus.BAD_REQUEST, "이미 초대한 사용자입니다." ),
-    CHALLENGE_CANT_INVITE_LEADER(HttpStatus.BAD_REQUEST, "챌린지 리더는 초대할 수 없습니다." ),;
+    CHALLENGE_CANT_INVITE_LEADER(HttpStatus.BAD_REQUEST, "챌린지 리더는 초대할 수 없습니다." ),
+    CHALLENGEINVITE_CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대장입니다." ),;
 
     private final HttpStatus httpStatus;
     private final String message;
