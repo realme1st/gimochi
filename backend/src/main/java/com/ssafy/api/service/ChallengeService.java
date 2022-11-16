@@ -275,12 +275,16 @@ public class ChallengeService {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
         });
 
+
+
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
+
             result.add(ChallengeListInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())
+                    .challengeInviteId(challengeInviteRepository.findByChallengeAndUser(challenge, findUserByUserId(userId)).get().getChallengeInviteId())
                     .build());
         });
 
