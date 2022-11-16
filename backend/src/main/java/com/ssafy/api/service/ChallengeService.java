@@ -167,9 +167,15 @@ public class ChallengeService {
         for(RankInterface challengeInfo : challengeInfoList){
             if(challengeInfo.getUserId()==userId){
                 myRank= challengeInfo.getMyRank();
+
             }
         }
-        return ChallengeInfoRankResDto.toDto(winnerName, myRank, userId);
+        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeIdUserId(challengeId,userId)
+                .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+
+        int successCnt = challengeInfo.getSuccessCnt();
+        return ChallengeInfoRankResDto.toDto(winnerName, myRank, userId,successCnt);
     }
 
     public List<RankInterface> findChallengeInfoListByChallengeId(Long challengeId) {
