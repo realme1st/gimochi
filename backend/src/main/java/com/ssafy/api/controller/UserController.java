@@ -20,6 +20,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/info/{userId}")
+    @ApiOperation(value = "userId로 사용자 정보 조회", notes = "사용자 정보 조회")
+    public ResponseEntity<? extends BasicResponse> getUser(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.getUser(userId)));
+    }
+
     // 팔로우
     @PostMapping("/follow-request")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)에게 친구 요청 전송", notes = "팔로우")
