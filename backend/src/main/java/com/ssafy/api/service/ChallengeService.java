@@ -275,16 +275,17 @@ public class ChallengeService {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
         });
 
-
+        User user =findUserByUserId(userId);
 
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
-
+            ChallengeInvite challengeInvite =challengeInviteRepository.findByChallengeAndUser(challenge,user)
+                    .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_INVITE_NOT_FOUND));
             result.add(ChallengeListInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
                     .challengeId(challenge.getChallengeId())
-                    .challengeInviteId(challengeInviteRepository.findByChallengeAndUser(challenge, findUserByUserId(userId)).get().getChallengeInviteId())
+                    .challengeInviteId(challengeInvite.getChallengeInviteId())
                     .build());
         });
 
