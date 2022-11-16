@@ -7,13 +7,14 @@ import lombok.Getter;
 @Getter
 public class UserResDto {
     @Builder
-    public UserResDto(Long userId, Long userKakaoId, String userEmail, int userPoint, String userNickname, String userBirthday) {
+    public UserResDto(Long userId, Long userKakaoId, String userEmail, int userPoint, String userNickname, String userBirthday, String userProfile) {
         this.userId = userId;
         this.userKakaoId = userKakaoId;
         this.userEmail = userEmail;
         this.userPoint = userPoint;
         this.userNickname = userNickname;
         this.userBirthday = userBirthday;
+        this.userProfie = userProfile;
     }
 
     private Long userId;
@@ -22,5 +23,6 @@ public class UserResDto {
     private int userPoint;
     private String userNickname;
     private String userBirthday;
+    private String userProfie;
 
 }

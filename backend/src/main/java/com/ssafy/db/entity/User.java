@@ -16,13 +16,14 @@ import java.util.List;
 @ToString(callSuper=true)
 public class User{
     @Builder
-    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken, String expiresIn) {
+    public User(Long userKakaoId, String userNickname, String userEmail, String userBirthday, String userSocialToken, String userSocialRefreshToken,String userProfile, String expiresIn) {
         this.userKakaoId = userKakaoId;
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userBirthday = userBirthday;
         this.userSocialToken = userSocialToken;
         this.userSocialRefreshToken = userSocialRefreshToken;
+        this.userProfile = userProfile;
         this.expiresIn = expiresIn;
     }
 
@@ -104,5 +105,7 @@ public class User{
     public void setFirebaseToken(String FirebaseToken){
         this.userFbToken = FirebaseToken;
     }
+
+    public void setUserProfile(String userProfile){ this.userProfile = userProfile;}
 
 }

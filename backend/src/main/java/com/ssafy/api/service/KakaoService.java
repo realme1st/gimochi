@@ -47,12 +47,12 @@ public class KakaoService {
         params.add("grant_type", "authorization_code");
         params.add("client_id", "0e3c9cecfd800e2aae8228d69a635959");
         //로컬에서 할 때
-//        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
+        params.add("redirect_uri", "http://localhost:3000/kakao/oauth");
         //ssl 인증서 설정 전
         //params.add("redirect_uri", "http://k7a205.p.ssafy.io/kakao/oauth");
 
         //ssl 인증서 설정 후
-        params.add("redirect_uri", "https://k7a205.p.ssafy.io/api/kakao/oauth");
+//        params.add("redirect_uri", "https://k7a205.p.ssafy.io/api/kakao/oauth");
         params.add("code", code);
         params.add("client_secret", "5YBXwlymi8l1I2H57ZObnlrOQ4NNUrnS"); // 생략 가능!
 
@@ -91,38 +91,45 @@ public class KakaoService {
         if (!user.isPresent()) {
             User newUser = User.builder()
                     .userKakaoId(profile.getId())
+                    .userProfile(profile.getProperties().getThumbnail_image())
                     .userNickname(profile.getProperties().getNickname())
                     .userEmail(profile.getKakao_account().getEmail())
                     .userBirthday(profile.getKakao_account().getBirthday())
                     .userSocialToken(token.getAccess_token())
                     .userSocialRefreshToken(token.getRefresh_token())
                     .expiresIn(sf.format(today.getTime() + (long) (21600 * 1000)))
+                    .userProfile(profile.getProperties().getThumbnail_image())
                     .build();
             newUser = userRepository.save(newUser);
             UserLoginDto userLoginDto = UserLoginDto.builder()
                     .userId(newUser.getUserId())
+                    .userProfile(user.get().getUserProfile())
                     .userEmail(newUser.getUserEmail())
                     .userNickname(newUser.getUserNickname())
                     .userSocialToken(newUser.getUserSocialToken())
                     .userSocialRefreshToken(newUser.getUserSocialRefreshToken())
                     .isNewUser(true)
                     .expiresIn(sf.format(today.getTime() + (long) (21600 * 1000)))
+                    .userProfile(newUser.getUserProfile())
                     .build();
 
             return userLoginDto;
 
         } else {
             user.get().changeSocialTokenInfo(token.getAccess_token(), token.getRefresh_token());
+            user.get().setUserProfile(profile.getProperties().getThumbnail_image());
             UserLoginDto userLoginDto = UserLoginDto.builder()
                     .userId(user.get().getUserId())
+                    .userProfile(user.get().getUserProfile())
                     .userEmail(user.get().getUserEmail())
                     .userNickname(user.get().getUserNickname())
                     .userSocialToken(user.get().getUserSocialToken())
                     .userSocialRefreshToken(user.get().getUserSocialRefreshToken())
-//                    .expiresIn(user.get().getExpiresIn())
                     .expiresIn(sf.format(today.getTime() + (long) (21600 * 1000)))
+                    .userProfile(user.get().getUserProfile())
                     .isNewUser(false)
                     .build();
+            userRepository.save(user.get());
             return userLoginDto;
         }
     }
@@ -142,6 +149,7 @@ public class KakaoService {
                     .userBirthday(profile.getKakao_account().getBirthday())
                     .userSocialToken(accessToken)
                     .userSocialRefreshToken(refreshToken)
+                    .userProfile(profile.getProperties().getThumbnail_image())
                     .build();
             userRepository.save(newUser);
             return newUser;
@@ -208,7 +216,6 @@ public class KakaoService {
             kakaoFriends = objectMapper.readValue(kakaoFriendsResponse.getBody(), KakaoFriends.class);
             Optional<User> me = userRepository.findByUserSocialToken(token);
             if (me.isPresent()) {
-                log.info("나 있다");
                 friendDtoList = kakaoFriends.getElements().stream().map(friend -> {
                     Optional<User> user = userRepository.findByUserKakaoId(friend.getId());
                     FriendDto friendDto = null;
@@ -219,12 +226,14 @@ public class KakaoService {
                             friendDto = FriendDto.builder()
                                     .userId(user.get().getUserId())
                                     .userName(friend.getProfile_nickname())
+                                    .userProfile(friend.getProfile_thumbnail_image())
                                     .isFriend(true)
                                     .build();
                         } else {
                             friendDto = FriendDto.builder()
                                     .userId(user.get().getUserId())
                                     .userName(friend.getProfile_nickname())
+                                    .userProfile(friend.getProfile_thumbnail_image())
                                     .isFriend(false)
                                     .build();
                         }
@@ -259,6 +268,7 @@ public class KakaoService {
                 FriendDto friendDto = FriendDto.builder()
                         .userId(kakaoFriend.getUserId())
                         .userName(kakaoFriend.getUserName())
+                        .userProfile(kakaoFriend.getUserProfile())
                         .isFriend(false)
                         .build();
                 return friendDto;
