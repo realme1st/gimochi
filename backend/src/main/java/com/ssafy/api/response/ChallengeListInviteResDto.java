@@ -9,11 +9,14 @@ public class ChallengeListInviteResDto {
     private String challengeLeaderName;
     private Long challengeId;
 
+    private Long challengeInviteId;
+
     @Builder
-    public ChallengeListInviteResDto(String challengeTitle, String challengeLeaderName, Long challengeId) {
+    public ChallengeListInviteResDto(String challengeTitle, String challengeLeaderName, Long challengeId,Long challengeInviteId) {
         this.challengeTitle = challengeTitle;
         this.challengeLeaderName = challengeLeaderName;
         this.challengeId = challengeId;
+        this.challengeInviteId = challengeInviteId;
     }
 
 }
