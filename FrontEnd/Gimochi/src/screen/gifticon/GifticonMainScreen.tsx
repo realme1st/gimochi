@@ -32,6 +32,7 @@ function GifticonMainScreen({ navigation }) {
   const [period, setPeriod] = useState(new Date());
   const [store, setStore] = useState('');
   const [id, setId] = useState('');
+  const [path, setPath] = useState('');
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -56,7 +57,9 @@ function GifticonMainScreen({ navigation }) {
     setPeriod(gifticons[index].gifticonPeriod);
     setStore(gifticons[index].gifticonStore);
     setId(gifticons[index].gifticonId);
+    setPath(gifticons[index].gifticonPath);
     setModal(true);
+    console.log(gifticons[index].gifticonPath);
   };
 
   const useGifticon = async (id: string) => {
@@ -127,13 +130,14 @@ function GifticonMainScreen({ navigation }) {
             margin: 2,
             height: 40,
             padding: 0,
+            justifyContent: 'center',
           }}
           titleStyle={{
             fontSize: 20,
             color: index == 0 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,
-            fontWeight: '900',
+            fontFamily: 'Regular',
           }}
         />
         <Tab.Item
@@ -144,12 +148,14 @@ function GifticonMainScreen({ navigation }) {
             margin: 2,
             height: 40,
             padding: 0,
+            justifyContent: 'center',
           }}
           titleStyle={{
             fontSize: 20,
             color: index == 1 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,
+            fontFamily: 'Regular',
           }}
         />
       </Tab>
@@ -163,11 +169,7 @@ function GifticonMainScreen({ navigation }) {
             renderItem={({ item, index }) => (
               <GifticonItemContainer onPress={() => goGifticonDetail(index)}>
                 {/* 사용기한 얼마 안남았을때 여기다가 D-XX 쓰기 */}
-                <FastImage
-                  source={require('../../assets/images/mochi.png')}
-                  style={{ width: 80, height: 80 }}
-                  resizeMode='contain'
-                />
+                <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
                 <GifticonItemText>{item.gifticonPeriod}</GifticonItemText>
                 <GifticonItemText>{item.gifticonStore}</GifticonItemText>
               </GifticonItemContainer>
@@ -183,7 +185,7 @@ function GifticonMainScreen({ navigation }) {
             renderItem={({ item, index }) => (
               <GifticonItemContainer onPress={() => goGifticonDetail(index)}>
                 <FastImage
-                  source={require('../../assets/images/challengeMochi.png')}
+                  source={{ uri: item.gifticonPath }}
                   style={{ width: 80, height: 80 }}
                   resizeMode='contain'
                 />
@@ -206,11 +208,7 @@ function GifticonMainScreen({ navigation }) {
         onBackdropPress={() => setModal(false)}
       >
         <ModalContainer>
-          <FastImage
-            source={require('../../assets/images/challengeMochi.png')}
-            style={{ width: 120, height: 180 }}
-            resizeMode='contain'
-          />
+          <FastImage source={{ uri: path }} style={{ width: 120, height: 180 }} resizeMode='contain' />
           <ModalText>{period}</ModalText>
           <ModalText>{store}</ModalText>
           <ModalButtonContainer>

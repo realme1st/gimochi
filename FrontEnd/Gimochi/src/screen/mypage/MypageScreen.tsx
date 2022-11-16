@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -5,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../slices/user';
@@ -16,26 +17,34 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import axios from 'axios';
 import Config from 'react-native-config';
+import styled from 'styled-components/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUserPlus, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+// import Modal from 'react-native-modal';
 
 function MypageScreen({ navigation }) {
   const dispatch = useAppDispatch();
+  const userId = useSelector((state: RootState) => state.user.userId);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
-  console.log(accessToken);
+  const reload = useSelector((state: RootState) => state.reload.reload);
+  const [friendList, setFriendList] = useState([]);
+  const [menuDisplay, setMenuDisplay] = useState(false);
 
   useEffect(() => {
     axios
-      .get(`${Config.API_URL}/kakao/friends`, {
+      .get(`${Config.API_URL}/user/follower/${userId}`, {
         headers: {
           token: accessToken,
         },
       })
       .then(function (response) {
-        console.log(response.data.data.elements);
+        console.log(response);
+        setFriendList(response.data.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  }, [reload]);
 
   const signOutWithKakao = async (): Promise<void> => {
     // 2. AsyncStorage 'Login'값 변경, UserId 삭제
@@ -72,40 +81,151 @@ function MypageScreen({ navigation }) {
     navigation.navigate('FriendRecomScreen');
   };
 
+  const goMyPoint = () => {
+    navigation.navigate('MyPointScreen');
+  };
+
   return (
-    <View>
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={goFriendRecom}>
-          <Text style={styles.text}>친구목록</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => signOutWithKakao()}>
-          <Text style={styles.text}>카카오 로그아웃</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <EntireContainer>
+      <MypageTitleContainer>
+        <MypageTitle>친구 목록</MypageTitle>
+        <FriendRecomButton onPress={goFriendRecom}>
+          <FontAwesomeIcon icon={faUserPlus} size={30} style={{ marginLeft: '3%', color: '#000000' }} />
+        </FriendRecomButton>
+        <MypageMenuButton onPress={() => setMenuDisplay(true)}>
+          <FontAwesomeIcon
+            icon={faEllipsisVertical}
+            size={30}
+            style={{ marginLeft: '3%', color: '#4e4b4b' }}
+          />
+        </MypageMenuButton>
+      </MypageTitleContainer>
+      <FriendListContainer>
+        {friendList.map((friend, index) => (
+          <FriendItemContainer key={index}>
+            <FriendItemText>{friend.userName}</FriendItemText>
+          </FriendItemContainer>
+        ))}
+      </FriendListContainer>
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={menuDisplay}
+        onRequestClose={() => {
+          setMenuDisplay(false);
+        }}
+        onBackdropPress={() => setMenuDisplay(false)}
+      >
+        <MenuOverLay onPress={() => setMenuDisplay(false)}>
+          <SettingMenuContainer>
+            <MenuSelectContainer onPress={goMyPoint}>
+              <MenuText>포인트 내역</MenuText>
+            </MenuSelectContainer>
+            <MenuSelectContainer onPress={signOutWithKakao}>
+              <MenuText>로그아웃</MenuText>
+            </MenuSelectContainer>
+            <MenuSelectContainer onPress={signOutWithKakao}>
+              <MenuText>회원탈퇴</MenuText>
+            </MenuSelectContainer>
+          </SettingMenuContainer>
+          <CancelContainer>
+            <MenuSelectContainer onPress={() => setMenuDisplay(false)}>
+              <MenuText>취소</MenuText>
+            </MenuSelectContainer>
+          </CancelContainer>
+        </MenuOverLay>
+      </Modal>
+    </EntireContainer>
   );
 }
 
-export default MypageScreen;
+const EntireContainer = styled.ScrollView`
+  background-color: #ffffff;
+  flex: 1;
+`;
 
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingBottom: 100,
-  },
-  button: {
-    backgroundColor: '#FEE500',
-    borderRadius: 40,
-    borderWidth: 1,
-    width: 250,
-    height: 40,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginTop: 10,
-  },
-  text: {
-    textAlign: 'center',
-  },
-});
+const MypageTitle = styled.Text`
+  font-family: 'Regular';
+  font-size: 30px;
+  color: #000000;
+  margin-bottom: 2%;
+`;
+
+const FriendRecomButton = styled.TouchableOpacity`
+  margin: 2% 5% 0 45%;
+`;
+
+const MypageMenuButton = styled.TouchableOpacity`
+  margin: 2% 0 0 0;
+`;
+
+const MypageTitleContainer = styled.View`
+  margin: 5% 5% 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #ffa401;
+  flex-direction: row;
+`;
+
+const FriendListContainer = styled.View`
+  margin: 3%;
+`;
+
+const FriendItemContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  border-radius: 10px;
+  background-color: #ffe7bc;
+  margin: 2%;
+  height: 50px;
+  elevation: 10;
+`;
+
+const FriendItemText = styled.Text`
+  font-family: 'Regular';
+  font-size: 20px;
+  margin-left: 5%;
+  color: #000000;
+`;
+
+const SettingMenuContainer = styled.View`
+  margin-top: 400px;
+  width: 80%;
+  background-color: #fcf9f0;
+  border-radius: 15px;
+  border: 1px solid #000;
+  align-items: center;
+  margin-bottom: 2%;
+`;
+
+const CancelContainer = styled.View`
+  width: 80%;
+  background-color: #fcf9f0;
+  border-radius: 15px;
+  border: 1px solid #000;
+  align-items: center;
+`;
+
+const MenuSelectContainer = styled.TouchableOpacity`
+  width: 100%;
+  background-color: #fcf9f0;
+  align-items: center;
+  margin: 5%;
+`;
+
+const MenuText = styled.Text`
+  font-family: 'Regular';
+  font-size: 18px;
+  color: #000000;
+`;
+
+const MenuOverLay = styled.TouchableOpacity`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  // background-color: rgba(102, 100, 100, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export default MypageScreen;

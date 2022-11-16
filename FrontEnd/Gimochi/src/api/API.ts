@@ -1,15 +1,31 @@
 import axios from 'axios';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../store/reducer';
-
-export const URL = 'https://k7a205.p.ssafy.io/api';
-
-// const accessToken = useSelector((state: RootState) => state.user.accessToken);
+import Config from 'react-native-config';
 
 export const axiosBasic = axios.create({
-  baseURL: URL,
-  // headers: {
-  //   AccessToken: accessToken,
-  // },
-  timeout: 10000,
+  baseURL: Config.API_URL,
 });
+
+export const singleNotification = async (receiverId: number, senderId: number, type: number) => {
+  try {
+    const response = await axiosBasic.post('/notification/message/single', {
+      receiverId: receiverId,
+      senderId: senderId,
+      type: type,
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const multiNotification = async (userId: number, type: number) => {
+  try {
+    const response = await axiosBasic.post('/notification/message/single', {
+      userId: userId,
+      type: type,
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

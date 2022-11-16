@@ -1,4 +1,5 @@
 import React, { useLayoutEffect } from 'react';
+import styled from 'styled-components/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import HomeScreen from '../screen/HomeScreen';
@@ -10,6 +11,8 @@ import ScheduleScreen from '../screen/ScheduleScreen';
 import HomeModal from '../components/HomeModal';
 import NotificationScreen from '../screen/NotificationScreen';
 import { Icon } from '@rneui/themed';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/reducer';
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
@@ -18,13 +21,14 @@ export type HomeStackParamList = {
   PlayScreen: undefined;
   RollingpaperScreen: undefined;
   ScheduleScreen: undefined;
-  NotificationScreen: undefined;
   HomeModal: undefined;
+  NotificationScreen1: undefined;
 };
 export type HomeModalProps = NativeStackScreenProps<HomeStackParamList, 'HomeModal'>;
 
 const Home = createNativeStackNavigator<HomeStackParamList>();
 function HomeNavigation({ route, navigation }: HomeModalProps) {
+  const notifications = useSelector((state: RootState) => state.notification.notification);
   const routeName = getFocusedRouteNameFromRoute(route);
   useLayoutEffect(() => {
     if (routeName === 'HomeModal') {
@@ -52,12 +56,17 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         options={{
           title: '기모치',
           headerRight: () => (
-            <Icon
-              name='bell'
-              type='evilicon'
-              onPress={() => navigation.navigate('NotificationScreen')}
-              size={30}
-            />
+            <>
+              <Icon
+                name='bell'
+                type='simple-line-icon'
+                onPress={() => navigation.navigate('NotificationScreen1')}
+                size={30}
+              />
+              <NotiCountContainer>
+                <NotiCountText>{notifications}</NotiCountText>
+              </NotiCountContainer>
+            </>
           ),
         }}
       ></Home.Screen>
@@ -67,12 +76,17 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         options={{
           title: '출석 체크',
           headerRight: () => (
-            <Icon
-              name='bell'
-              type='evilicon'
-              onPress={() => navigation.navigate('NotificationScreen')}
-              size={30}
-            />
+            <>
+              <Icon
+                name='bell'
+                type='simple-line-icon'
+                onPress={() => navigation.navigate('NotificationScreen1')}
+                size={30}
+              />
+              <NotiCountContainer>
+                <NotiCountText>{notifications}</NotiCountText>
+              </NotiCountContainer>
+            </>
           ),
         }}
       ></Home.Screen>
@@ -93,12 +107,17 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         options={{
           title: '일정 관리',
           headerRight: () => (
-            <Icon
-              name='bell'
-              type='evilicon'
-              onPress={() => navigation.navigate('NotificationScreen')}
-              size={30}
-            />
+            <>
+              <Icon
+                name='bell'
+                type='simple-line-icon'
+                onPress={() => navigation.navigate('NotificationScreen1')}
+                size={30}
+              />
+              <NotiCountContainer>
+                <NotiCountText>{notifications}</NotiCountText>
+              </NotiCountContainer>
+            </>
           ),
         }}
       ></Home.Screen>
@@ -112,12 +131,30 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
         }}
       ></Home.Screen>
       <Home.Screen
-        name='NotificationScreen'
+        name='NotificationScreen1'
         component={NotificationScreen}
         options={{ title: '알림' }}
       ></Home.Screen>
     </Home.Navigator>
   );
 }
+
+const NotiCountContainer = styled.View`
+  position: absolute;
+  width: 65%;
+  height: 65%;
+  right: 1%;
+  bottom: 65%;
+  background-color: #ffa401;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NotiCountText = styled.Text`
+  font-family: 'Regular';
+  font-size: 15px;
+  color: #ffffff;
+`;
 
 export default HomeNavigation;

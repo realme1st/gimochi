@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -10,10 +9,13 @@ import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
 import styled from 'styled-components/native';
+import { singleNotification } from '../../api/API';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 function FriendRecomScreen() {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
-  const userId = useSelector((state: RootState) => state.user.userId);
+  const userId = Number(useSelector((state: RootState) => state.user.userId));
   const reload = useSelector((state: RootState) => state.reload.reload);
   const [friends, setFriends] = useState([]);
   const dispatch = useAppDispatch();
@@ -44,6 +46,8 @@ function FriendRecomScreen() {
             reload: String(new Date()),
           }),
         );
+        const notification = singleNotification(id, userId, 1);
+        console.log(notification);
       })
       .catch(function (error) {
         console.log(error);
@@ -51,23 +55,74 @@ function FriendRecomScreen() {
   };
   return (
     <EntireContainer>
-      <Text>알 수도 있는 친구들</Text>
-      {friends.map((friend, index) => (
-        <View key={index}>
-          <Text>{friend.userName}</Text>
-          {!friend.friend && (
-            <TouchableOpacity onPress={() => requestFriend(friend.userId)}>
-              <Text>친구요청</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      ))}
+      <FriendRecomTitleContainer>
+        <FriendRecomTitle>알 수도 있는 친구들</FriendRecomTitle>
+      </FriendRecomTitleContainer>
+      <FriendListContainer>
+        {friends.map(
+          (friend, index) =>
+            !friend.friend && (
+              <FriendItemContainer key={index}>
+                <FriendItemText>{friend.userName}</FriendItemText>
+                {!friend.friend && (
+                  <FriendItemButton onPress={() => requestFriend(friend.userId)}>
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      size={30}
+                      style={{ marginLeft: '3%', color: '#5de11f' }}
+                    />
+                  </FriendItemButton>
+                )}
+              </FriendItemContainer>
+            ),
+        )}
+      </FriendListContainer>
     </EntireContainer>
   );
 }
 
 const EntireContainer = styled.ScrollView`
   background-color: #ffffff;
+  flex: 1;
+`;
+
+const FriendRecomTitle = styled.Text`
+  font-family: 'Regular';
+  font-size: 30px;
+  color: #000000;
+  margin-bottom: 2%;
+`;
+
+const FriendRecomTitleContainer = styled.View`
+  margin: 5% 5% 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #ffa401;
+  flex-direction: row;
+`;
+
+const FriendListContainer = styled.View`
+  margin: 3%;
+`;
+
+const FriendItemContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  border-radius: 10px;
+  background-color: #ffe7bc;
+  margin: 2%;
+  height: 50px;
+  elevation: 10;
+`;
+
+const FriendItemText = styled.Text`
+  font-family: 'Regular';
+  font-size: 20px;
+  margin-left: 5%;
+  color: #000000;
+`;
+
+const FriendItemButton = styled.TouchableOpacity`
+  margin-left: auto;
 `;
 
 export default FriendRecomScreen;
