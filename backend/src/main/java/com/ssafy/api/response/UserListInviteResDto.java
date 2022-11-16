@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserListInviteResDto {
+
+    private Long challengeInviteId;
     private String userNickname;
 
     private Long userId;
@@ -15,7 +17,8 @@ public class UserListInviteResDto {
     private String userProfile;
 
     @Builder
-    public UserListInviteResDto(String userNickname, Long userId, String userProfile) {
+    public UserListInviteResDto(Long challengeInviteId,String userNickname, Long userId, String userProfile) {
+        this.challengeInviteId = challengeInviteId;
         this.userNickname = userNickname;
         this.userId = userId;
         this.userProfile = userProfile;

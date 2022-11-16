@@ -8,10 +8,15 @@ public class UserListResDto {
 
     private int successCnt;
 
+    private String userNickname;
+    private String userProfile;
+
     @Builder
-    public UserListResDto(Long userId, int successCnt) {
+    public UserListResDto(Long userId, int successCnt, String userNickname,String userProfile) {
         this.userId = userId;
         this.successCnt = successCnt;
+        this.userNickname = userNickname;
+        this.userProfile = userProfile;
     }
 
 

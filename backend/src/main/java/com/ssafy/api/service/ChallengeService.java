@@ -124,6 +124,8 @@ public class ChallengeService {
             UserListResDto userListResDto = UserListResDto.builder()
                     .userId(challengeInfo.getUser().getUserId())
                     .successCnt(challengeInfo.getSuccessCnt())
+                    .userNickname(challengeInfo.getUser().getUserNickname())
+                    .userProfile(challengeInfo.getUser().getUserProfile())
                     .build();
 
             listRes.add(userListResDto);
@@ -214,6 +216,7 @@ public class ChallengeService {
 
         challengeInviteList.stream().forEach(challengeInvite -> {
             UserListInviteResDto userListInviteResDto = UserListInviteResDto.builder()
+                    .challengeInviteId(challengeInvite.getChallengeInviteId())
                     .userId(challengeInvite.getUser().getUserId())
                     .userNickname(challengeInvite.getUser().getUserNickname())
                     .userProfile(challengeInvite.getUser().getUserProfile())
