@@ -24,8 +24,10 @@ public class RewardInfo {
     @JoinColumn(name = "challengeId")
     private Challenge challenge;
 
-    @Column(nullable = false, name = "challenge_reward_type")
-    private Long challengeRewardType;
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "gifticonId")
+    private Gifticon gifticon;
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
@@ -35,9 +37,17 @@ public class RewardInfo {
         }
     }
 
+    public void setGifticon(Gifticon gifticon) {
+        this.gifticon = gifticon;
+        //무한 루프 주의
+        if (!gifticon.getRewardInfoList().contains(this)) {
+            gifticon.getRewardInfoList().add(this);
+        }
+    }
+
     @Builder
-    public RewardInfo(Challenge challenge, Long challengeRewardType) {
+    public RewardInfo(Challenge challenge, Gifticon gifticon) {
         this.challenge = challenge;
-        this.challengeRewardType = challengeRewardType;
+        this.gifticon = gifticon;
     }
 }
