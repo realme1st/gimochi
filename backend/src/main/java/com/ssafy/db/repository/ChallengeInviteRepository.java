@@ -1,5 +1,6 @@
 package com.ssafy.db.repository;
 
+import com.ssafy.db.entity.Challenge;
 import com.ssafy.db.entity.ChallengeInvite;
 import com.ssafy.db.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,9 @@ public interface ChallengeInviteRepository extends JpaRepository<ChallengeInvite
     List<ChallengeInvite> findAllByChallengeInviteUserId(Long userId);
 
     Optional<ChallengeInvite> findByChallengeInviteId(Long challengeInviteId);
+
+    @Query("select c from ChallengeInvite c where c.challenge.challengeId = ?1")
+    Optional<List<ChallengeInvite>> findAllByChallengeInviteChallengeId(Long challengeId);
+
+    Optional<ChallengeInvite> findByChallengeAndUser(Challenge challenge, User user);
 }
