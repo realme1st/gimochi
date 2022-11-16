@@ -52,49 +52,49 @@ public class GifticonService {
 
     private final ResourceLoader resourceLoader;
 
-    @PostConstruct
-    public void init() throws Exception {
-        System.out.println("11111=============================11111");
-        File dir = new File(System.getProperty("user.dir"));
-        String[] strs = dir.list();
-        for(String s : strs) System.out.println(s);
-        System.out.println("=============================");
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        System.out.println("=============================");
-        String currentPath = new java.io.File(".").getCanonicalPath();
-        System.out.println("Current dir:" + currentPath);
-        System.out.println("=============================");
-        Map<String, String> env = new HashMap<>();
-        env.put("GOOGLE_APPLICATION_CREDENTIALS", System.getProperty("user.dir")+"/gimochi-cd8bdea6fd58.json");
-        setEnv(env);
-    }
-
-    protected static void setEnv(Map<String, String> newenv) throws Exception {
-        try {
-            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-            theEnvironmentField.setAccessible(true);
-            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-            env.putAll(newenv);
-            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
-            theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-            cienv.putAll(newenv);
-        } catch (NoSuchFieldException e) {
-            Class[] classes = Collections.class.getDeclaredClasses();
-            Map<String, String> env = System.getenv();
-            for(Class cl : classes) {
-                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-                    Field field = cl.getDeclaredField("m");
-                    field.setAccessible(true);
-                    Object obj = field.get(env);
-                    Map<String, String> map = (Map<String, String>) obj;
-                    map.clear();
-                    map.putAll(newenv);
-                }
-            }
-        }
-    }
+//    @PostConstruct
+//    public void init() throws Exception {
+//        System.out.println("11111=============================11111");
+//        File dir = new File(System.getProperty("user.dir"));
+//        String[] strs = dir.list();
+//        for(String s : strs) System.out.println(s);
+//        System.out.println("=============================");
+//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+//        System.out.println("=============================");
+//        String currentPath = new java.io.File(".").getCanonicalPath();
+//        System.out.println("Current dir:" + currentPath);
+//        System.out.println("=============================");
+//        Map<String, String> env = new HashMap<>();
+//        env.put("GOOGLE_APPLICATION_CREDENTIALS", System.getProperty("user.dir")+"/gimochi-cd8bdea6fd58.json");
+//        setEnv(env);
+//    }
+//
+//    protected static void setEnv(Map<String, String> newenv) throws Exception {
+//        try {
+//            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+//            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+//            theEnvironmentField.setAccessible(true);
+//            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+//            env.putAll(newenv);
+//            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
+//            theCaseInsensitiveEnvironmentField.setAccessible(true);
+//            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+//            cienv.putAll(newenv);
+//        } catch (NoSuchFieldException e) {
+//            Class[] classes = Collections.class.getDeclaredClasses();
+//            Map<String, String> env = System.getenv();
+//            for(Class cl : classes) {
+//                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+//                    Field field = cl.getDeclaredField("m");
+//                    field.setAccessible(true);
+//                    Object obj = field.get(env);
+//                    Map<String, String> map = (Map<String, String>) obj;
+//                    map.clear();
+//                    map.putAll(newenv);
+//                }
+//            }
+//        }
+//    }
 
     public OcrResDto detect(Long userId, MultipartFile multipartFile) {
         User user = userRepository.findByUserId(userId).
