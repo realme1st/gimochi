@@ -127,13 +127,14 @@ function GifticonMainScreen({ navigation }) {
             margin: 2,
             height: 40,
             padding: 0,
+            justifyContent: 'center',
           }}
           titleStyle={{
             fontSize: 20,
             color: index == 0 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,
-            fontWeight: '900',
+            fontFamily: 'Regular',
           }}
         />
         <Tab.Item
@@ -144,12 +145,14 @@ function GifticonMainScreen({ navigation }) {
             margin: 2,
             height: 40,
             padding: 0,
+            justifyContent: 'center',
           }}
           titleStyle={{
             fontSize: 20,
             color: index == 1 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,
+            fontFamily: 'Regular',
           }}
         />
       </Tab>

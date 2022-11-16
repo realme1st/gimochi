@@ -10,6 +10,8 @@ import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
 import styled from 'styled-components/native';
 import { singleNotification } from '../../api/API';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 function FriendRecomScreen() {
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
@@ -64,7 +66,11 @@ function FriendRecomScreen() {
                 <FriendItemText>{friend.userName}</FriendItemText>
                 {!friend.friend && (
                   <FriendItemButton onPress={() => requestFriend(friend.userId)}>
-                    <FriendItemText>친구요청</FriendItemText>
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      size={30}
+                      style={{ marginLeft: '3%', color: '#5de11f' }}
+                    />
                   </FriendItemButton>
                 )}
               </FriendItemContainer>
@@ -116,7 +122,7 @@ const FriendItemText = styled.Text`
 `;
 
 const FriendItemButton = styled.TouchableOpacity`
-  margin-left: 50%;
+  margin-left: auto;
 `;
 
 export default FriendRecomScreen;

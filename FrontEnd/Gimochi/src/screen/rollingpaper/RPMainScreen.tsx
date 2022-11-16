@@ -103,6 +103,7 @@ const RPTitle = styled.Text`
   color: #000000;
   margin-bottom: 2%;
 `;
+
 const RPTitleContainer = styled.View`
   margin: 5% 5% 0;
   border-bottom-width: 1px;

@@ -9,12 +9,16 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducer';
 import { useAppDispatch } from '../store';
 import reloadSlice from '../slices/reload';
+import notificationSlice from '../slices/notification';
 import styled from 'styled-components/native';
+import { faCheckCircle, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 function NotificationScreen() {
   const userId = useSelector((state: RootState) => state.user.userId);
   const reload = useSelector((state: RootState) => state.reload.reload);
   const [friends, setFriends] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -29,8 +33,19 @@ function NotificationScreen() {
       });
   }, [reload]);
 
+  useEffect(() => {
+    axios
+      .get(`${Config.API_URL}/challenge/challengeInvite/challengeList/${userId}`)
+      .then(function (response) {
+        console.log(response.data);
+        setInvitations(response.data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [reload]);
+
   const acceptFriend = async (id: number) => {
-    console.log(id);
     await axios
       .post(`${Config.API_URL}/user/follow-accept`, { followerUserId: id, followingUserId: userId })
       .then(function (response) {
@@ -40,6 +55,7 @@ function NotificationScreen() {
             reload: String(new Date()),
           }),
         );
+        dispatch(notificationSlice.actions.deleteNotification());
       })
       .catch(function (error) {
         console.log(error);
@@ -47,8 +63,6 @@ function NotificationScreen() {
   };
 
   const rejectFriend = async (id: number) => {
-    console.log(id);
-
     await axios
       .post(`${Config.API_URL}/user/follow-reject`, { followerUserId: id, followingUserId: userId })
       .then(function (response) {
@@ -58,6 +72,41 @@ function NotificationScreen() {
             reload: String(new Date()),
           }),
         );
+        dispatch(notificationSlice.actions.deleteNotification());
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const acceptChallenge = async (id: number) => {
+    await axios
+      .post(`${Config.API_URL}/challenge/challengeInvite/accept/${id}`)
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        dispatch(notificationSlice.actions.deleteNotification());
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const rejectChallenge = async (id: number) => {
+    await axios
+      .delete(`${Config.API_URL}/challenge/challengeInvite/${id}`)
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        dispatch(notificationSlice.actions.deleteNotification());
       })
       .catch(function (error) {
         console.log(error);
@@ -65,21 +114,101 @@ function NotificationScreen() {
   };
 
   return (
-    <>
-      <Text>알림스크린</Text>
-      {friends.map((friend, index) => (
-        <View key={index}>
-          <Text>{friend.userName}</Text>
-          <TouchableOpacity onPress={() => acceptFriend(friend.userId)}>
-            <Text>친구추가</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => rejectFriend(friend.userId)}>
-            <Text>거절</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-    </>
+    <NotiContainer>
+      <NotiTitleContainer>
+        <NotiTitle>친구 신청</NotiTitle>
+      </NotiTitleContainer>
+      <NotiListContainer>
+        {friends.map((friend, index) => (
+          <NotiItemContainer key={index}>
+            <NotiListText>{friend.userName}</NotiListText>
+            <NotiItemButton1 onPress={() => acceptFriend(friend.userId)}>
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size={30}
+                style={{ marginLeft: '3%', color: '#5de11f' }}
+              />
+            </NotiItemButton1>
+            <NotiItemButton2 onPress={() => rejectFriend(friend.userId)}>
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                size={30}
+                style={{ marginLeft: '3%', color: '#f02626' }}
+              />
+            </NotiItemButton2>
+          </NotiItemContainer>
+        ))}
+      </NotiListContainer>
+      <NotiTitleContainer>
+        <NotiTitle>초대장</NotiTitle>
+      </NotiTitleContainer>
+      <NotiListContainer>
+        {invitations.map((invitation, index) => (
+          <NotiItemContainer key={index}>
+            <NotiListText>{invitation.challengeTitle}</NotiListText>
+            <NotiItemButton1 onPress={() => acceptChallenge(invitation.challengeInviteId)}>
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                size={30}
+                style={{ marginLeft: '3%', color: '#5de11f' }}
+              />
+            </NotiItemButton1>
+            <NotiItemButton2 onPress={() => rejectChallenge(invitation.challengeInviteId)}>
+              <FontAwesomeIcon
+                icon={faCircleXmark}
+                size={30}
+                style={{ marginLeft: '3%', color: '#f02626' }}
+              />
+            </NotiItemButton2>
+          </NotiItemContainer>
+        ))}
+      </NotiListContainer>
+    </NotiContainer>
   );
 }
+
+const NotiContainer = styled.View`
+  background-color: #ffffff;
+  flex: 1;
+`;
+const NotiTitle = styled.Text`
+  font-family: 'Regular';
+  font-size: 30px;
+  color: #000000;
+  margin-bottom: 2%;
+`;
+
+const NotiTitleContainer = styled.View`
+  margin: 5% 5% 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #ffa401;
+`;
+
+const NotiListContainer = styled.View`
+  margin: 3%;
+`;
+
+const NotiItemButton1 = styled.TouchableOpacity`
+  margin-left: auto;
+`;
+
+const NotiItemButton2 = styled.TouchableOpacity``;
+
+const NotiItemContainer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  border-radius: 10px;
+  background-color: #ffe7bc;
+  margin: 2%;
+  height: 50px;
+  elevation: 10;
+`;
+
+const NotiListText = styled.Text`
+  font-family: 'Regular';
+  font-size: 20px;
+  margin-left: 5%;
+  color: #000000;
+`;
 
 export default NotificationScreen;

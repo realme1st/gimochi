@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -26,7 +27,6 @@ const Stack = createNativeStackNavigator();
 
 function AppInner() {
   const dispatch = useAppDispatch();
-  const isUserNickname = useSelector((state: RootState) => !!state.user.userNickname);
   const isUserId = useSelector((state: RootState) => !!state.user.userId);
   const date = new Date();
   const [aToken, setAToken] = useState('');
