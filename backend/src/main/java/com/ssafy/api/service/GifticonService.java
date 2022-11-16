@@ -13,6 +13,7 @@ import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -124,20 +125,24 @@ public class GifticonService {
                     .replaceAll(" ", ""); // 줄바꿈, 공백 모두 제거
 
             List<String> stores = null;
-            String filePath = "store/stores.txt";
+            String filePath = "store" + File.separator + "stores.txt";
 
             if(File.separator.equals("\\")) { // 윈도우 로컬의 경우
+
                 stores = FileUtils.readLines(new File(resourceLoader
                         .getResource("classpath:" + filePath).getURI()), Charset.defaultCharset());
+
             } else if(File.separator.equals("/")) { // ec2 배포 환경일 경우
 
-                ClassPathResource classPathResource = new ClassPathResource(filePath);
-                log.info("=============================");
-                log.info("file path exists = {}", classPathResource.exists());
-                log.info("file path = {}", classPathResource.getPath());
-                log.info("=============================");
+                InputStream inputStream = new ClassPathResource("store/stores.txt").getInputStream();
+                File file = File.createTempFile("stores",".txt");
+                try {
+                    FileUtils.copyInputStreamToFile(inputStream, file);
+                    stores = FileUtils.readLines(file, Charset.defaultCharset());
+                } finally {
+                    IOUtils.closeQuietly(inputStream);
+                }
 
-                stores = FileUtils.readLines(classPathResource.getFile(), Charset.defaultCharset());
             }
 
             String store = "";
