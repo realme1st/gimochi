@@ -67,15 +67,17 @@ function NotificationScreen() {
       .post(`${Config.API_URL}/user/follow-reject`, { followerUserId: id, followingUserId: userId })
       .then(function (response) {
         console.log(response);
+        dispatch(notificationSlice.actions.deleteNotification());
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
         dispatch(
           reloadSlice.actions.setReload({
             reload: String(new Date()),
           }),
         );
-        dispatch(notificationSlice.actions.deleteNotification());
-      })
-      .catch(function (error) {
-        console.log(error);
       });
   };
 

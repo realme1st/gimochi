@@ -27,6 +27,7 @@ function RPGraduateScreen({ navigation, route }) {
   const [modal, setModal] = useState<boolean>(false);
   const [nickname, setNickname] = useState('');
   const [text, setText] = useState('');
+  const [gifticon, setGifticon] = useState('');
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const dispatch = useAppDispatch();
@@ -66,7 +67,7 @@ function RPGraduateScreen({ navigation, route }) {
   }, [reload]);
 
   const goMessageDetail = (index: number) => {
-    // setIdx(index);
+    setGifticon(messageList[index].gifticonStore);
     setNickname(messageList[index].nickname);
     setText(messageList[index].field);
     setModal(true);
@@ -75,6 +76,23 @@ function RPGraduateScreen({ navigation, route }) {
   const onPress = () => {
     navigation.navigate('RPMessageWriteScreen', { RPId: sessionId, type: sessionTypeId });
   };
+
+  const ModalContainer = styled.View`
+    margin: 15%;
+    width: 70%;
+    height: ${gifticon === 'null' ? '45%' : '65%'};
+    background-color: #ffe7bc;
+    border-radius: 15px;
+    border: 1px solid #000;
+    align-items: center;
+  `;
+
+  const ModalTextContainer = styled.View`
+    background-color: #ffffff;
+    width: 80%;
+    height: ${gifticon === 'null' ? '75%' : '60%'};
+    border-radius: 10px;
+  `;
 
   if (loading)
     return (
@@ -135,10 +153,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[0 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[0 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[0 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[0 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -151,10 +169,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[1 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[1 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[1 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[1 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -167,10 +185,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[2 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[2 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[3 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[2 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -183,10 +201,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[3 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[3 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[3 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[3 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -199,10 +217,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[4 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[4 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[4 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[4 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -215,10 +233,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[5 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[5 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[5 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[5 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -231,10 +249,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[6 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[6 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[6 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[6 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -247,10 +265,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[7 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[7 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[7 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[7 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -263,10 +281,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[8 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[8 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[8 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[8 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -279,10 +297,10 @@ function RPGraduateScreen({ navigation, route }) {
               messageList[9 + page * 10].messageType === 1
                 ? require('../../assets/images/homeMochi.png')
                 : messageList[9 + page * 10].messageType === 2
-                  ? require('../../assets/images/attendMochi.png')
-                  : messageList[9 + page * 10].messageType === 3
-                    ? require('../../assets/images/challengeMochi.png')
-                    : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/attendMochi.png')
+                : messageList[9 + page * 10].messageType === 3
+                ? require('../../assets/images/challengeMochi.png')
+                : require('../../assets/images/playMochi.png')
             }
             resizeMode='contain'
           />
@@ -303,28 +321,11 @@ const CreateButton = styled.TouchableOpacity`
   top: 85%;
 `;
 
-const ModalContainer = styled.View`
-  margin: 15%;
-  width: 70%;
-  height: 65%;
-  background-color: #ffe7bc;
-  border-radius: 15px;
-  border: 1px solid #000;
-  align-items: center;
-`;
-
 const ModalTitleText = styled.Text`
   margin: 5% auto 5% 10%;
   font-family: 'Regular';
   font-size: 15px;
   color: #000000;
-`;
-
-const ModalTextContainer = styled.View`
-  background-color: #ffffff;
-  width: 80%;
-  height: 60%;
-  border-radius: 10px;
 `;
 
 const ModalGifticonContainer = styled.View`

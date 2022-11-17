@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
@@ -6,7 +8,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useState, useEffect } from 'react';
-import { Modal, Image } from 'react-native';
+import { Modal, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../slices/user';
@@ -78,8 +80,34 @@ function MypageScreen({ navigation }) {
     );
   };
 
-  const goFriendSession = (id, nickname) => {
+  const goFriendSession = (id: any, nickname: any) => {
     navigation.navigate('FriendRPScreen', { friendId: id, friendNickname: nickname });
+  };
+
+  const unfollow = async (id: any) => {
+    await axios
+      .delete(`${Config.API_URL}/user/follow`, {
+        followerUserId: userId,
+        followingUserId: id,
+      })
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const unfollowButton = (id: any) => {
+    Alert.alert('친구 목록에서 삭제하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => unfollow(id) },
+    ]);
   };
 
   const goFriendRecom = () => {
@@ -125,7 +153,7 @@ function MypageScreen({ navigation }) {
             <NotiItemButton1 onPress={() => goFriendSession(friend.userId, friend.userName)}>
               <FontAwesomeIcon icon={faMessage} size={30} style={{ marginLeft: '3%', color: '#5de11f' }} />
             </NotiItemButton1>
-            <NotiItemButton2>
+            <NotiItemButton2 onPress={() => unfollowButton(friend.userId)}>
               <FontAwesomeIcon
                 icon={faCircleXmark}
                 size={30}

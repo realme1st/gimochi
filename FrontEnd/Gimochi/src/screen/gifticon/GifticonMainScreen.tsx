@@ -168,7 +168,6 @@ function GifticonMainScreen({ navigation }) {
             spacing={10}
             renderItem={({ item, index }) => (
               <GifticonItemContainer onPress={() => goGifticonDetail(index)}>
-                {/* 사용기한 얼마 안남았을때 여기다가 D-XX 쓰기 */}
                 <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
                 <GifticonItemText>{item.gifticonPeriod}</GifticonItemText>
                 <GifticonItemText>{item.gifticonStore}</GifticonItemText>
@@ -246,6 +245,7 @@ const GifticonItemContainer = styled.TouchableOpacity`
 
 const GifticonItemText = styled.Text`
   font-family: 'Regular';
+  color: #000000;
 `;
 
 const ModalContainer = styled.View`
@@ -262,6 +262,7 @@ const ModalText = styled.Text`
   font-family: 'Regular';
   font-size: 15px;
   margin: 2%;
+  color: #000000;
 `;
 
 const ModalButtonContainer = styled.View`

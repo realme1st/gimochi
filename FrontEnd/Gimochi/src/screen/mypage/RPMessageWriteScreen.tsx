@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect } from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity, View, Text, Alert } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -13,13 +17,18 @@ import screenSlice from '../../slices/screen';
 import reloadSlice from '../../slices/reload';
 import styled from 'styled-components/native';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
+import SelectDropdown from 'react-native-select-dropdown';
 
 function RPMessageWriteScreen({ route, navigation }) {
+  const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
+  const [loading, setLoading] = useState(true);
+  const [gifticonList, setGifticonList] = useState([]);
+  const [dropdownData, setDropdownData] = useState([]);
   const [nickname, setNickname] = useState<string>(userNickname);
   const [text, setText] = useState<string>('');
   const [type, setType] = useState<number>(1);
-  // const [gifticon, setGifticon] = useState<string>('');
+  const [gifticonId, setGifticonId] = useState<string>('');
   const sessionId: number = route.params.RPId;
   const sessionType: number = route.params.type;
   const dispatch = useAppDispatch();
@@ -36,11 +45,29 @@ function RPMessageWriteScreen({ route, navigation }) {
     };
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(`${Config.API_URL}/gifticon/uid/${userId}`)
+      .then(function (response) {
+        console.log(response);
+        setGifticonList(response.data.data);
+        const data = response.data.data.map((gifticon: { gifticonStore: any }, index: any, array: any) => {
+          return gifticon.gifticonStore;
+        });
+        setDropdownData(data);
+        console.log(data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const onSubmit = () => {
     axios
       .post(`${Config.API_URL}/session/message`, {
         field: text,
-        // gifticonId: gifticonId,
+        gifticonId: gifticonId,
         nickname: nickname,
         sessionId: sessionId,
         messageType: type,
@@ -59,6 +86,20 @@ function RPMessageWriteScreen({ route, navigation }) {
       });
   };
 
+  const submitButton = () => {
+    Alert.alert('메시지를 작성하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => onSubmit() },
+    ]);
+  };
+
+  if (loading)
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+
   return (
     <>
       <DismissKeyboardView style={{ flex: 2, backgroundColor: '#ffffff' }}>
@@ -72,7 +113,25 @@ function RPMessageWriteScreen({ route, navigation }) {
           <TitleText>선물하기</TitleText>
         </TitleContainer>
         <FormContainer>
-          <DropdownContents>추후 추가예정</DropdownContents>
+          <SelectDropdown
+            data={dropdownData}
+            defaultButtonText='기프티콘을 선택해주세요'
+            buttonTextStyle={{ fontFamily: 'Regular' }}
+            rowTextStyle={{ fontFamily: 'Regular' }}
+            onSelect={(item, index) => {
+              setGifticonId(gifticonList[index].gifticonId);
+              // console.log(index);
+              // console.log(gifticonList[index]);
+            }}
+            buttonStyle={{
+              width: '100%',
+              backgroundColor: '#ffffff',
+              borderRadius: 10,
+            }}
+            rowStyle={{
+              backgroundColor: '#ffffff',
+            }}
+          />
         </FormContainer>
         <TitleContainer>
           <TitleText>편지쓰기</TitleText>
@@ -119,7 +178,7 @@ function RPMessageWriteScreen({ route, navigation }) {
           </TouchableOpacity>
         </ImageContainer>
       </DismissKeyboardView>
-      <SubmitButton onPress={onSubmit}>
+      <SubmitButton onPress={submitButton}>
         <SubmitText>제출</SubmitText>
       </SubmitButton>
     </>

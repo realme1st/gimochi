@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useState, useEffect } from 'react';
+import { Alert } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -56,7 +57,6 @@ function FriendRecomScreen() {
       .post(`${Config.API_URL}/notification/message/single`, {
         receiverId: id,
         senderId: userId,
-        // 타입은 물어봐야
         type: 1,
       })
       .then(function (response) {
@@ -65,6 +65,13 @@ function FriendRecomScreen() {
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const requestButton = (id: any) => {
+    Alert.alert('친구 신청하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => requestFriend(id) },
+    ]);
   };
 
   return (
@@ -79,7 +86,7 @@ function FriendRecomScreen() {
               <FriendItemContainer key={index}>
                 <FriendItemText>{friend.userName}</FriendItemText>
                 {!friend.friend && (
-                  <FriendItemButton onPress={() => requestFriend(friend.userId)}>
+                  <FriendItemButton onPress={() => requestButton(friend.userId)}>
                     <FontAwesomeIcon
                       icon={faPaperPlane}
                       size={30}

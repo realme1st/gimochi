@@ -92,7 +92,7 @@ function HomeScreen() {
     });
     console.log(markedDates);
     setData(markedDates);
-  }, [gifticons]);
+  }, []);
 
   return (
     <EntireContainer>
