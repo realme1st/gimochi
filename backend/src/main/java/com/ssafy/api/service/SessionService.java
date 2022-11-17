@@ -38,6 +38,7 @@ public class SessionService {
      * */
     @Transactional
     public SessionResDto createSession(SessionReqDto reqDto) {
+//        throw new CustomException(E)
         // 유효한 사용자인지 검증
         User user = userRepository.findByUserId(reqDto.getUserId()).
                 orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -45,6 +46,7 @@ public class SessionService {
         SessionType sessionType = sessionTypeRepository.findSessionTypeBySessionTypeId(reqDto.getSessionTypeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_SESSION_TYPE));
         // Sesison 생성
+        System.out.println("입력"+reqDto.getName());
         Session session = SessionResDto.createSessionEntity(reqDto, user);
         log.info("세션 생성");
         // Response 생성

@@ -32,12 +32,24 @@ public class SessionResDto {
     }
 
     public static Session createSessionEntity(SessionReqDto sessionReqDto, User user){
-        return Session.builder()
-                .anniversary(sessionReqDto.getAnniversary())
-                .expireTime(sessionReqDto.getAnniversary().plusDays(7))
-                .user(user)
-                .sessionTypeId(sessionReqDto.getSessionTypeId())
-                .build();
+        System.out.println("사용자정의 : "+sessionReqDto.getName());
+        if(sessionReqDto.getSessionTypeId() == 5){
+            return Session.builder()
+                    .anniversary(sessionReqDto.getAnniversary())
+                    .expireTime(sessionReqDto.getAnniversary().plusDays(7))
+                    .user(user)
+                    .sessionTypeId(sessionReqDto.getSessionTypeId())
+                    .name(sessionReqDto.getName())
+                    .build();
+        }else{
+            return Session.builder()
+                    .anniversary(sessionReqDto.getAnniversary())
+                    .expireTime(sessionReqDto.getAnniversary().plusDays(7))
+                    .user(user)
+                    .sessionTypeId(sessionReqDto.getSessionTypeId())
+                    .build();
+        }
+
     }
     public static SessionResDto toDto(User user, Session session){
         // userId + name , sessionTypeId + anniversary 를 각 객체에서 받아와 파라미터를 줄여라

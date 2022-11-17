@@ -64,7 +64,7 @@ public enum ErrorCode {
     CHALLENGE_CANT_INVITE_LEADER(HttpStatus.BAD_REQUEST, "챌린지 리더는 초대할 수 없습니다." ),
     CHALLENGEINVITE_CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌린지 초대장입니다." ),
     GIFTICON_NOT_FOUND( HttpStatus.NOT_FOUND, "해당 기프티콘 ID에 해당하는 기프티콘을 찾을 수 없습니다." ),
-    GIFTICON_USER_NOT_FOUND( HttpStatus.NOT_FOUND, "사용자에게 기프티콘 ID에 해당하는 기프티콘이 없습니다." );
+    GIFTICON_USER_NOT_FOUND( HttpStatus.NOT_FOUND, "사용자에게 기프티콘 ID에 해당하는 기프티콘이 없습니다." ), NOT_FOUND_NAME(HttpStatus.NOT_FOUND,"세션이름 없음" );
 
     private final HttpStatus httpStatus;
     private final String message;
