@@ -5,7 +5,6 @@
 /* eslint-disable react/jsx-no-undef */
 import React, { useState } from 'react';
 import { Calendar } from 'react-native-calendars';
-import { MarkingProps } from 'react-native-calendars/src/calendar/day/marking';
 import Modal from 'react-native-modal';
 import styled from 'styled-components/native';
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -21,11 +22,13 @@ import { Tab, Icon, TabView, ThemeProvider, createTheme } from '@rneui/themed';
 import Modal from 'react-native-modal';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
+import { chiunGifticonCount } from '../../api/API';
 
 function GifticonMainScreen({ navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const reload = useSelector((state: RootState) => state.reload.reload);
-  const [gifticons, setGifticons] = useState([]);
+  const [usedGifticons, setUsedGifticons] = useState([]);
+  const [newGifticons, setNewGifticons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [modal, setModal] = useState(false);
@@ -39,9 +42,18 @@ function GifticonMainScreen({ navigation }) {
     axios
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
-        setGifticons(response.data.data);
         console.log(response);
-        // console.log(response.data.data);
+        var newData = [];
+        var usedData = [];
+        response.data.data.forEach((gifticon) => {
+          if (gifticon.gifticonUsed) {
+            usedData.push(gifticon);
+          } else {
+            newData.push(gifticon);
+          }
+        });
+        setNewGifticons(newData);
+        setUsedGifticons(usedData);
       })
       .catch(function (error) {
         console.log(error);
@@ -53,23 +65,30 @@ function GifticonMainScreen({ navigation }) {
     navigation.navigate('GifticonUploadScreen');
   };
 
-  const goGifticonDetail = (index) => {
-    setPeriod(gifticons[index].gifticonPeriod);
-    setStore(gifticons[index].gifticonStore);
-    setId(gifticons[index].gifticonId);
-    setPath(gifticons[index].gifticonPath);
+  const goNewGifticonDetail = (index) => {
+    setPeriod(newGifticons[index].gifticonPeriod);
+    setStore(newGifticons[index].gifticonStore);
+    setId(newGifticons[index].gifticonId);
+    setPath(newGifticons[index].gifticonPath);
     setModal(true);
-    console.log(gifticons[index].gifticonPath);
+    console.log(newGifticons[index].gifticonPath);
+  };
+
+  const goUsedGifticonDetail = (index) => {
+    setPeriod(usedGifticons[index].gifticonPeriod);
+    setStore(usedGifticons[index].gifticonStore);
+    setId(usedGifticons[index].gifticonId);
+    setPath(usedGifticons[index].gifticonPath);
+    setModal(true);
+    console.log(usedGifticons[index].gifticonPath);
   };
 
   const useGifticon = async (id: string) => {
     await axios
-      .put(`${Config.API_URL}/gifticon/used`, {
-        gifticonId: id,
-        userId: userId,
-      })
+      .put(`${Config.API_URL}/gifticon/used/${userId}/${id}`)
       .then(function (response) {
         console.log(response);
+        chiunGifticonCount(userId);
         dispatch(
           reloadSlice.actions.setReload({
             reload: String(new Date()),
@@ -87,6 +106,7 @@ function GifticonMainScreen({ navigation }) {
       .delete(`${Config.API_URL}/gifticon/${userId}/${id}`)
       .then(function (response) {
         console.log(response);
+        chiunGifticonCount(userId);
         dispatch(
           reloadSlice.actions.setReload({
             reload: String(new Date()),
@@ -170,11 +190,11 @@ function GifticonMainScreen({ navigation }) {
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <FlatGrid
             itemDimension={140}
-            data={gifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+            data={newGifticons}
             style={{}}
             spacing={10}
             renderItem={({ item, index }) => (
-              <GifticonItemContainer onPress={() => goGifticonDetail(index)}>
+              <GifticonItemContainer onPress={() => goNewGifticonDetail(index)}>
                 <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
                 <GifticonItemText>{item.gifticonPeriod}</GifticonItemText>
                 <GifticonItemText>{item.gifticonStore}</GifticonItemText>
@@ -185,11 +205,11 @@ function GifticonMainScreen({ navigation }) {
         <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
           <FlatGrid
             itemDimension={130}
-            data={gifticons.filter((gifticon) => gifticon.gifticonUsed)}
+            data={usedGifticons}
             style={{}}
             spacing={10}
             renderItem={({ item, index }) => (
-              <GifticonItemContainer onPress={() => goGifticonDetail(index)}>
+              <GifticonItemContainer onPress={() => goUsedGifticonDetail(index)}>
                 <FastImage
                   source={{ uri: item.gifticonPath }}
                   style={{ width: 80, height: 80 }}

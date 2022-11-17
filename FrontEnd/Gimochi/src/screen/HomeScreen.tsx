@@ -25,9 +25,11 @@ function HomeScreen() {
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
   const reload = useSelector((state: RootState) => state.reload.reload);
   const dispatch = useAppDispatch();
-  const [gifticons, setGifticons] = useState([]);
   const [data, setData] = useState({});
+  const [chiunCount, setChiunCount] = useState(0);
+  const [moinCount, setMoinCount] = useState(0);
   const notifications = useSelector((state: RootState) => state.notification.notification);
+
   useEffect(() => {
     dispatch(
       screenSlice.actions.addScreen({
@@ -43,8 +45,21 @@ function HomeScreen() {
     axios
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
-        console.log(response);
-        setGifticons(response.data.data);
+        const lst = response.data.data;
+        var markedDates = {};
+        lst.forEach((gifticon: object) => {
+          if (!gifticon.gifticonUsed) {
+            var period = gifticon.gifticonPeriod;
+            // console.log(period);
+            if (!markedDates.hasOwnProperty(period)) {
+              markedDates[period] = { dots: [selected], gifticons: [gifticon], clickable: true };
+            } else {
+              markedDates[period].dots.push(selected);
+              markedDates[period].gifticons.push(gifticon);
+            }
+          }
+        });
+        setData(markedDates);
       })
       .catch(function (error) {
         console.log(error);
@@ -72,32 +87,29 @@ function HomeScreen() {
       .finally(() => {
         dispatch(notificationSlice.actions.setNotification({ notification: Number(notiCount) }));
       });
-  }, []);
-
-  const selected = { color: '#00bbf2', selectedDotColor: 'blue' };
+  }, [reload]);
 
   useEffect(() => {
-    var markedDates = {};
-    gifticons.forEach((gifticon) => {
-      if (!gifticon.gifticonUsed) {
-        var period = gifticon.gifticonPeriod;
-        // console.log(period);
-        if (!markedDates.hasOwnProperty(period)) {
-          markedDates[period] = { dots: [selected], gifticons: [gifticon], clickable: true };
-        } else {
-          markedDates[period].dots.push(selected);
-          markedDates[period].gifticons.push(gifticon);
-        }
-      }
-    });
-    console.log(markedDates);
-    setData(markedDates);
-  }, []);
+    axios
+      .get(`${Config.API_URL}/user/usage/${userId}`)
+      .then(function (response) {
+        console.log(response);
+        setChiunCount(response.data.data.usedCount);
+        setMoinCount(response.data.data.registCount);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [reload]);
+
+  const selected = { color: '#00bbf2', selectedDotColor: 'blue' };
 
   return (
     <EntireContainer>
       <Text>{userId}</Text>
       <Text>{userNickname}</Text>
+      <Text>모인 기프티콘 {moinCount}개</Text>
+      <Text>치운 기프티콘 {chiunCount}개</Text>
       <Calendars type='multi-dot' data={data} />
     </EntireContainer>
   );

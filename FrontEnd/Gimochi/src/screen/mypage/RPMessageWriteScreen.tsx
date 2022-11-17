@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -18,6 +19,7 @@ import reloadSlice from '../../slices/reload';
 import styled from 'styled-components/native';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
 import SelectDropdown from 'react-native-select-dropdown';
+import { chiunGifticonCount } from '../../api/API';
 
 function RPMessageWriteScreen({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -31,6 +33,7 @@ function RPMessageWriteScreen({ route, navigation }) {
   const [gifticonId, setGifticonId] = useState<string>('');
   const sessionId: number = route.params.RPId;
   const sessionType: number = route.params.type;
+  const friendId = route.params.FId;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -50,8 +53,14 @@ function RPMessageWriteScreen({ route, navigation }) {
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
         console.log(response);
-        setGifticonList(response.data.data);
-        const data = response.data.data.map((gifticon: { gifticonStore: any }, index: any, array: any) => {
+        var gifticonData = [];
+        response.data.data.forEach((gifticon) => {
+          if (!gifticon.gifticonUsed) {
+            gifticonData.push(gifticon);
+          }
+        });
+        setGifticonList(gifticonData);
+        const data = gifticonData.map((gifticon: { gifticonStore: any }, index: any, array: any) => {
           return gifticon.gifticonStore;
         });
         setDropdownData(data);
@@ -63,8 +72,8 @@ function RPMessageWriteScreen({ route, navigation }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const onSubmit = () => {
-    axios
+  const onSubmit = async () => {
+    await axios
       .post(`${Config.API_URL}/session/message`, {
         field: text,
         gifticonId: gifticonId,
@@ -72,6 +81,15 @@ function RPMessageWriteScreen({ route, navigation }) {
         sessionId: sessionId,
         messageType: type,
       })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    chiunGifticonCount(userId);
+    await axios
+      .put(`${Config.API_URL}/gifticon/present/${gifticonId}/${userId}/${friendId}`)
       .then(function (response) {
         console.log(response);
         dispatch(

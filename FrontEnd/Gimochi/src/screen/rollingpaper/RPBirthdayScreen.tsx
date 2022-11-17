@@ -74,7 +74,7 @@ function RPBirthdayScreen({ navigation, route }) {
   };
 
   const onPress = () => {
-    navigation.navigate('RPMessageWriteScreen', { RPId: sessionId, type: sessionTypeId });
+    navigation.navigate('RPMessageWriteScreen', { RPId: sessionId, type: sessionTypeId, FId: friendId });
   };
 
   const ModalContainer = styled.View`

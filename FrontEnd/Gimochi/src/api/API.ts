@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import axios from 'axios';
 import Config from 'react-native-config';
 
@@ -28,5 +30,14 @@ export const multiNotification = async (userId: any, type: number) => {
     return response;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const chiunGifticonCount = async (userId: any) => {
+  try {
+    const response = await axiosBasic.get(`/user/usage/used/${userId}`);
+    return response;
+  } catch (error) {
+    console.log;
   }
 };
