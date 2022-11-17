@@ -56,15 +56,28 @@ public class SessionMessageResDto {
     public static List<SessionMessageResDto> toDtoList(List<SessionMessage> mList){
         List<SessionMessageResDto> sessionMessageResDtoList =new ArrayList<>();
         for(SessionMessage m : mList){
-            sessionMessageResDtoList.add(
-                    SessionMessageResDto.builder()
-                    .messageType(m.getMessageType())
-                    .sessionMessageId(m.getSessionMessageId())
-                    .nickname(m.getNickname())
-                    .field(m.getField())
-                    .expireTime(m.getExpireTime())
-                            .gifticonStore(m.getGifticon().getGifticonStore())
-                    .build());
+            if(m.getGifticon() == null){
+                sessionMessageResDtoList.add(
+                        SessionMessageResDto.builder()
+                                .messageType(m.getMessageType())
+                                .sessionMessageId(m.getSessionMessageId())
+                                .nickname(m.getNickname())
+                                .field(m.getField())
+                                .expireTime(m.getExpireTime())
+                                .gifticonStore("null")
+                                .build());
+            }else{
+                sessionMessageResDtoList.add(
+                        SessionMessageResDto.builder()
+                                .messageType(m.getMessageType())
+                                .sessionMessageId(m.getSessionMessageId())
+                                .nickname(m.getNickname())
+                                .field(m.getField())
+                                .expireTime(m.getExpireTime())
+                                .gifticonStore(m.getGifticon().getGifticonStore())
+                                .build());
+            }
+
         }
         return sessionMessageResDtoList;
     }
