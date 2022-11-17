@@ -1,10 +1,12 @@
 package com.ssafy.api.response;
 
 import com.ssafy.db.entity.Challenge;
+import com.ssafy.db.entity.ChallengeInfo;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 public class ChallengeDetailResDto {
@@ -30,10 +32,13 @@ public class ChallengeDetailResDto {
 
     private int challengeActive;
 
+    private List<ChallengeInfo> challengeInfoList;
+
     @Builder
     public ChallengeDetailResDto(Long challengeId, Long challengeLeaderId, String challengeLeaderName,
                                  String challengeTitle, String challengeDescription, LocalDate challengeStartDate,
-                                 LocalDate challengeEndDate, int challengeRewardType, int challengeRewardPoint, int challengeParticipantPoint, int challengeActive) {
+                                 LocalDate challengeEndDate, int challengeRewardType, int challengeRewardPoint, int challengeParticipantPoint, int challengeActive
+            , List<ChallengeInfo> challengeInfoList) {
         this.challengeId = challengeId;
         this.challengeLeaderId = challengeLeaderId;
         this.challengeLeaderName = challengeLeaderName;
@@ -45,6 +50,7 @@ public class ChallengeDetailResDto {
         this.challengeRewardPoint = challengeRewardPoint;
         this.challengeParticipantPoint = challengeParticipantPoint;
         this.challengeActive = challengeActive;
+        this.challengeInfoList = challengeInfoList;
     }
 
 
@@ -61,6 +67,7 @@ public class ChallengeDetailResDto {
                 .challengeRewardPoint(challenge.getChallengeRewardPoint())
                 .challengeParticipantPoint(challenge.getChallengeParticipantPoint())
                 .challengeActive(challenge.getChallengeActive())
+                .challengeInfoList(challenge.getChallengeInfoList())
                 .build();
     }
 }
