@@ -1,5 +1,6 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.request.SessionMessageReqDto;
 import com.ssafy.api.request.SessionReqDto;
 import com.ssafy.api.response.*;
@@ -12,13 +13,14 @@ import com.ssafy.db.repository.SessionTypeRepository;
 import com.ssafy.db.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("SessionService")
 @Transactional(readOnly = true)
@@ -30,6 +32,7 @@ public class SessionService {
     private final SessionMessageRepository sessionMessageRepository;
     private final UserRepository userRepository;
 
+    private final UserService userService;
     private final GifticonService gifticonService;
 
     /*
@@ -190,4 +193,46 @@ public class SessionService {
         });
     }
 
+    public List<FriendsSessionResDto> getFriendsSession(Long userId) {
+        // userId로 친구목록 조회
+        List<FriendDto> friendsList = userService.getFollowerList(userId);
+        List<Long> userIdList = new ArrayList<>();
+        List<FriendsSessionResDto> friendsSessionResDtoList = new ArrayList<>();
+
+        // 친구목록 조회
+        for (FriendDto friend : friendsList) {
+            userIdList.add(friend.getUserId());
+        }
+
+        // userId 기반 세션 조회
+        for(Long id : userIdList){
+            Optional<List<Session>> friendsSessionList = sessionRepository.findAllByUserUserIdOrderByAnniversary(id);
+            if(friendsSessionList.isPresent()){
+                List<Session> sessionList = friendsSessionList.get();
+                List<SessionResDto> sessionResDtoList = new ArrayList<>();
+                // 해당 유저의 세션 리스트 저장
+                for(Session session : sessionList){
+                    SessionResDto dto = SessionResDto.builder()
+                            .anniversary(session.getAnniversary())
+                            .sessionTypeId(session.getSessionTypeId())
+                            .sessionId(session.getSessionId())
+                            .name(session.getName())
+                            .userId(session.getUser().getUserId())
+                            .build();
+                    sessionResDtoList.add(dto);
+                }
+                // 친구목록에 해당 유저의 세션정보 저장
+                FriendsSessionResDto friendsSessionResDto = FriendsSessionResDto.builder()
+                        .userId(id)
+                        .list(sessionResDtoList)
+                        .build();
+                friendsSessionResDtoList.add(friendsSessionResDto);
+            }else{
+                log.info("친구목록 없음");
+            }
+
+        }
+
+        return friendsSessionResDtoList;
+    }
 }

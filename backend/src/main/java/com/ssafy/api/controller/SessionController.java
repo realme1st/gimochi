@@ -78,5 +78,11 @@ public class SessionController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getSessionMessage(sessionId)));
     }
 
+    @GetMapping("/session/friends/{userId}")
+    @ApiOperation(value = "userId 기반 친구 세션 조회", notes = "<strong>user id를 입력하여</strong> 친구 세션을 조회한다.")
+    public ResponseEntity<? extends BasicResponse> getSessionByFriendId(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(sessionService.getFriendsSession(userId)));
+    }
+
 
 }
