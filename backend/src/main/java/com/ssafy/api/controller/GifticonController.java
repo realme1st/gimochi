@@ -1,9 +1,7 @@
 package com.ssafy.api.controller;
 
 import com.ssafy.api.dto.GifticonInfoReqDto;
-import com.ssafy.api.dto.GifticonPresentReq;
 import com.ssafy.api.dto.GifticonStorePeriodReq;
-import com.ssafy.api.dto.GifticonUsedReq;
 import com.ssafy.api.service.GifticonService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
@@ -74,28 +72,21 @@ public class GifticonController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.deleteGifticonS3(userId, gifticonId)));
     }
 
-    @PutMapping
+    @PutMapping("/present/{gifticonId}/{userIdSend}/{userIdReceive}")
     @ApiOperation(value = "기프티콘 선물", notes = "<strong>선물하는 유저 아이디와 선물받을 유저 아이디, 기프티콘 아이디</strong> 를 받아" +
             " <strong>해당 기프티콘을 선물</strong> 한다.")
 
-    public ResponseEntity<? extends BasicResponse> presentGifticon(@RequestBody GifticonPresentReq gifticonPresentReq) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticonUser(gifticonPresentReq)));
+    public ResponseEntity<? extends BasicResponse> presentGifticon(@PathVariable Long gifticonId, @PathVariable Long userIdSend,
+                                                                   @PathVariable Long userIdReceive) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticonUser(gifticonId, userIdSend, userIdReceive)));
     }
 
-    @PutMapping("/used")
+    @PutMapping("/used/{userId}/{gifticonId}")
     @ApiOperation(value = "기프티콘 상태 수정", notes = "<strong>유저 아이디와 기프티콘 아이디</strong> 를 받아" +
             " <strong>해당 기프티콘의 사용여부를 변경</strong> 한다.")
 
-    public ResponseEntity<? extends BasicResponse> updateGifticonUsed(@RequestBody GifticonUsedReq gifticonUsedReq) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticonUsed(gifticonUsedReq)));
-    }
-
-    @PutMapping("/store/period")
-    @ApiOperation(value = "기프티콘 정보 수정", notes = "<strong>유저 아이디와 기프티콘 아이디</strong> 를 받아" +
-            " <strong>해당 기프티콘의 사용 기한과 사용처를 변경</strong> 한다.")
-
-    public ResponseEntity<? extends BasicResponse> updateGifticonStorePeriod(@RequestBody GifticonStorePeriodReq gifticonStorePeriodReq) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticonStorePeriod(gifticonStorePeriodReq)));
+    public ResponseEntity<? extends BasicResponse> updateGifticonUsed(@PathVariable Long userId, @PathVariable Long gifticonId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.updateGifticonUsed(userId, gifticonId)));
     }
 
     /*
