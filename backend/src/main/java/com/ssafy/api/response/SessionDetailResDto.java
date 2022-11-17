@@ -2,7 +2,6 @@ package com.ssafy.api.response;
 
 import com.ssafy.db.entity.Session;
 import com.ssafy.db.entity.SessionMessage;
-import com.ssafy.db.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +41,16 @@ public class SessionDetailResDto {
                 .anniversary(session.getAnniversary())
                 .sessionMessageResDtoList(SessionMessageResDto.toDtoList(mList))
                 .build();
+    }
+
+    // 친구 세션 목록 조회시 필요한 정보
+    @Builder
+    public SessionDetailResDto(Long sessionId, String name, LocalDate expireTime, LocalDate anniversary, Long sessionTypeId) {
+        this.sessionId = sessionId;
+        this.name = name;
+        this.expireTime = expireTime;
+        this.anniversary = anniversary;
+        this.sessionTypeId = sessionTypeId;
     }
 
 }
