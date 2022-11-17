@@ -50,7 +50,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
       // console.log(SSTT - new Date() - 32400000);
       setTime(new Date());
       setCalTime(SSTT - new Date() - 32400000);
-    }, 100000);
+    }, 1000);
     // 타이머 컴포넌트가 언마운트 될 때 실행
     return () => clearInterval(interval.current);
   });
@@ -299,21 +299,25 @@ function ChallengeDetailScreen0({ route, navigation }) {
                     <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
                       {myfollower.map((myF, index) => (
                         <>
-                          {myF.friend === true && (
-                            <>
-                              <Text>친구:{myF.userName}</Text>
-                              {/* <Text onPress={() => doInvite(myF.userId)}>초대하기</Text> */}
-                              {/* <Text>취소하기</Text> */}
+                          {myF.friend === true &&
+                            usersInfoL.findIndex((e) => e.userId === myF.userId) === -1 && (
+                              <>
+                                <Text>친구:{myF.userName}</Text>
+                                {inviteUsers.findIndex((e) => e.userId === myF.userId) === -1 ? (
+                                  <Text>초대하기</Text>
+                                ) : (
+                                  <Text>취소하기</Text>
+                                )}
 
-                              <Icon
-                                name='close'
-                                type='fontisto'
-                                color='#FFE7BC'
-                                size={25}
-                                iconStyle={{ fontSize: 33 }}
-                              />
-                            </>
-                          )}
+                                <Icon
+                                  name='close'
+                                  type='fontisto'
+                                  color='#FFE7BC'
+                                  size={25}
+                                  iconStyle={{ fontSize: 33 }}
+                                />
+                              </>
+                            )}
                         </>
                       ))}
                     </ScrollView>
