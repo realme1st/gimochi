@@ -268,14 +268,14 @@ public class UserService {
 	 * @return boolean : 언팔로우 성공 여부
 	 * */
 	@Transactional
-	public boolean unfollow(FollowReqDto followReqDto) {
+	public boolean unfollow(Long followerUserId, Long followingUserId) {
 		// 유효한 요청인지 확인
-		if (!friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+		if (!friendsListRepository.existsByFollowerIdAndFollowingId(followerUserId, followingUserId)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		// 언팔로우 하기
-		friendsListRepository.deleteByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId());
-		friendsListRepository.deleteByFollowerIdAndFollowingId(followReqDto.getFollowingUserId(),followReqDto.getFollowerUserId());
+		friendsListRepository.deleteByFollowerIdAndFollowingId(followerUserId, followingUserId);
+		friendsListRepository.deleteByFollowerIdAndFollowingId(followingUserId,followerUserId);
 
 		return true;
 	}
