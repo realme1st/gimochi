@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/usage/used/{userId}")
-    @ApiOperation(value = "userId로 사용자 정보 조회", notes = "사용자 정보 조회")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 증가", notes = "사용자 정보 수정")
     public ResponseEntity<? extends BasicResponse> countUpUsed(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseEntity<>(userService.countUpUsed(userId)));

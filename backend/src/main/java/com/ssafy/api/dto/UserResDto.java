@@ -14,7 +14,7 @@ public class UserResDto {
         this.userPoint = userPoint;
         this.userNickname = userNickname;
         this.userBirthday = userBirthday;
-        this.userProfie = userProfile;
+        this.userProfile = userProfile;
     }
 
     private Long userId;
@@ -23,6 +23,6 @@ public class UserResDto {
     private int userPoint;
     private String userNickname;
     private String userBirthday;
-    private String userProfie;
+    private String userProfile;
 
 }
