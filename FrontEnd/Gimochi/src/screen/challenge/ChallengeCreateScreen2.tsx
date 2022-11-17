@@ -61,7 +61,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
       challengeStartDate: format(dateS, 'yyyy-MM-dd'),
       challengeTitle: chTitle,
     };
-    console.log(jsonData);
+    // console.log(jsonData);
     await axios
       .post(`${Config.API_URL}/challenge`, jsonData)
       .then(function (response) {
