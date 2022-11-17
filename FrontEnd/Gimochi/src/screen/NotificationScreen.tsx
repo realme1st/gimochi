@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
@@ -81,6 +81,13 @@ function NotificationScreen() {
       });
   };
 
+  const rejectFriendButton = (id: any) => {
+    Alert.alert('친구 신청을 거절하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => rejectFriend(id) },
+    ]);
+  };
+
   const acceptChallenge = async (id: number) => {
     await axios
       .post(`${Config.API_URL}/challenge/challengeInvite/accept/${id}`)
@@ -115,6 +122,13 @@ function NotificationScreen() {
       });
   };
 
+  const rejectChallengeButton = (id: any) => {
+    Alert.alert('챌린지 신청을 거절하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => rejectChallenge(id) },
+    ]);
+  };
+
   return (
     <NotiContainer>
       <NotiTitleContainer>
@@ -131,7 +145,7 @@ function NotificationScreen() {
                 style={{ marginLeft: '3%', color: '#5de11f' }}
               />
             </NotiItemButton1>
-            <NotiItemButton2 onPress={() => rejectFriend(friend.userId)}>
+            <NotiItemButton2 onPress={() => rejectFriendButton(friend.userId)}>
               <FontAwesomeIcon
                 icon={faCircleXmark}
                 size={30}
@@ -155,7 +169,7 @@ function NotificationScreen() {
                 style={{ marginLeft: '3%', color: '#5de11f' }}
               />
             </NotiItemButton1>
-            <NotiItemButton2 onPress={() => rejectChallenge(invitation.challengeInviteId)}>
+            <NotiItemButton2 onPress={() => rejectChallengeButton(invitation.challengeInviteId)}>
               <FontAwesomeIcon
                 icon={faCircleXmark}
                 size={30}

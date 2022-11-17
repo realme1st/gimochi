@@ -35,11 +35,7 @@ function MypageScreen({ navigation }) {
 
   useEffect(() => {
     axios
-      .get(`${Config.API_URL}/user/follower/${userId}`, {
-        headers: {
-          token: accessToken,
-        },
-      })
+      .get(`${Config.API_URL}/user/follower/${userId}`)
       .then(function (response) {
         console.log(response);
         setFriendList(response.data.data);

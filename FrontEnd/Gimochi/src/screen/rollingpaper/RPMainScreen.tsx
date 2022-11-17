@@ -47,6 +47,7 @@ function RPMainScreen({ navigation }: RPNavigationProps) {
         console.log(error);
       });
   }, [reload]);
+
   const goDetail = (id: number, sessionTypeId: number, name: string) => {
     if (sessionTypeId === 1) {
       navigation.navigate('RPBirthdayScreen', {
