@@ -61,7 +61,7 @@ public class Challenge {
     }
 
     @OneToMany(mappedBy = "challenge")
-    private List<RewardInfo> rewardInfoList = new ArrayList<>();
+    private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
@@ -85,11 +85,11 @@ public class Challenge {
 
 
 
-    public void addChallengeReward(RewardInfo rewardInfo){
-        this.rewardInfoList.add(rewardInfo);
+    public void addChallengeReward(ChallengeReward challengeReward){
+        this.challengeRewardList.add(challengeReward);
 
-        if(rewardInfo.getChallenge() !=this) { //무한루프 방지
-            rewardInfo.setChallenge(this);
+        if(challengeReward.getChallenge() !=this) { //무한루프 방지
+            challengeReward.setChallenge(this);
         }
 
     }

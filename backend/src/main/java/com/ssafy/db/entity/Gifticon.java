@@ -1,6 +1,5 @@
 package com.ssafy.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -19,6 +18,7 @@ public class Gifticon{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gifticonId;
 
+    @JsonIgnore
     @ManyToOne(fetch=LAZY)
     @JoinColumn(name = "userId")
     private User user;
@@ -32,12 +32,16 @@ public class Gifticon{
     @Column(nullable = false)
     private String gifticonPath;
 
+    @Column(nullable = false)
+    private String gifticonCode;
+
     /* Session Message */
+    @JsonIgnore
     @OneToOne(mappedBy = "gifticon")
     private SessionMessage sessionMessage;
 
     @OneToMany(mappedBy = "gifticon")
-    private List<RewardInfo> rewardInfoList = new ArrayList<>();
+    private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 
     public void setUser(User user){
         this.user =user;
@@ -47,12 +51,14 @@ public class Gifticon{
         }
     }
     @Builder
-    public Gifticon(User user, LocalDate gifticonPeriod, String gifticonStore, boolean gifticonUsed, String gifticonPath) {
+    public Gifticon(User user, LocalDate gifticonPeriod, String gifticonStore, boolean gifticonUsed,
+                    String gifticonPath, String gifticonCode) {
         this.user = user;
         this.gifticonPeriod = gifticonPeriod;
         this.gifticonStore = gifticonStore;
         this.gifticonUsed = gifticonUsed;
         this.gifticonPath = gifticonPath;
+        this.gifticonCode = gifticonCode;
     }
 
     public void changeGifticonPath(String path) {
@@ -80,11 +86,11 @@ public class Gifticon{
         }
     }
 
-    public void addChallengeReward(RewardInfo rewardInfo){
-        this.rewardInfoList.add(rewardInfo);
+    public void addChallengeReward(ChallengeReward challengeReward){
+        this.challengeRewardList.add(challengeReward);
 
-        if(rewardInfo.getGifticon() !=this) { //무한루프 방지
-            rewardInfo.setGifticon(this);
+        if(challengeReward.getGifticon() !=this) { //무한루프 방지
+            challengeReward.setGifticon(this);
         }
 
     }
