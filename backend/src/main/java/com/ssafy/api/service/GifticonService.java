@@ -291,11 +291,7 @@ public class GifticonService {
     }
 
     @Transactional
-    public Gifticon updateGifticonUser(GifticonPresentReq gifticonPresentReq) {
-
-        Long senderId = gifticonPresentReq.getUserIdSend();
-        Long receiverId = gifticonPresentReq.getUserIdReceive();
-        Long gifticonId = gifticonPresentReq.getGifticonId();
+    public Gifticon updateGifticonUser(Long gifticonId, Long senderId, Long receiverId) {
 
         User userSender = userRepository.findByUserId(senderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
@@ -319,10 +315,7 @@ public class GifticonService {
     }
 
     @Transactional
-    public Gifticon updateGifticonUsed(GifticonUsedReq gifticonUsedReq) {
-
-        Long userId = gifticonUsedReq.getUserId();
-        Long gifticonId = gifticonUsedReq.getGifticonId();
+    public Gifticon updateGifticonUsed(Long userId, Long gifticonId) {
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
@@ -337,33 +330,6 @@ public class GifticonService {
         }
 
         gifticon.changeGifticonUsed(); // 기프티콘 사용여부 상태를 변경
-
-        return gifticon;
-
-    }
-
-    @Transactional
-    public Gifticon updateGifticonStorePeriod(GifticonStorePeriodReq gifticonStorePeriodReq) {
-
-        Long userId = gifticonStorePeriodReq.getUserId();
-        Long gifticonId = gifticonStorePeriodReq.getGifticonId();
-
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
-
-        // 기프티콘 존재하는지 확인
-        Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID)); // 수정 필요
-
-        // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
-        if(gifticon.getUser().getUserId() != userId) {
-            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND); // 수정 필요
-        }
-
-        String store = gifticonStorePeriodReq.getGifticonStore();
-        LocalDate period = gifticonStorePeriodReq.getGifticonPeriod();
-
-        gifticon.changeGifticonStorePeriod(store, period); // 기프티콘 사용처와 사용 기한을 변경
 
         return gifticon;
 
