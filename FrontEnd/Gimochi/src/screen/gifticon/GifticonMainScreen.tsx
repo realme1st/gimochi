@@ -7,7 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -97,6 +97,13 @@ function GifticonMainScreen({ navigation }) {
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const deleteButton = (id) => {
+    Alert.alert('기프티콘을 삭제하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => deleteGifticon(id) },
+    ]);
   };
 
   if (loading)
@@ -211,11 +218,11 @@ function GifticonMainScreen({ navigation }) {
           <ModalText>{period}</ModalText>
           <ModalText>{store}</ModalText>
           <ModalButtonContainer>
-            <ModalButton>
-              <ModalButtonText onPress={() => useGifticon(id)}>사용완료</ModalButtonText>
+            <ModalButton onPress={() => useGifticon(id)}>
+              <ModalButtonText>사용완료</ModalButtonText>
             </ModalButton>
-            <ModalButton>
-              <ModalButtonText onPress={() => deleteGifticon(id)}>삭제하기</ModalButtonText>
+            <ModalButton onPress={() => deleteButton(id)}>
+              <ModalButtonText>삭제하기</ModalButtonText>
             </ModalButton>
           </ModalButtonContainer>
         </ModalContainer>

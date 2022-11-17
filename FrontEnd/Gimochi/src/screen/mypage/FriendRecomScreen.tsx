@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -47,20 +48,7 @@ function FriendRecomScreen() {
             reload: String(new Date()),
           }),
         );
-        const notification = singleNotification(id, userId, 1);
-        console.log(notification);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    await axios
-      .post(`${Config.API_URL}/notification/message/single`, {
-        receiverId: id,
-        senderId: userId,
-        type: 1,
-      })
-      .then(function (response) {
-        console.log(response);
+        // singleNotification(id, userId, 2);
       })
       .catch(function (error) {
         console.log(error);

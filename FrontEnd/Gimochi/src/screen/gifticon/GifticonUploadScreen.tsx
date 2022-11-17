@@ -30,6 +30,7 @@ function GifticonUploadScreen({ navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const [store, setStore] = useState('');
   const [period, setPeriod] = useState('');
+  const [code, setCode] = useState(0);
   const [isOCR, setIsOCR] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -88,10 +89,10 @@ function GifticonUploadScreen({ navigation }) {
         },
       })
       .then(function (response) {
-        console.log(response.data.data.gifticonPeriod);
-        console.log(response.data.data.gifticonStore);
+        console.log(response.data.data);
         setPeriod(response.data.data.gifticonPeriod);
         setStore(response.data.data.gifticonStore);
+        setCode(response.data.data.gifticonCode);
         setIsOCR(true);
       })
       .catch(function (error) {
@@ -107,6 +108,7 @@ function GifticonUploadScreen({ navigation }) {
       .post(`${Config.API_URL}/gifticon/info`, {
         gifticonPeriod: period,
         gifticonStore: store,
+        gifticonCode: code,
         userId: userId,
       })
       .then(function (response) {
@@ -165,6 +167,7 @@ function GifticonUploadScreen({ navigation }) {
           <DateButtonContainer>
             <FontAwesomeIcon icon={faCalendar} size={20} />
             <DateText>{period}</DateText>
+            <DateText>{code}</DateText>
           </DateButtonContainer>
           <SubmitButton onPress={postInfo}>
             <SubmitText>등록</SubmitText>

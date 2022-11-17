@@ -12,15 +12,16 @@ export const singleNotification = async (receiverId: number, senderId: number, t
       senderId: senderId,
       type: type,
     });
+    console.log('hi');
     return response;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const multiNotification = async (userId: number, type: number) => {
+export const multiNotification = async (userId: any, type: number) => {
   try {
-    const response = await axiosBasic.post('/notification/message/single', {
+    const response = await axiosBasic.post('/notification/message/multi', {
       userId: userId,
       type: type,
     });
