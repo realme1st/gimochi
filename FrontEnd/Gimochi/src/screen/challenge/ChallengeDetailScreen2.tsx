@@ -19,13 +19,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
-
+// @@@@@@@@@@@@@@@중간결과에서 원하는것만 복사해오자
 function ChallengeDetailScreen2({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   console.log(userId);
 
-  const challegneId = route.params.challengeId;
-  console.log(challegneId);
+  const challengeId = route.params.challengeId;
+  console.log(challengeId);
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
   };

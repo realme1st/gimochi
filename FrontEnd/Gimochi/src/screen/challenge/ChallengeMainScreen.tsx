@@ -6,7 +6,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
-import reloadSlice from '../../slices/reload';
+
 import screenSlice from '../../slices/screen';
 
 function ChallengeMainScreen({ navigation, route }) {
@@ -14,19 +14,13 @@ function ChallengeMainScreen({ navigation, route }) {
   const reload = useSelector((state: RootState) => state.reload.reload);
   const dispatch = useAppDispatch();
   const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const [myChList, setmyChList] = useState([]);
-  const [myChListC, setmyChListC] = useState([]);
-
-  var temp = [];
   const [my0ChList, setmy0ChList] = useState([]);
   const [my1ChList, setmy1ChList] = useState([]);
   const [my2ChList, setmy2ChList] = useState([]);
-  console.log('JMJ1');
-  //  console.log('M');
-  // const myList = route.params.myList ? route.params.myList : [];
-  // console.log(myList);
+
   const goDetail0 = (id) => {
     navigation.navigate('ChallengeDetailScreen0', { challengeId: id });
   };
@@ -41,21 +35,28 @@ function ChallengeMainScreen({ navigation, route }) {
     navigation.navigate('ChallengeCreateScreen1');
   };
 
-  // const create012List = (chall) => {
-  //         // response.data.data.forEach((chall) => {
-  //         if (chall.challengeActive === 0) {
-  //           my0ChList.push(chall.challengeActive);
-  //         } else if (chall.challengeActive === 1) {
-  //           my1ChList.push(chall.challengeActive);
-  //         } else if (chall.challengeActive === 2) {
-  //           my2ChList.push(chall.challengeActive);
-  //         }
-  //         console.log(myChList, my0ChList, my1ChList, my2ChList);
-  //       };
-
-  //   let pensByColors = pens.sort((a,b) => (a.price - b.price));
-  // console.log(pensByColors);
-
+  const create012List = (res) => {
+    res.forEach((chall, i) => {
+      if (chall.challengeActive === 0) {
+        my0ChList.push(chall);
+      } else if (chall.challengeActive === 1) {
+        my1ChList.push(chall);
+      } else if (chall.challengeActive === 2) {
+        my2ChList.push(chall);
+      }
+      console.log(myChList, my0ChList, my1ChList, my2ChList);
+    });
+  };
+  const calSDay = (time) => {
+    const t = new Date(time) - new Date() - 32400000;
+    const result = parseInt(t / 86400000);
+    return result === 0 ? '' : result + 1;
+  };
+  const calEDay = (time) => {
+    const t = new Date(time) - new Date() - 32400000;
+    const result = parseInt(t / 86400000);
+    return result === 0 ? '' : result + 1;
+  };
   useEffect(() => {
     dispatch(
       screenSlice.actions.addScreen({
@@ -69,65 +70,24 @@ function ChallengeMainScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    console.log('e1');
-    async function myList() {
-      const response = await axios.get(`${Config.API_URL}/challenge/challengeList/` + userId);
-      console.log(response.data.data);
-      setmyChList(response.data.data);
-    }
-    myList();
+    axios
+      .get(`${Config.API_URL}/challenge/challengeList/` + userId)
+      .then(function (response) {
+        console.log(response.data.data);
+        // myChList.push(response.data.data);
+        setmyChList(response.data.data);
+        create012List(response.data.data);
+        // const temp = { ...response1.data.data[i], ...response2.data.data };
+        my0ChList.sort((a, b) => new Date(a.challengeStartDate) - new Date(b.challengeStartDate));
+        my1ChList.sort((a, b) => new Date(a.challengeEndDate) - new Date(b.challengeEndDate));
+        my2ChList.sort((a, b) => new Date(b.challengeEndDate) - new Date(a.challengeEndDate));
+        // console.log(myChList, my0ChList, my1ChList, my2ChList);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(() => setLoading(false));
   }, [reload]);
-
-  useEffect(() => {
-    console.log('e2');
-    console.log(myChList);
-
-    async function myList2() {
-      myChList.forEach((chId, i) => {
-        // console.log(chId, i);
-        axios
-          .all([
-            axios.get(`${Config.API_URL}/challenge/challengeList/` + userId),
-            axios.get(`${Config.API_URL}/challenge/challengeInfo/rank/${chId.challengeId}/${userId}`),
-          ])
-          .then(
-            axios.spread((response1, response2) => {
-              console.log('T');
-              console.log(response1.data.data);
-              console.log(response1.data.data[i]);
-              console.log(chId.challengeId, response2.data.data);
-              var temp = { ...response1.data.data[i], ...response2.data.data };
-              console.log(temp);
-              myChListC.push(temp);
-            }),
-          )
-          .catch(function (error) {
-            console.log(error);
-          });
-      });
-      setLoading(false);
-    }
-    // try {
-    myList2();
-    // if (confirm('에러를 만드시겠습니까?')) 이상한_코드();
-    // } catch (error) {
-    //   console.log(error);
-    // } finally {
-    //   console.log('load');
-    // setLoading(false);
-    // }
-
-    console.log('a');
-    console.log(myChListC);
-  }, [myChList]);
-  console.log('aa');
-  console.log(myChListC);
-
-  useEffect(() => {
-    console.log('e3');
-    // myChListC.push(temp);
-    console.log(myChListC);
-  }, [temp]);
 
   if (loading) {
     return (
@@ -211,40 +171,51 @@ function ChallengeMainScreen({ navigation, route }) {
         <TabView value={index} onChange={setIndex} animationType='spring'>
           <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
             <ScrollView>
-              <TouchableOpacity
-                style={{ marginVertical: 10, backgroundColor: 'red' }}
-                onPress={() => goDetail0(1)}
-              >
-                <Text>챌린지 대기중 상세보기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ marginVertical: 10, backgroundColor: 'green' }}
-                onPress={() => goDetail1(1)}
-              >
-                <Text>챌린지 진행중 상세보기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ marginVertical: 10, backgroundColor: 'blue' }}
-                onPress={() => goDetail2(1)}
-              >
-                <Text>챌린지 종료된 상세보기</Text>
-              </TouchableOpacity>
+              <Text>---진행중(맨위가 종료임박)---</Text>
+              {my1ChList.map((Ch, index) => (
+                <TouchableOpacity key={index + 10000} onPress={() => goDetail1(Ch.challengeId)}>
+                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
+                  <Text>제목:{Ch.challengeTitle}</Text>
+                  <Text>끝나기까지 D-{calEDay(Ch.challengeEndDate)}day</Text>
+                  <Text>게시자:{Ch.challengeLeaderName}</Text>
+                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
+                  <Text>현재 1위{Ch.winnerName}</Text>
+                  {/* <Text>1위 없음</Text> */}
+                  <Text>------------------------</Text>
+                </TouchableOpacity>
+              ))}
 
-              <Text>대기중 진행중 여기서 표시 삭제는 각 챌린지 들어가서</Text>
-
-              {/* <Text>{myChList ? myChList : ''} </Text> */}
-              {/* <Text>{myChListC ? myChListC : ''} </Text> */}
-              {/* <Text>{myChList[0] ? myChList[0] : ''} </Text> */}
-              {/* <Text>{myChList[0].challengeId ? myChList[0].challengeId : ''} </Text> */}
-              {/* <Text>{myChListC ? myChListC[0].challengeId : ''} 시</Text> */}
-              <Text>챌린지 진행중</Text>
-              <Text>챌린지 대기중</Text>
-              <Text>챌린지 대기중</Text>
+              <Text>---대기중(맨위가 시작임박)---</Text>
+              {my0ChList.map((Ch, index) => (
+                <TouchableOpacity key={index + 100} onPress={() => goDetail0(Ch.challengeId)}>
+                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
+                  <Text>제목:{Ch.challengeTitle}</Text>
+                  <Text>시작하기까지 D-{calSDay(Ch.challengeStartDate)}day</Text>
+                  <Text>게시자:{Ch.challengeLeaderName}</Text>
+                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
+                  {/* <Text>1위:{Ch.winnerName}</Text> */}
+                  <Text>순위 없음</Text>
+                  <Text>------------------------</Text>
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </TabView.Item>
           <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
             <ScrollView>
-              <Text>종료된 목록들 표시 삭제는 각 챌린지 들어가서 </Text>
+              <Text>---종료됨(맨위가 최신종료)---</Text>
+              {my2ChList.map((Ch, index) => (
+                <TouchableOpacity key={index + 1000} onPress={() => goDetail2(Ch.challengeId)}>
+                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
+                  <Text>제목:{Ch.challengeTitle}</Text>
+                  <Text>종료</Text>
+                  {/* <Text>D-{calEDay(Ch.challengeEndDate)}day</Text> */}
+                  <Text>게시자:{Ch.challengeLeaderName}</Text>
+                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
+                  <Text>우승자:{Ch.winnerName}</Text>
+                  {/* <Text>1위 없음</Text> */}
+                  <Text>------------------------</Text>
+                </TouchableOpacity>
+              ))}
             </ScrollView>
           </TabView.Item>
         </TabView>

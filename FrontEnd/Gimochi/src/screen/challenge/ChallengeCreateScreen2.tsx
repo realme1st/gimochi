@@ -39,15 +39,16 @@ function ChallengeCreateScreen2({ route, navigation }) {
   const dispatch = useAppDispatch();
   const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
+  const indexOfGP = route.params.indexOfGP;
+  // indexOfGP 1 :포인트  2 :기프티콘
+  // console.log(indexOfGP);
 
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
   };
-  const indexOfGP = route.params.indexOfGP;
-  console.log(indexOfGP);
-  // indexOfGP 1 :포인트  2 :기프티콘
+
   const onSubmit = async () => {
-    const finalP = chPoint ? chPoint : 0;
+    const finalP = chPoint ? Number(chPoint) : 0;
     const jsonData = {
       challengeActive: 0,
       challengeDescription: chDescription,
@@ -263,63 +264,75 @@ function ChallengeCreateScreen2({ route, navigation }) {
             errorMessage='Tip. 챌린지 추가설명을 300자 안으로 작성하세요!'
           />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 100,
-            padding: 20,
-            marginRight: 85,
-          }}
-        >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>참가비{'  '}:</Text>
 
-          <Input
-            placeholder='참가비를 입력하세요'
-            onChangeText={onChanged}
-            value={chPoint}
-            keyboardType='numeric'
-            maxLength={4}
-            errorStyle={{ color: 'black' }}
-            errorMessage='Tip. 챌린지는 달성률에 비례해 환급됩니다!'
-            rightIcon={
-              <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogP()} />
-            }
-            rightIconContainerStyle={{ padding: 1 }}
-          />
-          <Dialog isVisible={visibleDialogP} onBackdropPress={toggleDialogP}>
-            <Dialog.Title title='포인트설명 가져가는' />
-            <Text>ㄴ이ㅏㅣ나이ㅏㅇ닝니ㅏㅇ니</Text>
-          </Dialog>
-        </View>
+        {indexOfGP === 1 ? (
+          <View
+            style={{
+              flexDirection: 'row',
+              height: 100,
+              padding: 20,
+              marginRight: 85,
+            }}
+          >
+            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>참가비{'  '}:</Text>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 100,
-            padding: 20,
-            marginRight: 85,
-          }}
-        >
-          <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-            기프티콘 목록
-          </Text>
-          <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
-          <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
-            <Dialog.Title title='기프티콘 목록 (여기서 등록)' />
-            <Text onPress={() => toggleAddG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기프티콘 등록 버튼
+            <Input
+              placeholder='참가비를 입력하세요'
+              onChangeText={onChanged}
+              value={chPoint}
+              keyboardType='numeric'
+              maxLength={4}
+              errorStyle={{ color: 'black' }}
+              errorMessage='Tip. 챌린지는 달성률에 비례해 환급됩니다!'
+              rightIcon={
+                <Icon
+                  name='question'
+                  type='octicon'
+                  size={35}
+                  color='black'
+                  onPress={() => toggleDialogP()}
+                />
+              }
+              rightIconContainerStyle={{ padding: 1 }}
+            />
+            <Dialog isVisible={visibleDialogP} onBackdropPress={toggleDialogP}>
+              <Dialog.Title title='포인트설명 가져가는' />
+              <Text>ㄴ이ㅏㅣ나이ㅏㅇ닝니ㅏㅇ니</Text>
+            </Dialog>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: 'row',
+              height: 100,
+              padding: 20,
+              marginRight: 85,
+            }}
+          >
+            <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
+              기프티콘 목록
             </Text>
-            <Text>ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</Text>
-          </Dialog>
-          <Dialog isVisible={visibleAddG} onBackdropPress={toggleAddG}>
-            <Dialog.Title title='기프티콘등록 화면(모달에모달)' />
-            <Text>ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ</Text>
-          </Dialog>
-          <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
-            <Dialog.Title title='기프티콘 설명 가져가는' />
-            <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>
-          </Dialog>
-        </View>
+            <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
+            <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
+              <Dialog.Title title='기프티콘 목록 (여기서 등록)' />
+              <Text
+                onPress={() => toggleAddG()}
+                style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}
+              >
+                기프티콘 등록 버튼
+              </Text>
+              <Text>ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</Text>
+            </Dialog>
+            <Dialog isVisible={visibleAddG} onBackdropPress={toggleAddG}>
+              <Dialog.Title title='기프티콘등록 화면(모달에모달)' />
+              <Text>ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ</Text>
+            </Dialog>
+            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
+              <Dialog.Title title='기프티콘 설명 가져가는' />
+              <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>
+            </Dialog>
+          </View>
+        )}
       </ScrollView>
       <Icon
         name='check'
