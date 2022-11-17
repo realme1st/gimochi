@@ -182,7 +182,7 @@ public class GifticonService {
     public Gifticon createGifticonInfo(GifticonInfoReqDto gifticonInfoReqDto) {
 
         User user = userRepository.findByUserId(gifticonInfoReqDto.getUserId()).
-                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         Gifticon gifticon = Gifticon.builder()
                 .user(user)
@@ -191,6 +191,7 @@ public class GifticonService {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
                 .gifticonUsed(false)
                 .gifticonPath("notAllocated")
+                .gifticonCode(gifticonInfoReqDto.getGifticonCode())
                 .build();
 
         return gifticonRepository.save(gifticon);
@@ -201,17 +202,18 @@ public class GifticonService {
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
 
         // 유저 존재하는지 확인
         User user = userRepository.findByUserId(gifticon.getUser().getUserId()).
-                orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         String url = null;
 
         try {
             url = amazonS3Util.upload(multipartFile, user.getUserSocialToken());
         } catch (IOException e) {
+
             log.error(e.getMessage());
         }
 
@@ -225,27 +227,27 @@ public class GifticonService {
 
     public List<Gifticon> getGifticonByUserId(Long userId) {
         return gifticonRepository.findAllByUserUserIdOrderByGifticonPeriod(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
     }
 
     public Gifticon getGifticonByGifticonId(Long gifticonId) {
         return gifticonRepository.findByGifticonId(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
     }
 
     @Transactional
-    public boolean deleteGifticon(Long userId, Long gifticonId) {
+    public boolean deleteGifticonS3(Long userId, Long gifticonId) {
         // 유저 존재하는지 확인
         User user = userRepository.findByUserId(userId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
 
         // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
         if(gifticon.getUser().getUserId() != userId) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND);
         }
 
         String path = gifticon.getGifticonPath().replace("https://mygimochi.s3.ap-northeast-2.amazonaws.com/", "");
@@ -259,8 +261,33 @@ public class GifticonService {
             }
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
+            deleteGifticon(userId, gifticonId);
+            return false;
         }
-        return false;
+    }
+
+    @Transactional
+    public boolean deleteGifticon(Long userId, Long gifticonId) {
+        // 유저 존재하는지 확인
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
+
+        // 기프티콘 존재하는지 확인
+        Gifticon gifticon = gifticonRepository.findById(gifticonId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
+
+        // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
+        if(gifticon.getUser().getUserId() != userId) {
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND);
+        }
+
+        try {
+            gifticonRepository.delete(gifticon); // db 삭제
+            return true;
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return false;
+        }
     }
 
     @Transactional
@@ -271,18 +298,18 @@ public class GifticonService {
         Long gifticonId = gifticonPresentReq.getGifticonId();
 
         User userSender = userRepository.findByUserId(senderId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         User userReceiver = userRepository.findByUserId(receiverId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
 
         // 넘어온 선물 보내는 유저 정보와 기프티콘의 유저정보가 같은지 비교
         if(gifticon.getUser().getUserId() != senderId) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND);
         }
 
         gifticon.changeGifticonUser(userReceiver); // 기프티콘 소유자를 받는 사람으로 변경
@@ -298,15 +325,15 @@ public class GifticonService {
         Long gifticonId = gifticonUsedReq.getGifticonId();
 
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID)); // 수정 필요
 
         // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
         if(gifticon.getUser().getUserId() != userId) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND); // 수정 필요
         }
 
         gifticon.changeGifticonUsed(); // 기프티콘 사용여부 상태를 변경
@@ -322,15 +349,15 @@ public class GifticonService {
         Long gifticonId = gifticonStorePeriodReq.getGifticonId();
 
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ID));
 
         // 기프티콘 존재하는지 확인
         Gifticon gifticon = gifticonRepository.findById(gifticonId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST)); // 수정 필요
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID)); // 수정 필요
 
         // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
         if(gifticon.getUser().getUserId() != userId) {
-            throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND); // 수정 필요
         }
 
         String store = gifticonStorePeriodReq.getGifticonStore();

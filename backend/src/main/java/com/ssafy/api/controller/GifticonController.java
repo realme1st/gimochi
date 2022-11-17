@@ -71,7 +71,7 @@ public class GifticonController {
             " <strong>해당 기프티콘을 삭제</strong> 한다.")
 
     public ResponseEntity<? extends BasicResponse> deleteGifticon(@PathVariable Long userId, @PathVariable Long gifticonId) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.deleteGifticon(userId, gifticonId)));
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(gifticonService.deleteGifticonS3(userId, gifticonId)));
     }
 
     @PutMapping
