@@ -58,7 +58,10 @@ public class UserService {
 	public UserUsageResDto getUsage(Long userId){
 		User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
 		UserUsageResDto userUsageResDto = UserUsageResDto.builder()
-				.registCount(user.getGifticonsList().size())
+				.registCount(
+						user.getGifticonsList()
+								.stream()
+								.filter(gifticon -> {return !gifticon.isGifticonUsed();}).collect(Collectors.toList()).size())
 				.usedCount(user.getUsedCount())
 				.build();
 		return userUsageResDto;
