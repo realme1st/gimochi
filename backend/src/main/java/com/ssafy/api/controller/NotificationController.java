@@ -33,7 +33,7 @@ public class NotificationController {
     }
 
     //알림 type에 따라서 단체 메세지 전송
-    @PostMapping("/message/muliti")
+    @PostMapping("/message/multi")
     @ApiOperation(value = "여러 디바이스에 메세지 전송", notes = "알림 타입에 따른 단체 알림 전송\n1 : 추카포카함 개설")
     public ResponseEntity<? extends BasicResponse> sendMultiMessage(@RequestBody MultiMessageReqDto multiMessageReqDto){
         List<FriendDto> userList = userService.getFollowerList(multiMessageReqDto.getUserId());
@@ -44,7 +44,7 @@ public class NotificationController {
     //cd6e7_ZHRRewNpQK3yndXN:APA91bGuDmUdfG4mgkFsvc-m3T-JJ2U1h4oLlNJAZjCfiq6SYwX1EHBRZmbi6Sqnoq_tv8H5HnrwXmhbB8ZbgBpkjqLOb6L-c26J70THIEW1iKuz-H_l0nUfaEk9yOABn5CqZqbguf2u
 
     @PostMapping("/message/single")
-    @ApiOperation(value = "특정 디바이스에 메세지 전송", notes = "알림 타입에 따른 알림 전송")
+    @ApiOperation(value = "특정 디바이스에 메세지 전송", notes = "알림 타입에 따른 알림 전송\n1 : 챌린지 초대\n2 : 친구 요청\n3 : 친구 요청 수락")
     public ResponseEntity<? extends BasicResponse> sendSingleMessage(
             @RequestBody SingleMessageReqDto singleMessageReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(notificationService.sendToUser(singleMessageReqDto)));
