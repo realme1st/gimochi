@@ -1,6 +1,7 @@
 package com.ssafy.api.response;
 
 import com.ssafy.api.request.SessionMessageReqDto;
+import com.ssafy.db.entity.Gifticon;
 import com.ssafy.db.entity.SessionMessage;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,15 +19,18 @@ public class SessionMessageResDto {
     private String nickname;
     private String field;
     private LocalDate expireTime;
+
+    private String gifticonStore;
     private int messageType;
 
     @Builder
-    public SessionMessageResDto(Long sessionMessageId, String nickname, String field, LocalDate expireTime, int messageType) {
+    public SessionMessageResDto(Long sessionMessageId, String nickname, String field, LocalDate expireTime, int messageType, String gifticonStore) {
         this.sessionMessageId = sessionMessageId;
         this.nickname = nickname;
         this.field = field;
         this.expireTime = expireTime;
         this.messageType = messageType;
+        this.gifticonStore = gifticonStore;
     }
 
     public static SessionMessage toDto(SessionMessageReqDto reqDto){
@@ -45,6 +49,7 @@ public class SessionMessageResDto {
                 .field(sessionMessage.getField())
                 .expireTime(sessionMessage.getExpireTime())
                 .messageType(sessionMessage.getMessageType())
+                .gifticonStore(sessionMessage.getGifticon().getGifticonStore())
                 .build();
     }
 
@@ -58,6 +63,7 @@ public class SessionMessageResDto {
                     .nickname(m.getNickname())
                     .field(m.getField())
                     .expireTime(m.getExpireTime())
+                            .gifticonStore(m.getGifticon().getGifticonStore())
                     .build());
         }
         return sessionMessageResDtoList;
