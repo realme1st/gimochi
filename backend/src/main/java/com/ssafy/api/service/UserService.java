@@ -124,7 +124,8 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_USER);
 		}
 		// 이미 팔로우 했는지 확인
-		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())
+		&&!friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get().isFriend()) {
 			FriendsList friendsList = friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get();
 			// 친구 상태 업데이트
 			friendsList.acceptRequest(true);
@@ -162,7 +163,8 @@ public class UserService {
 			throw new CustomException(ErrorCode.INVALID_USER);
 		}
 		// 이미 팔로우 했는지 확인
-		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())) {
+		if (friendsListRepository.existsByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId())
+				&&!friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get().isFriend()) {
 			FriendsList friendsList = friendsListRepository.findByFollowerIdAndFollowingId(followReqDto.getFollowerUserId(), followReqDto.getFollowingUserId()).get();
 			friendsListRepository.delete(friendsList);
 			return true;
