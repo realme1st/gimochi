@@ -21,6 +21,7 @@ import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
 import screenSlice from '../../slices/screen';
 import Config from 'react-native-config';
+import { multiNotification } from '../../api/API';
 
 function RPWriteScreen({ navigation }) {
   const [typeId, setTypeId] = useState<number>(0);
@@ -82,18 +83,8 @@ function RPWriteScreen({ navigation }) {
             reload: String(new Date()),
           }),
         );
+        multiNotification(userId, 1);
         navigation.goBack();
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    await axios
-      .post(`${Config.API_URL}/notification/message/multi`, {
-        type: 1,
-        userId: userId,
-      })
-      .then(function (response) {
-        console.log(response);
       })
       .catch(function (error) {
         console.log(error);

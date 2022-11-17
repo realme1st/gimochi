@@ -84,12 +84,10 @@ function MypageScreen({ navigation }) {
     navigation.navigate('FriendRPScreen', { friendId: id, friendNickname: nickname });
   };
 
-  const unfollow = async (id: any) => {
+  const unfollow = async (id) => {
+    console.log(userId, id);
     await axios
-      .delete(`${Config.API_URL}/user/follow`, {
-        followerUserId: userId,
-        followingUserId: id,
-      })
+      .delete(`${Config.API_URL}/user/follow/${userId}/${id}`)
       .then(function (response) {
         console.log(response);
         dispatch(
