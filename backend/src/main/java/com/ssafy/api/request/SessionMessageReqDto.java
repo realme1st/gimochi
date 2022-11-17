@@ -20,6 +20,7 @@ public class SessionMessageReqDto {
 
     @ApiModelProperty(name ="기프티콘 id" , example = "1", required = false)
     Long gifticonId;
+    
 
     @ApiModelProperty(name = "세션 메세지 타입", example = "1", required = false)
     Integer messageType;

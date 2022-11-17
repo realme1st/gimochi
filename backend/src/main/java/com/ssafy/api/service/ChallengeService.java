@@ -9,6 +9,7 @@ import com.ssafy.db.entity.*;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -169,7 +170,17 @@ public class ChallengeService {
                 myRank = challengeInfo.getMyRank();
             }
         }
-        return ChallengeInfoRankResDto.toDto(winnerName, myRank, userId);
+        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeIdUserId(challengeId,userId)
+                .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+
+
+        int successCnt = challengeInfo.getSuccessCnt();
+        AuthTotalCnt authTotalCnt = challengeAuthRepository.findTotalCntByChallengeInfo(challengeInfo.getChallengeInfoId())
+                .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        Integer totalCnt = authTotalCnt.gettotalCnt();
+        return ChallengeInfoRankResDto.toDto(winnerName, myRank, userId,successCnt,totalCnt);
     }
 
     public List<RankInterface> findChallengeInfoListByChallengeId(Long challengeId) {

@@ -28,6 +28,19 @@ public class UserController {
                 .body(new CommonResponseEntity<>(userService.getUser(userId)));
     }
 
+    @GetMapping("/usage/{userId}")
+    @ApiOperation(value = "userId로 등록/ 사용 기프티콘 수 조회", notes = "사용자 정보 조회")
+    public ResponseEntity<? extends BasicResponse> getUsageInfo(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.getUsage(userId)));
+    }
+
+    @GetMapping("/usage/used/{userId}")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 증가", notes = "사용자 정보 수정")
+    public ResponseEntity<? extends BasicResponse> countUpUsed(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.countUpUsed(userId)));
+    }
     // 팔로우
     @PostMapping("/follow-request")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)에게 친구 요청 전송", notes = "팔로우")
