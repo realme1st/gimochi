@@ -36,6 +36,7 @@ public class SessionMessage {
     private Session session;
 
     // @OneToOne(mappedBy = "sessionMessage")
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "gifticonId")
     private Gifticon gifticon;

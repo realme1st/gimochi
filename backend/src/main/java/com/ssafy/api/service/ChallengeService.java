@@ -27,7 +27,8 @@ public class ChallengeService {
     private final UserRepository userRepository;
     private final ChallengeInviteRepository challengeInviteRepository;
     private final VoteRepository voteRepository;
-
+    private final GifticonRepository gifticonRepository;
+    private final ChallengeRewardRepository challengeRewardRepository;
 
 
     @Transactional
@@ -41,15 +42,15 @@ public class ChallengeService {
         Challenge challenge = ChallengeResDto.createChallenge(challengeReqDto);
         if (challengeReqDto.getChallengeStartDate().isBefore(challengeReqDto.getChallengeEndDate())) {
             challengeRepository.save(challenge);
-        }else{
+        } else {
             throw new CustomException(ErrorCode.CHALLENGE_DATE_ERROR);
         }
         ChallengeResDto challengeResDto = null;
-        try{
+        try {
             Long challengeId = challengeRepository.save(challenge).getChallengeId();
             challenge.setChallengeId(challengeId);
             challengeResDto = ChallengeResDto.toDto(user, challenge);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.SESSION_SAVE_ERROR);
         }
 
@@ -64,11 +65,11 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
-        if(challenge.getChallengeStartDate().isAfter(LocalDate.now())) {
+        if (challenge.getChallengeStartDate().isAfter(LocalDate.now())) {
             challenge.changeActive(0);
-        } else if(challenge.getChallengeEndDate().isAfter(LocalDate.now())) {
+        } else if (challenge.getChallengeEndDate().isAfter(LocalDate.now())) {
             challenge.changeActive(1);
-        } else if(challenge.getChallengeEndDate().isBefore(LocalDate.now())){
+        } else if (challenge.getChallengeEndDate().isBefore(LocalDate.now())) {
             challenge.changeActive(2);
         }
 
@@ -145,11 +146,10 @@ public class ChallengeService {
         List<ChallengeListResDto> listRes = new ArrayList<>();
 
 
-
         userInfoList.stream().forEach(challengeInfo -> {
 
             Long challengeId = challengeInfo.getChallenge().getChallengeId();
-            ChallengeInfoRankResDto resDto= findChallengeInfoRankByChallengeIdAndUserId(challengeId,userId);
+            ChallengeInfoRankResDto resDto = findChallengeInfoRankByChallengeIdAndUserId(challengeId, userId);
 
             ChallengeListResDto challengeListResDto = ChallengeListResDto.toDto(challengeInfo, resDto.getMyRank(), resDto.getWinnerName());
             listRes.add(challengeListResDto);
@@ -157,18 +157,17 @@ public class ChallengeService {
         return listRes;
     }
 
-    public ChallengeInfoRankResDto findChallengeInfoRankByChallengeIdAndUserId(Long challengeId,Long userId) {
+    public ChallengeInfoRankResDto findChallengeInfoRankByChallengeIdAndUserId(Long challengeId, Long userId) {
 
         List<RankInterface> challengeInfoList = findChallengeInfoListByChallengeId(challengeId);
 
-        String winnerName = userRepository.findByUserId(challengeInfoList.get(0).getUserId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND)).getUserNickname();
+        String winnerName = userRepository.findByUserId(challengeInfoList.get(0).getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)).getUserNickname();
 
         int myRank = 0;
 
-        for(RankInterface challengeInfo : challengeInfoList){
-            if(challengeInfo.getUserId()==userId){
-                myRank= challengeInfo.getMyRank();
-
+        for (RankInterface challengeInfo : challengeInfoList) {
+            if (challengeInfo.getUserId() == userId) {
+                myRank = challengeInfo.getMyRank();
             }
         }
         ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeIdUserId(challengeId,userId)
@@ -201,11 +200,11 @@ public class ChallengeService {
                 .build();
 
         //challengeInvite에 이미 userId가 있다면
-        if(challengeInviteRepository.findByChallengeAndUser(challenge, user).isPresent()){
+        if (challengeInviteRepository.findByChallengeAndUser(challenge, user).isPresent()) {
             throw new CustomException(ErrorCode.CHALLENGE_INVITE_DUPLICATE);
         }
         //challengeInvite userId가 userLeaderId라면
-        if(challenge.getChallengeLeaderId()==user.getUserId()){
+        if (challenge.getChallengeLeaderId() == user.getUserId()) {
             throw new CustomException(ErrorCode.CHALLENGE_CANT_INVITE_LEADER);
         }
 
@@ -223,7 +222,7 @@ public class ChallengeService {
 
         List<UserListInviteResDto> listRes = new ArrayList<>();
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteChallengeId(challengeId);
-        if (challengeInviteList.isEmpty()){
+        if (challengeInviteList.isEmpty()) {
             throw new CustomException(ErrorCode.CHALLENGEINVITE_CHALLENGE_NOT_FOUND);
         }
         challengeInviteList.stream().forEach(challengeInvite -> {
@@ -276,7 +275,7 @@ public class ChallengeService {
     public List<ChallengeListInviteResDto> findChallengeInviteList(Long userId) {
         // userId가 속한 ChallengeInvite 리스트 가져오기
         List<ChallengeInvite> challengeInviteList = challengeInviteRepository.findAllByChallengeInviteUserId(userId);
-        if (challengeInviteList.isEmpty()){
+        if (challengeInviteList.isEmpty()) {
             throw new CustomException(ErrorCode.CHALLENGEINVITE_USER_NOT_FOUND);
         }
         // challengeInviteList에서 challengeId만 추출해서 그걸로 챌린지 정보 가져오기
@@ -287,12 +286,12 @@ public class ChallengeService {
             challengeIdList.add(challengeInvite.getChallenge().getChallengeId());
         });
 
-        User user =findUserByUserId(userId);
+        User user = findUserByUserId(userId);
 
         challengeIdList.stream().forEach(id -> {
             Challenge challenge = findChallengeByChallengeId(id);
-            ChallengeInvite challengeInvite =challengeInviteRepository.findByChallengeAndUser(challenge,user)
-                    .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_INVITE_NOT_FOUND));
+            ChallengeInvite challengeInvite = challengeInviteRepository.findByChallengeAndUser(challenge, user)
+                    .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_INVITE_NOT_FOUND));
             result.add(ChallengeListInviteResDto.builder()
                     .challengeLeaderName(challenge.getChallengeLeaderName())
                     .challengeTitle(challenge.getChallengeTitle())
@@ -393,7 +392,7 @@ public class ChallengeService {
         return challengeRepository.findByChallengeId(challengeId).orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
     }
 
-    public ChallengeDetailResDto getChallenge(Long challengeId){
+    public ChallengeDetailResDto getChallenge(Long challengeId) {
         //Challenge 조회
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
@@ -404,7 +403,30 @@ public class ChallengeService {
         return userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    @Transactional
+    public boolean createRewardInfo(ChallengeRewardReqDto challengeRewardReqDto) {
+        Challenge challenge = challengeRepository.findByChallengeId(challengeRewardReqDto.getChallengeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
+        Gifticon gifticon = gifticonRepository.findByGifticonId(challengeRewardReqDto.getGifticonId())
+                .orElseThrow(() -> new CustomException(ErrorCode.GIFTICON_NOT_FOUND));
 
+        // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
+        if (gifticon.getUser().getUserId() != challenge.getChallengeLeaderId()) {
+            throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND);
+        }
+        ChallengeReward challengeReward = ChallengeReward.builder()
+                .challenge(challenge)
+                .gifticon(gifticon)
+                .build();
+
+        try {
+            challengeRewardRepository.save(challengeReward);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+
+    }
 }
 

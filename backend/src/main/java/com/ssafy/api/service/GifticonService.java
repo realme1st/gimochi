@@ -18,28 +18,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
 
 @Service("GiftconService")
 @Transactional(readOnly = true)
@@ -162,10 +151,22 @@ public class GifticonService {
                 period = temp.replaceAll("([년]|[월]|[.]|[\\/])", "-");
             }
 
+            Pattern barcodePattern = Pattern.compile("[0-9]{16}|([0-9]{4})(([^ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]([0-9]){4}){3})|" +
+                    "[0-9]{14}|([0-9]{4})(([^ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]([0-9]){4}){2}([^ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]([0-9]){2}))|" +
+                    "[0-9]{12}|([0-9]{4})(([^ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]([0-9]){4}){2})");
+            matcher = barcodePattern.matcher(target);
+
+            String code = "";
+            if(matcher.find()) {
+                String temp = matcher.group();
+                code = temp.replaceAll("-", "");
+            }
+
             OcrResDto ocrResDto = OcrResDto.builder()
                     .user(user)
                     .gifticonStore(store)
                     .gifticonPeriod(period)
+                    .gifticonCode(code)
                     .build();
 
             return ocrResDto;
@@ -247,10 +248,11 @@ public class GifticonService {
             throw new CustomException(ErrorCode.INVALID_REQUEST); // 수정 필요
         }
 
+        String path = gifticon.getGifticonPath().replace("https://mygimochi.s3.ap-northeast-2.amazonaws.com/", "");
         try {
-            gifticonRepository.delete(gifticon); // db 삭제
-            boolean isDeleteObject = amazonS3Util.delete(gifticon.getGifticonPath()); // 아마존 S3 객체 삭제
+            boolean isDeleteObject = amazonS3Util.delete(path); // 아마존 S3 객체 삭제
             if(isDeleteObject) {
+                gifticonRepository.delete(gifticon); // db 삭제
                 return true;
             } else {
                 return false;
