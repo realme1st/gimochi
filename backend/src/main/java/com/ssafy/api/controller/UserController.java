@@ -87,7 +87,7 @@ public class UserController {
     }
 
     // 팔로우 삭제
-    @DeleteMapping("/follow/{follower-user-id}/{following-user-id}")
+    @DeleteMapping("/follow/{followerUserId}/{followingUserId}")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우 취소", notes = "팔로우 취소")
     public ResponseEntity<? extends BasicResponse> unfollow(@PathVariable Long followerUserId, @PathVariable Long followingUserId) {
         return ResponseEntity.status(HttpStatus.OK)
