@@ -103,7 +103,7 @@ public class KakaoService {
             newUser = userRepository.save(newUser);
             UserLoginDto userLoginDto = UserLoginDto.builder()
                     .userId(newUser.getUserId())
-                    .userProfile(user.get().getUserProfile())
+                    .userProfile(newUser.getUserProfile())
                     .userEmail(newUser.getUserEmail())
                     .userNickname(newUser.getUserNickname())
                     .userSocialToken(newUser.getUserSocialToken())
