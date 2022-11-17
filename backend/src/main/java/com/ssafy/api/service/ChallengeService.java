@@ -393,26 +393,24 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean createRewardInfo(RewardInfoReqDto rewardInfoReqDto) {
-        Challenge challenge = challengeRepository.findByChallengeId(rewardInfoReqDto.getChallengeId())
+    public boolean createRewardInfo(ChallengeRewardReqDto challengeRewardReqDto) {
+        Challenge challenge = challengeRepository.findByChallengeId(challengeRewardReqDto.getChallengeId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
 
-        Gifticon gifticon = gifticonRepository.findByGifticonId(rewardInfoReqDto.getGifticonId())
+        Gifticon gifticon = gifticonRepository.findByGifticonId(challengeRewardReqDto.getGifticonId())
                 .orElseThrow(() -> new CustomException(ErrorCode.GIFTICON_NOT_FOUND));
 
         // 넘어온 유저 정보와 기프티콘의 유저정보가 같은지 비교
         if (gifticon.getUser().getUserId() != challenge.getChallengeLeaderId()) {
-            System.out.println(gifticon.getUser().getUserId());
-            System.out.println(challenge.getChallengeLeaderId());
             throw new CustomException(ErrorCode.GIFTICON_USER_NOT_FOUND);
         }
-
-        RewardInfo rewardInfo = RewardInfo.builder()
+        ChallengeReward challengeReward = ChallengeReward.builder()
                 .challenge(challenge)
                 .gifticon(gifticon)
                 .build();
+
         try {
-            challengeRewardRepository.save(rewardInfo);
+            challengeRewardRepository.save(challengeReward);
             return true;
         } catch (IllegalArgumentException e) {
             return false;

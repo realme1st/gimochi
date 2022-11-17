@@ -2,16 +2,14 @@ package com.ssafy.api.controller;
 
 
 import com.ssafy.api.dto.UpdateChallengeAuthReqDto;
-import com.ssafy.api.dto.VoteReqDto;
 import com.ssafy.api.request.ChallengeAuthReqDto;
 import com.ssafy.api.request.ChallengeInviteReqDto;
 import com.ssafy.api.request.ChallengeReqDto;
-import com.ssafy.api.request.RewardInfoReqDto;
+import com.ssafy.api.request.ChallengeRewardReqDto;
 import com.ssafy.api.response.*;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.entity.Challenge;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -135,8 +133,8 @@ public class ChallengeController {
 
     @PostMapping("/rewardInfo")
     @ApiOperation(value = "기프티콘 보상 정보 등록", notes = "<strong>챌린지 ID와 기프티콘 ID를 입력하여</strong> 챌린지 보상 정보를 만든다.")
-    public ResponseEntity<? extends BasicResponse> createRewardInfo (@RequestBody RewardInfoReqDto rewardInfoReqDto) {
-        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createRewardInfo(rewardInfoReqDto)));
+    public ResponseEntity<? extends BasicResponse> createRewardInfo (@RequestBody ChallengeRewardReqDto challengeRewardReqDto) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createRewardInfo(challengeRewardReqDto)));
     }
 
 }

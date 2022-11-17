@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RewardInfoReqDto {
+public class ChallengeRewardReqDto {
     @ApiModelProperty(name = "챌린지 id", example = "1")
     Long challengeId;
 
