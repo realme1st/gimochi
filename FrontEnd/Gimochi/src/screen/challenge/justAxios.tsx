@@ -10,8 +10,7 @@ function Just({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   console.log(userId);
 
-  const challegneId = route.params.challengeId;
-  console.log(challegneId);
+  const challengeId = 16;
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
   };
