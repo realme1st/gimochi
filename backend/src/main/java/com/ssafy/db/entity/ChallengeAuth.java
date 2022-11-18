@@ -49,7 +49,7 @@ public class ChallengeAuth {
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="challenge_id")
+    @Column(name="challenges_id")
     private Long challengseId;
     @OneToMany(mappedBy = "challengeAuth")
     private List<Vote> voteList = new ArrayList<>();
