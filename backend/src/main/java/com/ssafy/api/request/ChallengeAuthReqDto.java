@@ -9,8 +9,11 @@ import java.util.Date;
 
     @Data
 public class ChallengeAuthReqDto {
-    @ApiModelProperty(name="챌린지 정보Id(FK)", example="1")
-    private Long challengeInfoId;
+    @ApiModelProperty(name="챌린지 Id", example="1")
+    private Long challengeId;
+    @ApiModelProperty(name="userId")
+    private Long userId;
+
     @ApiModelProperty(name="챌린지 인증 파일 경로", example="awerfd")
     private String challengePath;
     @ApiModelProperty(name="챌린지 인증 투표 수", example="0")

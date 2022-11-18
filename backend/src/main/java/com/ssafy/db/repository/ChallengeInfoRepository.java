@@ -37,4 +37,7 @@ public interface ChallengeInfoRepository extends JpaRepository<ChallengeInfo, Lo
 //challengeId와 userId에 해당하는 challengeInfo
     @Query("select ch from ChallengeInfo ch where ch.challenge.challengeId = :challengeId and ch.user.userId = :userId")
     Optional<ChallengeInfo> findByChallengeIdUserId(Long challengeId,Long userId);
+
+    //@Query("select ch from ChallengeInfo ch where ch.user.userId=:userId")
+    //int findByChallengeInfoUserId(Long userId);
 }

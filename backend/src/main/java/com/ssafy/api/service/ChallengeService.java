@@ -254,8 +254,16 @@ public class ChallengeService {
     @Transactional
     public ChallengeAuth createChallengeAuth(ChallengeAuthReqDto challengeAuthReqDto) {
 
-        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeAuthReqDto.getChallengeInfoId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGEINFO_NOT_FOUND));
+//        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeInfoId(challengeAuthReqDto.getChallengeInfoId())
+//                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGEINFO_NOT_FOUND));
+
+        Challenge challenge =challengeRepository.findByChallengeId(challengeAuthReqDto.getChallengeId())
+                .orElseThrow(()->new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        User user = userRepository.findByUserId(challengeAuthReqDto.getUserId())
+                .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        ChallengeInfo challengeInfo = challengeInfoRepository.findByChallengeIdUserId(challenge.getChallengeId(),user.getUserId()).get();
         // 사용자, 챌린지 유효성 체크
         ChallengeAuth challengeauth = ChallengeAuth.builder()
                 .challengeInfo(challengeInfo)
@@ -264,6 +272,7 @@ public class ChallengeService {
                 .challengeDate(challengeAuthReqDto.getChallengeDate())
                 .isConfirm(0)
                 .challengerCnt(challengeInfoRepository.findChallegerCntByChallengeId(challengeInfo.getChallenge().getChallengeId()))
+                //.challengerId(challengeInfoRepository.findByChallengeInfoUserId(challengeInfo.getUser().getUserId()))
                 .build();
 
         return challengeAuthRepository.save(challengeauth);
@@ -333,6 +342,11 @@ public class ChallengeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_AUTH_NOT_FOUND));
         Long authUserId = updateChallengeAuthReqDto.getAuthUserId();
         Long voteUserId = updateChallengeAuthReqDto.getVoteUserId();
+
+        if(authUserId==voteUserId){
+            throw new CustomException(ErrorCode.VOTE_USER_NOT_SELF);
+        }
+
         Long challengeAuthId = updateChallengeAuthReqDto.getChallengeAuthId();
         // User 유효성 검사
         findUserByUserId(updateChallengeAuthReqDto.getAuthUserId());
@@ -360,7 +374,7 @@ public class ChallengeService {
          * */
         try {
             // 1
-            voteRepository.findByAuthUserIdAndVoteUserId(authUserId, voteUserId);
+            voteRepository.findByAuthUserIdAndVoteUserIdAndChallengeAuthChallengeAuthId(authUserId, voteUserId,challengeAuthId);
             voteRepository.save(Vote.builder().authUserId(authUserId).voteUserId(voteUserId).challengeAuth(challengeAuth).build());
             // 2
             challengeAuth.voteCntUp();

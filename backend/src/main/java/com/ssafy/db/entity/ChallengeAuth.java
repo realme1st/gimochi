@@ -46,6 +46,9 @@ public class ChallengeAuth {
     @Column(name="challenger_cnt")
     private int challengerCnt;
 
+    //@Column(name="challenger_id")
+   // private int challengerId;
+
     @OneToMany(mappedBy = "challengeAuth")
     private List<Vote> voteList = new ArrayList<>();
 
@@ -75,6 +78,7 @@ public class ChallengeAuth {
         this.isConfirm = isConfirm;
         this.challengeDate = challengeDate;
         this.challengerCnt = challengerCnt;
+        //this.challengerId=challengerId;
     }
 
     // 투표수 증가
