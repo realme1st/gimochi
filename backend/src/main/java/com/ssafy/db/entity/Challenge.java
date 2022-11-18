@@ -60,7 +60,7 @@ public class Challenge {
         }
 
     }
-    @JsonIgnore
+
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 
