@@ -119,6 +119,12 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeAuth(challengeAuthReqDto)));
     }
 
+    @GetMapping("/challengeAuth/{challengeId}")
+    @ApiOperation(value = "챌린지 인증 조회", notes = "<strong>챌린지 id 정보를 입력하여</strong> 해당 챌린지 id의 인증들을 조회한다.")
+    public ResponseEntity<? extends BasicResponse> getChallengeAuth(@PathVariable Long challengeId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getChallengeAuth(challengeId)));
+    }
+
 
     @PutMapping("/vote")
     @ApiOperation(value = "챌린지 인증 업데이트", notes = "<strong>챌린지 인증 투표 정보를 입력하여</strong> 해당 챌린지 인증 투표에 대한 사용자의 챌린지 관련 정보를 업데이트한다.")
@@ -146,5 +152,7 @@ public class ChallengeController {
                                                                      @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeAuthImg(challengeAuthId, file)));
     }
+
+
 
 }

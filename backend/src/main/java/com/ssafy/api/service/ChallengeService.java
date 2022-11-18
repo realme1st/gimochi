@@ -478,5 +478,19 @@ public class ChallengeService {
 
         return challengeAuthRepository.save(challengeAuth);
     }
+
+
+    public List<ChallengeAuth> getChallengeAuth(Long challengeId) {
+        List<ChallengeAuth> listRes = new ArrayList<>();
+        List<ChallengeAuth> challengeAuths =challengeAuthRepository.findAllByChallengesId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+
+        challengeAuths.stream().forEach(challengeAuth -> {
+            listRes.add(challengeAuth);
+        });
+
+        return listRes;
+    }
 }
 

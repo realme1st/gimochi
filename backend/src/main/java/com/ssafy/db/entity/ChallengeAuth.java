@@ -50,7 +50,7 @@ public class ChallengeAuth {
     private Long userId;
 
     @Column(name="challenges_id")
-    private Long challengseId;
+    private Long challengesId;
     @OneToMany(mappedBy = "challengeAuth")
     private List<Vote> voteList = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class ChallengeAuth {
         this.challengeDate = challengeDate;
         this.challengerCnt = challengerCnt;
         this.userId=userId;
-        this.challengseId=challengesId;
+        this.challengesId=challengesId;
     }
 
     // 투표수 증가
