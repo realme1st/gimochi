@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,4 +22,8 @@ public interface ChallengeAuthRepository extends JpaRepository<ChallengeAuth, Lo
     //challengInfoId 에 해당하는 전체 count
     @Query(value = "select count(ch.challenge_auth_id) as totalCnt from challenge_auth ch where ch.challenge_info_id = ?1",nativeQuery = true)
     Optional<AuthTotalCnt> findTotalCntByChallengeInfo(Long challengeInfoId);
+
+    Optional<List<ChallengeAuth>> findAllByChallengesId(Long challengeId);
+
+
 }

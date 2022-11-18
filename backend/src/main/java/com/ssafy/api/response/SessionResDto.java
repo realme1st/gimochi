@@ -16,20 +16,24 @@ public class SessionResDto {
     private Long userId;
 
     private String name;
+    private String userName;
     private Long sessionId;
     private Long sessionTypeId;
     private LocalDate expireTime;
     private LocalDate anniversary;
 
     @Builder
-    public SessionResDto(Long userId, String name, Long sessionTypeId, LocalDate anniversary, Long sessionId) {
+    public SessionResDto(Long userId, String name, Long sessionTypeId, LocalDate anniversary, Long sessionId, String userName) {
         this.userId = userId;
         this.name = name;
         this.expireTime = anniversary.plusDays(7);
         this.sessionTypeId = sessionTypeId;
         this.anniversary = anniversary;
         this.sessionId = sessionId;
+        this.userName = userName;
     }
+
+
 
     public static Session createSessionEntity(SessionReqDto sessionReqDto, User user){
         System.out.println("사용자정의 : "+sessionReqDto.getName());
@@ -59,6 +63,7 @@ public class SessionResDto {
                 .sessionId(session.getSessionId())
                 .sessionTypeId(session.getSessionTypeId())
                 .anniversary(session.getAnniversary())
+                .userName(session.getUser().getUserNickname())
                 .build();
     }
 

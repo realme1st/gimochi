@@ -218,6 +218,7 @@ public class SessionService {
                             .sessionId(session.getSessionId())
                             .name(session.getName())
                             .userId(session.getUser().getUserId())
+                            .userName(session.getUser().getUserNickname())
                             .build();
                     sessionResDtoList.add(dto);
                 }
