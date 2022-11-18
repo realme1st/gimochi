@@ -39,7 +39,7 @@ public class Gifticon{
     @JsonIgnore
     @OneToOne(mappedBy = "gifticon")
     private SessionMessage sessionMessage;
-    @JsonIgnore
+
     @OneToMany(mappedBy = "gifticon")
     private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 

@@ -19,10 +19,12 @@ public class ChallengeReward {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long challengeRewardId;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "challengeId")
     private Challenge challenge;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "gifticonId")
     private Gifticon gifticon;
