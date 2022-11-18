@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -135,6 +136,15 @@ public class ChallengeController {
     @ApiOperation(value = "기프티콘 보상 정보 등록", notes = "<strong>챌린지 ID와 기프티콘 ID를 입력하여</strong> 챌린지 보상 정보를 만든다.")
     public ResponseEntity<? extends BasicResponse> createRewardInfo (@RequestBody ChallengeRewardReqDto challengeRewardReqDto) {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createRewardInfo(challengeRewardReqDto)));
+    }
+
+    @PostMapping("/img/{challengeAuthId}")
+    @ApiOperation(value = "챌린지 인증 이미지 저장 (정보 먼저 보내고, 이미지 보내주세요)", notes = "<strong>챌린지 인증 이미지 정보</strong> 를 받아" +
+            " <strong>챌린지 인증 이미지 정보</strong> 를 db와 S3에 저장한다.")
+
+    public ResponseEntity<? extends BasicResponse> createChallengeAuthImg(@PathVariable Long challengeAuthId,
+                                                                     @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeAuthImg(challengeAuthId, file)));
     }
 
 }

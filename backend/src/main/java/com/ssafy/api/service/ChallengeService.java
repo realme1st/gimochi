@@ -5,14 +5,18 @@ import com.ssafy.api.request.*;
 import com.ssafy.api.response.*;
 import com.ssafy.common.exception.CustomException;
 import com.ssafy.common.exception.ErrorCode;
+import com.ssafy.common.util.AmazonS3Util;
 import com.ssafy.db.entity.*;
 //import com.ssafy.db.repository.ChallengeInfoRepository;
 import com.ssafy.db.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
 @Service("ChallengeService")
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final ChallengeInfoRepository challengeInfoRepository;
@@ -30,6 +35,7 @@ public class ChallengeService {
     private final GifticonRepository gifticonRepository;
     private final ChallengeRewardRepository challengeRewardRepository;
 
+    private final AmazonS3Util amazonS3Util;
 
     @Transactional
     public ChallengeResDto createChllenge(ChallengeReqDto challengeReqDto) {
@@ -272,7 +278,8 @@ public class ChallengeService {
                 .challengeDate(challengeAuthReqDto.getChallengeDate())
                 .isConfirm(0)
                 .challengerCnt(challengeInfoRepository.findChallegerCntByChallengeId(challengeInfo.getChallenge().getChallengeId()))
-                //.challengerId(challengeInfoRepository.findByChallengeInfoUserId(challengeInfo.getUser().getUserId()))
+                .userId(challengeAuthReqDto.getUserId())
+                .challengeId(challengeAuthReqDto.getChallengeId())
                 .build();
 
         return challengeAuthRepository.save(challengeauth);
@@ -441,6 +448,35 @@ public class ChallengeService {
             return false;
         }
 
+    }
+
+    @Transactional
+    public ChallengeAuth createChallengeAuthImg(Long challengeAuthId, MultipartFile multipartFile) {
+        // 기프티콘 존재하는지 확인
+        ChallengeAuth challengeAuth = challengeAuthRepository.findById(challengeAuthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_GIFTICON_ID));
+
+        // 유저 존재하는지 확인
+        User user =userRepository.findByUserId(challengeAuth.getUserId()).get();
+
+
+
+        String url = null;
+
+        try {
+            url = amazonS3Util.upload(multipartFile, user.getUserSocialToken());
+        } catch (IOException e) {
+
+            log.error(e.getMessage());
+            return null;
+        }
+
+        String prefix = "https://mygimochi.s3.ap-northeast-2.amazonaws.com/";
+        String finalUrl = prefix + url;
+
+        challengeAuth.changeChallengeAuth(finalUrl);
+
+        return challengeAuthRepository.save(challengeAuth);
     }
 }
 

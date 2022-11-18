@@ -46,9 +46,11 @@ public class ChallengeAuth {
     @Column(name="challenger_cnt")
     private int challengerCnt;
 
-    //@Column(name="challenger_id")
-   // private int challengerId;
+    @Column(name="user_id")
+    private Long userId;
 
+    @Column(name="challenge_id")
+    private Long challengeId;
     @OneToMany(mappedBy = "challengeAuth")
     private List<Vote> voteList = new ArrayList<>();
 
@@ -71,14 +73,15 @@ public class ChallengeAuth {
     }
 
     @Builder
-    public ChallengeAuth(ChallengeInfo challengeInfo,String challengePath, int voteCnt, LocalDate challengeDate,int isConfirm,int challengerCnt){
+    public ChallengeAuth(ChallengeInfo challengeInfo,String challengePath, int voteCnt, LocalDate challengeDate,int isConfirm,int challengerCnt,Long userId,Long challengeId){
         this.challengeInfo = challengeInfo;
         this.challengePath = challengePath;
         this.voteCnt = voteCnt;
         this.isConfirm = isConfirm;
         this.challengeDate = challengeDate;
         this.challengerCnt = challengerCnt;
-        //this.challengerId=challengerId;
+        this.userId=userId;
+        this.challengeId=challengeId;
     }
 
     // 투표수 증가
@@ -88,5 +91,10 @@ public class ChallengeAuth {
 
     public void isConfirm(){
         this.isConfirm = 1;
+    }
+
+
+    public void changeChallengeAuth(String finalUrl) {
+        this.challengePath = finalUrl;
     }
 }
