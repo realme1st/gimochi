@@ -50,7 +50,7 @@ public class ChallengeAuth {
     private Long userId;
 
     @Column(name="challenge_id")
-    private Long challengeId;
+    private Long challengseId;
     @OneToMany(mappedBy = "challengeAuth")
     private List<Vote> voteList = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class ChallengeAuth {
     }
 
     @Builder
-    public ChallengeAuth(ChallengeInfo challengeInfo,String challengePath, int voteCnt, LocalDate challengeDate,int isConfirm,int challengerCnt,Long userId,Long challengeId){
+    public ChallengeAuth(ChallengeInfo challengeInfo,String challengePath, int voteCnt, LocalDate challengeDate,int isConfirm,int challengerCnt,Long userId,Long challengesId){
         this.challengeInfo = challengeInfo;
         this.challengePath = challengePath;
         this.voteCnt = voteCnt;
@@ -81,7 +81,7 @@ public class ChallengeAuth {
         this.challengeDate = challengeDate;
         this.challengerCnt = challengerCnt;
         this.userId=userId;
-        this.challengeId=challengeId;
+        this.challengseId=challengesId;
     }
 
     // 투표수 증가

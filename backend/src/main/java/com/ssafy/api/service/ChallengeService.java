@@ -279,7 +279,7 @@ public class ChallengeService {
                 .isConfirm(0)
                 .challengerCnt(challengeInfoRepository.findChallegerCntByChallengeId(challengeInfo.getChallenge().getChallengeId()))
                 .userId(challengeAuthReqDto.getUserId())
-                .challengeId(challengeAuthReqDto.getChallengeId())
+                .challengesId(challengeAuthReqDto.getChallengeId())
                 .build();
 
         return challengeAuthRepository.save(challengeauth);
