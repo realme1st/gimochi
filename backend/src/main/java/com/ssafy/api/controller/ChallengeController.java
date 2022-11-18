@@ -10,6 +10,7 @@ import com.ssafy.api.response.*;
 import com.ssafy.api.service.ChallengeService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
+import com.ssafy.db.entity.ChallengeReward;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -153,6 +154,11 @@ public class ChallengeController {
         return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.createChallengeAuthImg(challengeAuthId, file)));
     }
 
+    @GetMapping("/rewardInfo/{challengeId}}")
+    @ApiOperation(value = "챌린지 보상 기프티콘 조회", notes = "<strong>챌린지를 입력하여</strong> 해당 챌린지에 걸린 기프티콘을 조회한다.")
+    public ResponseEntity<CommonResponseEntity<ChallengeRewardListResDto>> getRewardInfo(@PathVariable Long challengeId) {
+        return ResponseEntity.ok().body(new CommonResponseEntity<>(challengeService.getRewardInfo(challengeId)));
+    }
 
 
 }
