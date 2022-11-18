@@ -66,7 +66,9 @@ public enum ErrorCode {
     GIFTICON_NOT_FOUND( HttpStatus.NOT_FOUND, "해당 기프티콘 ID에 해당하는 기프티콘을 찾을 수 없습니다." ),
     GIFTICON_USER_NOT_FOUND( HttpStatus.NOT_FOUND, "사용자에게 기프티콘 ID에 해당하는 기프티콘이 없습니다." ), NOT_FOUND_NAME(HttpStatus.NOT_FOUND,"세션이름 없음" ),
     INVALID_USER_ID_SESSION(HttpStatus.NOT_FOUND, "해당 유저id에 해당하는 세션이 없습니다. 잘못된 요청"),
-    VOTE_USER_NOT_SELF(HttpStatus.BAD_REQUEST,"자기 자신에게 투표는 불가능 합니다." );
+    VOTE_USER_NOT_SELF(HttpStatus.BAD_REQUEST,"자기 자신에게 투표는 불가능 합니다." ),
+
+    CHALLENGE_REWARD_NOT_FOUND(HttpStatus.NOT_FOUND, "챌린지 보상을 찾을 수 없습니다."),;
 
     private final HttpStatus httpStatus;
     private final String message;

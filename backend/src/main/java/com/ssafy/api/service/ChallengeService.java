@@ -492,5 +492,31 @@ public class ChallengeService {
 
         return listRes;
     }
+
+    public ChallengeRewardListResDto getRewardInfo(Long challengeId) {
+
+        Challenge challenge = challengeRepository.findByChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
+
+        List<ChallengeReward> list = challengeRewardRepository.findByChallengeChallengeId(challengeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_REWARD_NOT_FOUND));
+
+        List<Gifticon> gifticonList = new ArrayList<>();
+        if(list.isEmpty()) {
+            throw new CustomException(ErrorCode.CHALLENGE_REWARD_NOT_FOUND);
+        } else {
+            for(ChallengeReward cr : list) {
+//                Gifticon gifticon = gifticonRepository.findByGifticonId(cr.getGifticon())
+//                        .orElseThrow(() -> new CustomException(ErrorCode.GIFTICON_NOT_FOUND));
+                gifticonList.add(cr.getGifticon());
+            }
+        }
+
+        ChallengeRewardListResDto dto = ChallengeRewardListResDto.builder()
+                .gifticonList(gifticonList)
+                .build();
+
+        return dto;
+    }
 }
 

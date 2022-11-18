@@ -1,5 +1,6 @@
 package com.ssafy.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,7 +60,7 @@ public class Challenge {
         }
 
     }
-
+    @JsonIgnore
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 
