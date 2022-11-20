@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/usage/used/down/{userId}")
-    @ApiOperation(value = "userId의 사용 기프티콘 카운트 증가", notes = "사용자 정보 수정")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 감소", notes = "사용자 정보 수정")
     public ResponseEntity<? extends BasicResponse> countDownUsed(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseEntity<>(userService.countDownUsed(userId)));
