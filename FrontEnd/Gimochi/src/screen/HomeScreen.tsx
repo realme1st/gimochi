@@ -107,8 +107,13 @@ function HomeScreen() {
   return (
     <EntireContainer>
       <TitleContainer>
-        <TitleText1>모인 기프티콘 {moinCount}개</TitleText1>
-        <TitleText2>치운 기프티콘 {chiunCount}개</TitleText2>
+        <TitleText1>
+          모인 기프티콘
+          <TitleText3> {moinCount} </TitleText3>개
+        </TitleText1>
+        <TitleText2>
+          치운 기프티콘 <TitleText3> {chiunCount} </TitleText3>개
+        </TitleText2>
       </TitleContainer>
       <Calendars type='multi-dot' data={data} />
     </EntireContainer>
@@ -122,21 +127,27 @@ const EntireContainer = styled.View`
 const TitleContainer = styled.View`
   flex-direction: row;
   width: 80%;
-  margin: 5% 10%;
+  margin: 5% 10% 2%;
 `;
 
 const TitleText1 = styled.Text`
   color: #000000;
-  font-size: 18px;
+  font-size: 15px;
   font-family: 'Regular';
   margin-right: auto;
 `;
 
 const TitleText2 = styled.Text`
   color: #000000;
-  font-size: 18px;
+  font-size: 15px;
   font-family: 'Regular';
   margin-left: auto;
+`;
+
+const TitleText3 = styled.Text`
+  color: #ffa401;
+  font-size: 30px;
+  font-family: 'Regular';
 `;
 
 export default HomeScreen;

@@ -22,6 +22,7 @@ function RPBirthdayScreen({ navigation, route }) {
   const userName = route.params.userName;
   const sessionId: number = route.params.RPId;
   const sessionTypeId: number = route.params.sessionTypeId;
+  const fromSchedule: boolean = route.params.fromSchedule;
   const reload = useSelector((state: RootState) => state.reload.reload);
   const [messageList, setMessageList] = useState([]);
   const [modal, setModal] = useState<boolean>(false);
@@ -74,7 +75,11 @@ function RPBirthdayScreen({ navigation, route }) {
   };
 
   const onPress = () => {
-    navigation.navigate('RPMessageWriteScreen', { RPId: sessionId, type: sessionTypeId, FId: friendId });
+    if (fromSchedule) {
+      navigation.navigate('RPMessageWriteScreen1', { RPId: sessionId, type: sessionTypeId, FId: friendId });
+    } else {
+      navigation.navigate('RPMessageWriteScreen', { RPId: sessionId, type: sessionTypeId, FId: friendId });
+    }
   };
 
   const ModalContainer = styled.View`

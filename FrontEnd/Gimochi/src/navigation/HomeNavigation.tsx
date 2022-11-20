@@ -7,7 +7,7 @@ import AttendanceScreen from '../screen/AttendanceScreen';
 import ChallengeScreen from './ChallengeNavigation';
 import PlayScreen from '../screen/PlayScreen';
 import RPNavigation from './RPNavigation';
-import ScheduleScreen from '../screen/ScheduleScreen';
+import ScheduleNavigation from './ScheduleNavigation';
 import HomeModal from '../components/HomeModal';
 import NotificationScreen from '../screen/NotificationScreen';
 import { Icon } from '@rneui/themed';
@@ -103,23 +103,8 @@ function HomeNavigation({ route, navigation }: HomeModalProps) {
       ></Home.Screen>
       <Home.Screen
         name='ScheduleScreen'
-        component={ScheduleScreen}
-        options={{
-          title: '일정 관리',
-          headerRight: () => (
-            <>
-              <Icon
-                name='bell'
-                type='simple-line-icon'
-                onPress={() => navigation.navigate('NotificationScreen1')}
-                size={30}
-              />
-              <NotiCountContainer>
-                <NotiCountText>{notifications}</NotiCountText>
-              </NotiCountContainer>
-            </>
-          ),
-        }}
+        component={ScheduleNavigation}
+        options={{ headerShown: false }}
       ></Home.Screen>
       <Home.Screen
         name='HomeModal'

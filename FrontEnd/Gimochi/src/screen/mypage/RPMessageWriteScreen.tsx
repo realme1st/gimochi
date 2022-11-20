@@ -87,7 +87,6 @@ function RPMessageWriteScreen({ route, navigation }) {
       .catch(function (error) {
         console.log(error);
       });
-    chiunGifticonCount(userId);
     if (gifticonId) {
       await axios
         .put(`${Config.API_URL}/gifticon/present/${gifticonId}/${userId}/${friendId}`)
@@ -97,6 +96,7 @@ function RPMessageWriteScreen({ route, navigation }) {
         .catch(function (error) {
           console.log(error);
         });
+      chiunGifticonCount(userId);
     }
     dispatch(
       reloadSlice.actions.setReload({
@@ -173,7 +173,7 @@ function RPMessageWriteScreen({ route, navigation }) {
               <Image
                 source={require('../../assets/images/christmasItem1.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 1 ? { height: 65 } : { height: 65, opacity: 0.3 }}
               />
             ) : (
               <Image
@@ -188,13 +188,13 @@ function RPMessageWriteScreen({ route, navigation }) {
               <Image
                 source={require('../../assets/images/christmasItem2.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 2 ? { height: 65 } : { height: 65, opacity: 0.3 }}
               />
             ) : (
               <Image
                 source={require('../../assets/images/attendMochi.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 2 ? { height: 70 } : { height: 70, opacity: 0.3 }}
               />
             )}
           </TouchableOpacity>
@@ -203,13 +203,13 @@ function RPMessageWriteScreen({ route, navigation }) {
               <Image
                 source={require('../../assets/images/christmasItem3.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 3 ? { height: 65 } : { height: 65, opacity: 0.3 }}
               />
             ) : (
               <Image
                 source={require('../../assets/images/challengeMochi.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 3 ? { height: 70 } : { height: 70, opacity: 0.3 }}
               />
             )}
           </TouchableOpacity>
@@ -218,13 +218,13 @@ function RPMessageWriteScreen({ route, navigation }) {
               <Image
                 source={require('../../assets/images/christmasItem4.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 4 ? { height: 65 } : { height: 65, opacity: 0.3 }}
               />
             ) : (
               <Image
                 source={require('../../assets/images/playMochi.png')}
                 resizeMode='contain'
-                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+                style={type === 4 ? { height: 70 } : { height: 70, opacity: 0.3 }}
               />
             )}
           </TouchableOpacity>
@@ -264,7 +264,9 @@ const FormContainer = styled.View`
   border-radius: 10px;
 `;
 
-const Form = styled.TextInput``;
+const Form = styled.TextInput`
+  color: #000000;
+`;
 
 const ImageContainer = styled.View`
   width: 80%;

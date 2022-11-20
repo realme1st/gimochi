@@ -24,8 +24,8 @@ export const singleNotification = async (receiverId: number, senderId: number, t
 export const multiNotification = async (userId: any, type: number) => {
   try {
     const response = await axiosBasic.post('/notification/message/multi', {
-      userId: userId,
       type: type,
+      userId: userId,
     });
     console.log(response);
     return response;
@@ -37,6 +37,15 @@ export const multiNotification = async (userId: any, type: number) => {
 export const chiunGifticonCount = async (userId: any) => {
   try {
     const response = await axiosBasic.get(`/user/usage/used/${userId}`);
+    return response;
+  } catch (error) {
+    console.log;
+  }
+};
+
+export const chiunGifticonMinus = async (userId: any) => {
+  try {
+    const response = await axiosBasic.get(`/user/usage/used/down/${userId}`);
     return response;
   } catch (error) {
     console.log;

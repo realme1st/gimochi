@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -20,6 +23,29 @@ function NotificationScreen() {
   const [friends, setFriends] = useState([]);
   const [invitations, setInvitations] = useState([]);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    let notiCount = 0;
+    axios
+      .all([
+        axios.get(`${Config.API_URL}/user/following-request/${userId}`),
+        axios.get(`${Config.API_URL}/challenge/challengeInvite/challengeList/${userId}`),
+      ])
+      .then(
+        axios.spread((response1, response2) => {
+          const followList = response1.data.data;
+          notiCount = notiCount + followList.length;
+          const inviteList = response2.data.data;
+          notiCount = notiCount + inviteList.length;
+        }),
+      )
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(() => {
+        dispatch(notificationSlice.actions.setNotification({ notification: Number(notiCount) }));
+      });
+  }, [reload]);
 
   useEffect(() => {
     axios

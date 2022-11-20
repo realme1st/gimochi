@@ -33,6 +33,13 @@ function MypageScreen({ navigation }) {
   const [friendList, setFriendList] = useState([]);
   const [menuDisplay, setMenuDisplay] = useState(false);
 
+  const httpsUrl = (url: string) => {
+    const exp = 'http://';
+    const startIndex = url.indexOf(exp);
+    const bareUrl = url.substring(startIndex + exp.length);
+    return 'https://' + bareUrl;
+  };
+
   useEffect(() => {
     axios
       .get(`${Config.API_URL}/user/follower/${userId}`)
@@ -132,7 +139,7 @@ function MypageScreen({ navigation }) {
           <FriendItemContainer key={index}>
             {friend.userProfile ? (
               <FastImage
-                source={{ uri: friend.userProfile }}
+                source={{ uri: httpsUrl(friend.userProfile) }}
                 style={{ width: 40, height: 40, borderRadius: 6, marginLeft: 8 }}
                 resizeMode='contain'
               />

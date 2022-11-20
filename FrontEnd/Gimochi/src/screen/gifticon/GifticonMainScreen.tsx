@@ -22,7 +22,7 @@ import { Tab, Icon, TabView, ThemeProvider, createTheme } from '@rneui/themed';
 import Modal from 'react-native-modal';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
-import { chiunGifticonCount } from '../../api/API';
+import { chiunGifticonCount, chiunGifticonMinus } from '../../api/API';
 
 function GifticonMainScreen({ navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -36,6 +36,7 @@ function GifticonMainScreen({ navigation }) {
   const [store, setStore] = useState('');
   const [id, setId] = useState('');
   const [path, setPath] = useState('');
+  const [code, setCode] = useState(0);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -70,6 +71,7 @@ function GifticonMainScreen({ navigation }) {
     setStore(newGifticons[index].gifticonStore);
     setId(newGifticons[index].gifticonId);
     setPath(newGifticons[index].gifticonPath);
+    setCode(newGifticons[index].gifticonCode);
     setModal(true);
     console.log(newGifticons[index].gifticonPath);
   };
@@ -83,12 +85,16 @@ function GifticonMainScreen({ navigation }) {
     console.log(usedGifticons[index].gifticonPath);
   };
 
-  const useGifticon = async (id: string) => {
+  const useGifticon = async (id: string, index: number) => {
     await axios
       .put(`${Config.API_URL}/gifticon/used/${userId}/${id}`)
       .then(function (response) {
         console.log(response);
-        chiunGifticonCount(userId);
+        if (index === 0) {
+          chiunGifticonCount(userId);
+        } else {
+          chiunGifticonMinus(userId);
+        }
         dispatch(
           reloadSlice.actions.setReload({
             reload: String(new Date()),
@@ -99,6 +105,11 @@ function GifticonMainScreen({ navigation }) {
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const goBarcode = () => {
+    setModal(false);
+    navigation.navigate('GifticonBarcodeScreen', { code: code, gifticonId: id });
   };
 
   const deleteGifticon = async (id) => {
@@ -119,7 +130,7 @@ function GifticonMainScreen({ navigation }) {
       });
   };
 
-  const deleteButton = (id) => {
+  const deleteButton = (id: string) => {
     Alert.alert('기프티콘을 삭제하시겠습니까?', '', [
       { text: '아니오', style: 'cancel' },
       { text: '네', onPress: () => deleteGifticon(id) },
@@ -234,16 +245,30 @@ function GifticonMainScreen({ navigation }) {
         onBackdropPress={() => setModal(false)}
       >
         <ModalContainer>
-          <FastImage
-            source={{ uri: path }}
-            style={{ width: 150, height: 200, marginBottom: '3%', marginTop: '5%' }}
-            resizeMode='contain'
-          />
+          {index === 0 ? (
+            <TouchableOpacity onPress={() => goBarcode()}>
+              <FastImage
+                source={{ uri: path }}
+                style={{ width: 150, height: 200, marginBottom: '3%', marginTop: '5%' }}
+                resizeMode='contain'
+              />
+            </TouchableOpacity>
+          ) : (
+            <FastImage
+              source={{ uri: path }}
+              style={{ width: 150, height: 200, marginBottom: '3%', marginTop: '5%' }}
+              resizeMode='contain'
+            />
+          )}
           <ModalText>{period}</ModalText>
           <ModalText>{store}</ModalText>
           <ModalButtonContainer>
-            <ModalButton onPress={() => useGifticon(id)}>
-              <ModalButtonText>사용완료</ModalButtonText>
+            <ModalButton onPress={() => useGifticon(id, index)}>
+              {index === 0 ? (
+                <ModalButtonText>사용완료</ModalButtonText>
+              ) : (
+                <ModalButtonText>사용취소</ModalButtonText>
+              )}
             </ModalButton>
             <ModalButton onPress={() => deleteButton(id)}>
               <ModalButtonText>삭제하기</ModalButtonText>

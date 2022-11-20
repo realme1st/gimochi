@@ -6,9 +6,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import Calendars from '../components/Calendar';
 import { useAppDispatch } from '../store';
 import screenSlice from '../slices/screen';
 import axios from 'axios';
@@ -18,7 +17,7 @@ import { RootState } from '../store/reducer';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 
-function ScheduleScreen() {
+function ScheduleScreen({ navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const reload = useSelector((state: RootState) => state.reload.reload);
   const [loading, setLoading] = useState(true);
@@ -72,6 +71,50 @@ function ScheduleScreen() {
         setLoading(false);
       });
   }, [reload]);
+
+  const goDetailSession = (
+    id: number,
+    sessionTypeId: number,
+    friendId: number,
+    friendName: string,
+    name: string,
+  ) => {
+    setModal(false);
+    if (sessionTypeId === 1) {
+      navigation.navigate('RPBirthdayScreen2', {
+        RPId: id,
+        sessionTypeId: sessionTypeId,
+        userId: friendId,
+        userName: friendName,
+        fromSchedule: true,
+      });
+    } else if (sessionTypeId === 2) {
+      navigation.navigate('RPGraduateScreen2', {
+        RPId: id,
+        sessionTypeId: sessionTypeId,
+        userId: friendId,
+        userName: friendName,
+        fromSchedule: true,
+      });
+    } else if (sessionTypeId === 3) {
+      navigation.navigate('RPChristmasScreen2', {
+        RPId: id,
+        sessionTypeId: sessionTypeId,
+        userId: friendId,
+        userName: friendName,
+        fromSchedule: true,
+      });
+    } else {
+      navigation.navigate('RPEtcScreen2', {
+        RPId: id,
+        sessionTypeId: sessionTypeId,
+        name: name,
+        userId: friendId,
+        userName: friendName,
+        fromSchedule: true,
+      });
+    }
+  };
 
   const selected = { color: '#00bbf2', selectedDotColor: 'blue' };
 
@@ -141,15 +184,71 @@ function ScheduleScreen() {
             <ModalTitle1Text>친구들의 일정 목록</ModalTitle1Text>
             {scheduleList[date].sessions.map((session, index) =>
               session.sessionTypeId === 1 ? (
-                <ModalContentsText key={index}>{session.userName} 님의 생일 추카포카</ModalContentsText>
+                <ModalContentsContainer key={index}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      goDetailSession(
+                        session.sessionId,
+                        session.sessionTypeId,
+                        session.userId,
+                        session.userName,
+                        session.name,
+                      )
+                    }
+                  >
+                    <ModalContentsText>{session.userName} 님의 생일 추카포카</ModalContentsText>
+                  </TouchableOpacity>
+                </ModalContentsContainer>
               ) : session.sessionTypeId === 2 ? (
-                <ModalContentsText key={index}>{session.userName} 님의 졸업 추카포카</ModalContentsText>
+                <ModalContentsContainer key={index}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      goDetailSession(
+                        session.sessionId,
+                        session.sessionTypeId,
+                        session.userId,
+                        session.userName,
+                        session.name,
+                      )
+                    }
+                  >
+                    <ModalContentsText>{session.userName} 님의 졸업 추카포카</ModalContentsText>
+                  </TouchableOpacity>
+                </ModalContentsContainer>
               ) : session.sessionTypeId === 3 ? (
-                <ModalContentsText key={index}>{session.userName} 님의 크리스마스 추카포카</ModalContentsText>
+                <ModalContentsContainer key={index}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      goDetailSession(
+                        session.sessionId,
+                        session.sessionTypeId,
+                        session.userId,
+                        session.userName,
+                        session.name,
+                      )
+                    }
+                  >
+                    <ModalContentsText>{session.userName} 님의 크리스마스 추카포카</ModalContentsText>
+                  </TouchableOpacity>
+                </ModalContentsContainer>
               ) : (
-                <ModalContentsText key={index}>
-                  {session.userName} 님의 {session.name} 추카포카
-                </ModalContentsText>
+                <ModalContentsContainer key={index}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      goDetailSession(
+                        session.sessionId,
+                        session.sessionTypeId,
+                        session.userId,
+                        session.userName,
+                        session.name,
+                      )
+                    }
+                  >
+                    <ModalContentsText>
+                      {session.userName} 님의 {session.name} 추카포카
+                    </ModalContentsText>
+                  </TouchableOpacity>
+                </ModalContentsContainer>
               ),
             )}
           </ModalContainer>
@@ -201,10 +300,18 @@ const ModalTitle1Text = styled.Text`
   color: #000000;
 `;
 
+const ModalContentsContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+`;
+
 const ModalContentsText = styled.Text`
   font-family: 'Regular';
   font-size: 15px;
   color: #000000;
+  margin: 2%;
 `;
 
 export default ScheduleScreen;
