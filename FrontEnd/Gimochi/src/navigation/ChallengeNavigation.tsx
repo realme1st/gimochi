@@ -40,32 +40,32 @@ function ChallengeNavigation() {
       <Challenge.Screen
         name='ChallengeDetailScreen0'
         component={ChallengeDetailScreen0}
-        options={{ title: '대기중 챌린지 상세보기' }}
+        options={{ title: '대기중 챌린지' }}
       ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeDetailScreen1'
         component={ChallengeDetailScreen1}
-        options={{ title: '진행중 챌린지 상세보기' }}
+        options={{ title: '진행중 챌린지' }}
       ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeDetailScreen2'
         component={ChallengeDetailScreen2}
-        options={{ title: '종료된 챌린지 상세보기' }}
+        options={{ title: '종료된 챌린지' }}
       ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeCameraScreen'
         component={ChallengeCameraScreen}
-        options={{ title: '챌린지 카메라 인증' }}
+        options={{ title: '챌린지 인증샷' }}
       ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeCreateScreen1'
         component={ChallengeCreateScreen1}
-        options={{ title: '챌린지 생성하기1' }}
+        options={{ title: '챌린지 생성안내' }}
       ></Challenge.Screen>
       <Challenge.Screen
         name='ChallengeCreateScreen2'
         component={ChallengeCreateScreen2}
-        options={{ title: '챌린지 생성하기2' }}
+        options={{ title: '챌린지 생성하기' }}
       ></Challenge.Screen>
     </Challenge.Navigator>
   );

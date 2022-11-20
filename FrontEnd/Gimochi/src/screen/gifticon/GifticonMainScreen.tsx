@@ -141,26 +141,26 @@ function GifticonMainScreen({ navigation }) {
           height: 0,
         }}
         style={{
-          borderRadius: 21,
+          borderRadius: 31,
           backgroundColor: '#F6F6F6',
           marginTop: 21,
           marginHorizontal: 10,
-          height: 42,
+          height: 52,
         }}
         variant='primary'
       >
         <Tab.Item
           title='미사용'
           containerStyle={{
-            borderRadius: 20,
+            borderRadius: 30,
             backgroundColor: index == 0 ? 'white' : '#F6F6F6',
             margin: 2,
-            height: 40,
+            height: 48,
             padding: 0,
             justifyContent: 'center',
           }}
           titleStyle={{
-            fontSize: 20,
+            fontSize: 24,
             color: index == 0 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,
@@ -170,15 +170,15 @@ function GifticonMainScreen({ navigation }) {
         <Tab.Item
           title='사용 완료'
           containerStyle={{
-            borderRadius: 20,
+            borderRadius: 30,
             backgroundColor: index == 1 ? 'white' : '#F6F6F6',
             margin: 2,
-            height: 40,
+            height: 48,
             padding: 0,
             justifyContent: 'center',
           }}
           titleStyle={{
-            fontSize: 20,
+            fontSize: 24,
             color: index == 1 ? '#FFA401' : '#686868',
             paddingHorizontal: 0,
             paddingVertical: 0,

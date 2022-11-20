@@ -46,7 +46,7 @@ function ChallengeCameraScreen({ navigation, route }) {
 
   console.log(chId);
 
-  //..깊티임의로 userId : 1
+  //..깊티만드는것처럼 임의로 userId : 1 사용해서 킾티 id가지고옴
   const onTempPath = async () => {
     const formData = new FormData();
     formData.append('file', image);
@@ -68,7 +68,7 @@ function ChallengeCameraScreen({ navigation, route }) {
         console.log(error);
       });
   };
-
+  // 깊티아이디로 path 가지고옴 ...
   const onTempPath2 = async (id: number, formData: FormData) => {
     await axios
       .post(`${Config.API_URL}/gifticon/img/${id}`, formData, {
@@ -174,7 +174,16 @@ function ChallengeCameraScreen({ navigation, route }) {
     <View style={{ backgroundColor: '#fff', flex: 1 }}>
       <ScrollView>
         <View style={styles.orderId}>
-          <Text>챌린지번호: {chId}</Text>
+          <Text
+            style={{
+              textAlign: 'center',
+              color: 'black',
+              fontSize: 20,
+              fontFamily: 'Regular',
+            }}
+          >
+            {format(new Date(), 'yyyy-MM-dd')}
+          </Text>
         </View>
         <View style={styles.preview}>
           {preview && <Image style={styles.previewImage} source={preview} />}
@@ -221,12 +230,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     width: 120,
     alignItems: 'center',
-    backgroundColor: 'yellow',
+    backgroundColor: '#FFA401',
     borderRadius: 5,
     margin: 5,
   },
   buttonText: {
     color: 'black',
+    fontFamily: 'Regular',
+    fontSize: 15,
   },
   buttonDisabled: {
     backgroundColor: 'gray',
