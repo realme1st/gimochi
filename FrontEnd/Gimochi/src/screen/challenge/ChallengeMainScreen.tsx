@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Tab, Icon, TabView, ThemeProvider, createTheme, ListItem } from '@rneui/themed';
+import { Tab, Icon, TabView, Divider, ThemeProvider, createTheme, ListItem } from '@rneui/themed';
 import { useAppDispatch } from '../../store';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -59,12 +59,12 @@ function ChallengeMainScreen({ navigation, route }) {
   const calSDay = (time) => {
     const t = new Date(time) - new Date() - 32400000;
     const result = parseInt(t / 86400000);
-    return result === 0 ? '' : result + 1;
+    return result === 0 ? 1 : result + 1;
   };
   const calEDay = (time) => {
     const t = new Date(time) - new Date() - 32400000;
     const result = parseInt(t / 86400000);
-    return result === 0 ? '' : result + 1;
+    return result === 0 ? 1 : result + 1;
   };
   useEffect(() => {
     dispatch(
@@ -78,13 +78,11 @@ function ChallengeMainScreen({ navigation, route }) {
     };
   }, []);
 
-  useEffect(() => {
-    axios
+  const reMain = async () => {
+    await axios
       .get(`${Config.API_URL}/challenge/challengeList/` + userId)
-      .then(function (response) {
+      .then(async (response) => {
         console.log(response.data.data);
-        console.log('hi');
-        // myChList.push(response.data.data);
         setmyChList(response.data.data);
         create012List(response.data.data);
         // const temp = { ...response1.data.data[i], ...response2.data.data };
@@ -94,6 +92,37 @@ function ChallengeMainScreen({ navigation, route }) {
         console.log(error);
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    async function myF() {
+      await axios
+        .get(`${Config.API_URL}/challenge/challengeList/` + userId)
+        .then(function (response) {
+          console.log(response.data.data);
+          for (var i = 0; i < response.data.data.length; i++) {
+            axios
+              .put(`${Config.API_URL}/challenge/` + response.data.data[i].challengeId)
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+
+          // setmyChList(response.data.data);
+          // create012List(response.data.data);
+          // const temp = { ...response1.data.data[i], ...response2.data.data };
+          // console.log(myChList, my0ChList, my1ChList, my2ChList);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    myF();
+    reMain();
+    // .finally(() => setLoading(false));
   }, [reload]);
 
   if (loading) {
@@ -112,11 +141,11 @@ function ChallengeMainScreen({ navigation, route }) {
             height: 0,
           }}
           style={{
-            borderRadius: 21,
+            borderRadius: 31,
             backgroundColor: '#F6F6F6',
             marginTop: 21,
             marginHorizontal: 10,
-            height: 42,
+            height: 52,
           }}
           // containerStyle={{
           //   borderRadius: 21,
@@ -141,15 +170,15 @@ function ChallengeMainScreen({ navigation, route }) {
           <Tab.Item
             title='진행중인 챌린지'
             containerStyle={{
-              borderRadius: 20,
+              borderRadius: 30,
               backgroundColor: index == 0 ? 'white' : '#F6F6F6',
               margin: 2,
-              height: 38,
+              height: 48,
               padding: 0,
             }}
             // buttonStyle={{}}
             titleStyle={{
-              fontSize: 20,
+              fontSize: 24,
               color: index == 0 ? '#FFA401' : '#686868',
               paddingHorizontal: 0,
               paddingVertical: 0,
@@ -159,15 +188,16 @@ function ChallengeMainScreen({ navigation, route }) {
           <Tab.Item
             title='종료된 챌린지'
             containerStyle={{
-              borderRadius: 20,
+              borderRadius: 30,
               backgroundColor: index == 1 ? 'white' : '#F6F6F6',
               margin: 2,
-              height: 38,
+              height: 48,
               padding: 0,
             }}
             // buttonStyle={{}}
             titleStyle={{
-              fontSize: 20,
+              fontSize: 24,
+              fontWeight: '900',
               color: index == 1 ? '#FFA401' : '#686868',
               paddingHorizontal: 0,
               paddingVertical: 0,
@@ -178,62 +208,167 @@ function ChallengeMainScreen({ navigation, route }) {
         <TabView value={index} onChange={setIndex} animationType='spring'>
           <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
             <ScrollView>
-              <Text>---진행중(맨위가 종료임박)---</Text>
+              <Divider width={0} style={{ height: 10, width: '100%' }} />
               {my1ChList.map((Ch, index) => (
                 <TouchableOpacity key={index + 10000} onPress={() => goDetail1(Ch.challengeId)}>
-                  <ListItem bottomDivider>
+                  <ListItem>
                     {Ch.challengeRewardType === 1 ? (
-                      <Icon name='file-powerpoint-box-outline' type='material-community' />
+                      <Icon name='file-powerpoint-box-outline' type='material-community' size={60} />
                     ) : (
-                      <Icon name='barcode-scan' type='material-community' />
+                      <Icon name='barcode-scan' type='material-community' size={60} />
                     )}
 
                     <ListItem.Content>
                       <View style={{ flexDirection: 'row' }}>
-                        <ListItem.Title style={{ color: 'black' }}>{Ch.challengeTitle}</ListItem.Title>
-                        <ListItem.Title right style={{ color: '#FFA401' }}>
-                          D-{calEDay(Ch.challengeEndDate)}day
-                        </ListItem.Title>
+                        <View style={{ flex: 1 }}>
+                          <ListItem.Title
+                            style={{ color: 'black', fontWeight: '900', fontSize: 22, fontFamily: 'Regular' }}
+                          >
+                            {Ch.challengeTitle}
+                          </ListItem.Title>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <ListItem.Title
+                            style={{
+                              textAlign: 'right',
+                              color: '#FFA401',
+                              fontWeight: '900',
+                              fontSize: 18,
+                              fontFamily: 'Regular',
+                            }}
+                          >
+                            종료 까지 D-{calEDay(Ch.challengeEndDate)}day
+                          </ListItem.Title>
+                        </View>
                       </View>
-                      <ListItem.Subtitle>
+                      <ListItem.Subtitle
+                        style={{
+                          color: 'black',
+                          fontWeight: '100',
+                          fontSize: 16,
+                          fontFamily: 'Regular',
+                          paddingTop: 3,
+                        }}
+                      >
                         게시자:{Ch.challengeLeaderName} | 참여자수:{Ch.challenger_cnt}명 | 1위:{Ch.winnerName}
                       </ListItem.Subtitle>
                     </ListItem.Content>
                   </ListItem>
+                  <Divider inset={true} width={1} style={{ width: '100%' }} />
                 </TouchableOpacity>
               ))}
-
-              <Text>---대기중(맨위가 시작임박)---</Text>
+              <Divider width={0} style={{ height: 30, width: '100%' }} />
               {my0ChList.map((Ch, index) => (
                 <TouchableOpacity key={index + 100} onPress={() => goDetail0(Ch.challengeId)}>
-                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
-                  <Text>제목:{Ch.challengeTitle}</Text>
-                  <Text>시작하기까지 D-{calSDay(Ch.challengeStartDate)}day</Text>
-                  <Text>게시자:{Ch.challengeLeaderName}</Text>
-                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
-                  {/* <Text>1위:{Ch.winnerName}</Text> */}
-                  <Text>순위 없음</Text>
-                  <Text>------------------------</Text>
+                  <ListItem>
+                    {Ch.challengeRewardType === 1 ? (
+                      <Icon name='file-powerpoint-box-outline' type='material-community' size={60} />
+                    ) : (
+                      <Icon name='barcode-scan' type='material-community' size={60} />
+                    )}
+
+                    <ListItem.Content>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flex: 1 }}>
+                          <ListItem.Title
+                            style={{ color: 'black', fontWeight: '900', fontSize: 22, fontFamily: 'Regular' }}
+                          >
+                            {Ch.challengeTitle}
+                          </ListItem.Title>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <ListItem.Title
+                            style={{
+                              textAlign: 'right',
+                              color: '#FFA401',
+                              fontWeight: '900',
+                              fontSize: 18,
+                              fontFamily: 'Regular',
+                            }}
+                          >
+                            시작 까지 D-{calSDay(Ch.challengeStartDate)}day
+                          </ListItem.Title>
+                        </View>
+                      </View>
+                      <ListItem.Subtitle
+                        style={{
+                          color: 'black',
+                          fontWeight: '100',
+                          fontSize: 16,
+                          fontFamily: 'Regular',
+                          paddingTop: 3,
+                        }}
+                      >
+                        게시자:{Ch.challengeLeaderName} | 참여자수:{Ch.challenger_cnt}명 | 현재 순위 미정
+                      </ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
+                  <Divider inset={true} width={1} style={{ width: '100%' }} />
                 </TouchableOpacity>
               ))}
+              <Divider width={0} style={{ height: 80, width: '100%' }} />
             </ScrollView>
           </TabView.Item>
           <TabView.Item style={{ backgroundColor: 'white', width: '100%' }}>
             <ScrollView>
-              <Text>---종료됨(맨위가 최신종료)---</Text>
+              <Divider width={0} style={{ height: 10, width: '100%' }} />
               {my2ChList.map((Ch, index) => (
-                <TouchableOpacity key={index + 1000} onPress={() => goDetail2(Ch.challengeId)}>
-                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
-                  <Text>제목:{Ch.challengeTitle}</Text>
-                  <Text>종료</Text>
-                  {/* <Text>D-{calEDay(Ch.challengeEndDate)}day</Text> */}
-                  <Text>게시자:{Ch.challengeLeaderName}</Text>
-                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
-                  <Text>우승자:{Ch.winnerName}</Text>
-                  {/* <Text>1위 없음</Text> */}
-                  <Text>------------------------</Text>
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity key={index + 1000} onPress={() => goDetail2(Ch.challengeId)}>
+                    <ListItem>
+                      {Ch.challengeRewardType === 1 ? (
+                        <Icon name='file-powerpoint-box-outline' type='material-community' size={60} />
+                      ) : (
+                        <Icon name='barcode-scan' type='material-community' size={60} />
+                      )}
+
+                      <ListItem.Content>
+                        <View style={{ flexDirection: 'row' }}>
+                          <View style={{ flex: 1 }}>
+                            <ListItem.Title
+                              style={{
+                                color: 'black',
+                                fontWeight: '900',
+                                fontSize: 22,
+                                fontFamily: 'Regular',
+                              }}
+                            >
+                              {Ch.challengeTitle}
+                            </ListItem.Title>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <ListItem.Title
+                              style={{
+                                textAlign: 'right',
+                                color: 'red',
+                                fontWeight: '900',
+                                fontSize: 18,
+                                fontFamily: 'Regular',
+                              }}
+                            >
+                              종료
+                            </ListItem.Title>
+                          </View>
+                        </View>
+                        <ListItem.Subtitle
+                          style={{
+                            color: 'black',
+                            fontWeight: '100',
+                            fontSize: 16,
+                            fontFamily: 'Regular',
+                            paddingTop: 3,
+                          }}
+                        >
+                          게시자:{Ch.challengeLeaderName} | 참여자수:{Ch.challenger_cnt}명 | 우승자:
+                          {Ch.winnerName}
+                        </ListItem.Subtitle>
+                      </ListItem.Content>
+                    </ListItem>
+                  </TouchableOpacity>
+                  <Divider inset={true} width={1} style={{ width: '100%' }} />
+                </>
               ))}
+              <Divider width={0} style={{ height: 80, width: '100%' }} />
             </ScrollView>
           </TabView.Item>
         </TabView>

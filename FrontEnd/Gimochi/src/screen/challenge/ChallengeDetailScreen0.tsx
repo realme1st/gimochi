@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, ScrollView, Image, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, ScrollView, Image, View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import {
   BottomSheet,
   Button,
@@ -37,6 +37,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
   const [visibleDialogG, setVisibleDialogG] = useState(false);
   const [visibleAddG, setVisibleAddG] = useState(false);
   const [visibleListG, setVisibleListG] = useState(false);
+  const [visibleDialogQ, setVisibleDialogQ] = useState(false);
   const [gifticons, setGifticons] = useState([]);
   const [chGifticons, setChGifticons] = useState([]);
   const [giftId, setGiftId] = useState('');
@@ -45,8 +46,10 @@ function ChallengeDetailScreen0({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
   const reload = useSelector((state: RootState) => state.reload.reload);
   const dispatch = useAppDispatch();
-  // const challengeId = route.params.challengeId;
-  const challengeId = 16;
+  const challengeId = route.params.challengeId;
+  const toggleDialogQ = () => {
+    setVisibleDialogQ(!visibleDialogQ);
+  };
   const toggleDialogF = () => {
     setVisibleDialogF(!visibleDialogF);
   };
@@ -65,7 +68,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
   });
   // Start End Time 테스트용  !! 한국 표준시 9시간 빼줘야함 -32400000
   // 86400000 24시간 3600000 1시간  60000 1분  1000 1초
-  const SSTT = new Date('2022-11-17'); //useState로 만들기 .challengeStartDate
+  const SSTT = new Date(); //useState로 만들기 .challengeStartDate
   // const EETT = new Date('2022-11-09');
 
   const dd = parseInt(caltime / 86400000);
@@ -92,7 +95,38 @@ function ChallengeDetailScreen0({ route, navigation }) {
     navigation.navigate('ChallengeMainScreen');
   };
 
-  const registerGift = async (index) => {
+  const godelete = () => {
+    Alert.alert('진행중인 챌린지를 삭제하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => godelete2() },
+    ]);
+  };
+
+  const godelete2 = async () => {
+    await axios
+      .delete(`${Config.API_URL}/challenge/${challengeId}`)
+      .then(function (response) {
+        console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        Alert.alert('챌린지 목록 화면으로 이동합니다.', '', [{ text: '확인', onPress: () => goMain() }]);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const registerGift = () => {
+    Alert.alert('기프티콘을 등록하시겠습니까?', '', [
+      { text: '아니오', style: 'cancel' },
+      { text: '네', onPress: () => registerGift2() },
+    ]);
+  };
+
+  const registerGift2 = async (index) => {
     setGiftPeriod(gifticons[index].gifticonPeriod);
     setGiftId(gifticons[index].gifticonId);
     // console.log(gifticons[index].gifticonId);
@@ -129,27 +163,27 @@ function ChallengeDetailScreen0({ route, navigation }) {
       .finally(() => toggleDialogF());
   };
 
-  // const doInvite = async (id) => {
-  //   const jsonData = {
-  //     challengeId: challengeId,
-  //     userId: id,
-  //   };
-  //   console.log(jsonData);
-  //   await axios
-  //     .post(`${Config.API_URL}/challenge/challengeInvite`, jsonData)
-  //     .then(function (response) {
-  //       console.log(response);
-  //       // 실시간 상태관리용, 무지성 복붙할것
-  //       dispatch(
-  //         reloadSlice.actions.setReload({
-  //           reload: String(new Date()),
-  //         }),
-  //       );
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
+  const doInvite = async (id) => {
+    const jsonData = {
+      challengeId: challengeId,
+      userId: id,
+    };
+    console.log(jsonData);
+    await axios
+      .post(`${Config.API_URL}/challenge/challengeInvite`, jsonData)
+      .then(function (response) {
+        console.log(response);
+        // 실시간 상태관리용, 무지성 복붙할것
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     axios
@@ -240,77 +274,86 @@ function ChallengeDetailScreen0({ route, navigation }) {
             style={{
               flexDirection: 'row',
               height: 80,
-              padding: 20,
-              marginRight: 60,
+              paddingHorizontal: 20,
+              marginTop: 10,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              제목{'  '}:{myChallenge.challengeTitle}
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+              제목{'  '}:{'  '}
+              {myChallenge.challengeTitle}
             </Text>
           </View>
           <View
             style={{
-              flexDirection: 'row',
-              height: 130,
-              padding: 20,
-              marginRight: 60,
+              flexDirection: 'column',
+              height: 90,
+              paddingHorizontal: 20,
+              marginTop: -20,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기간{'  '}: {myChallenge.challengeStartDate}부터{myChallenge.challengeEndDate}까지 매일
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+              기간{'  '}:{'  '}
+              {myChallenge.challengeStartDate}
+              {'  '}부터
             </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 80,
-              padding: 20,
-              marginRight: 60,
-            }}
-          >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              설명{'  '}:{myChallenge.challengeDescription}
+            <Text style={{ marginLeft: 75, color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+              {myChallenge.challengeEndDate}
+              {'  '}까지 매일
             </Text>
           </View>
           <View
             style={{
               flexDirection: 'row',
               height: 80,
-              padding: 20,
-              marginRight: 60,
+              paddingHorizontal: 20,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }} onPress={() => myFollow()}>
-              참가 인원 {usersInfo.length}명 | 친구초대하기
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+              설명{'  '}:{'  '}
+              {myChallenge.challengeDescription}
             </Text>
-            <Dialog isVisible={visibleDialogF} onBackdropPress={toggleDialogF} overlayStyle={{ height: 300 }}>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              height: 80,
+              paddingHorizontal: 20,
+            }}
+          >
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }} onPress={() => myFollow()}>
+              참가 인원 {usersInfo.length}명 {'  '}+친구초대하기+
+            </Text>
+            <Dialog
+              overlayStyle={{ flex: 0.5, backgroundColor: '#FFE7BC', borderRadius: 20 }}
+              isVisible={visibleDialogF}
+              onBackdropPress={toggleDialogF}
+            >
               <Tab
-                // index 0 :포인트  1 :기프티콘
                 value={index}
                 onChange={(e) => setIndex(e)}
                 indicatorStyle={{
                   height: 0,
                 }}
                 style={{
-                  borderRadius: 21,
+                  borderRadius: 31,
                   backgroundColor: '#F6F6F6',
                   marginTop: 21,
                   marginHorizontal: 10,
-                  height: 42,
+                  height: 52,
                 }}
                 variant='primary'
               >
                 <Tab.Item
                   title='참가 현황'
                   containerStyle={{
-                    borderRadius: 20,
+                    borderRadius: 30,
                     backgroundColor: index == 0 ? 'white' : '#F6F6F6',
                     margin: 2,
-                    height: 38,
+                    height: 48,
                     padding: 0,
                   }}
                   titleStyle={{
-                    fontSize: 20,
+                    fontSize: 24,
                     color: index == 0 ? '#FFA401' : '#686868',
                     paddingHorizontal: 0,
                     paddingVertical: 0,
@@ -320,40 +363,75 @@ function ChallengeDetailScreen0({ route, navigation }) {
                 <Tab.Item
                   title='친구 목록'
                   containerStyle={{
-                    borderRadius: 20,
+                    borderRadius: 30,
                     backgroundColor: index == 1 ? 'white' : '#F6F6F6',
                     margin: 2,
-                    height: 38,
+                    height: 48,
                     padding: 0,
                   }}
                   titleStyle={{
-                    fontSize: 20,
+                    fontSize: 24,
                     color: index == 1 ? '#FFA401' : '#686868',
                     paddingHorizontal: 0,
                     paddingVertical: 0,
+                    fontWeight: '900',
                   }}
                 />
               </Tab>
 
               <TabView value={index} onChange={setIndex} animationType='spring'>
                 {index == 0 ? (
-                  <TabView.Item style={{ backgroundColor: 'red', width: '100%', height: 200 }}>
-                    <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
+                  <TabView.Item style={{ width: '100%', height: 250, marginTop: 20 }}>
+                    <ScrollView
+                      style={{
+                        paddingVertical: 10,
+                        backgroundColor: '#efefef',
+                        // marginHorizontal: 10,
+                        borderRadius: 10,
+                      }}
+                    >
                       {usersInfoL.map((user, index) => (
                         <>
-                          <Image
-                            source={
-                              user.userProfile
-                                ? {
-                                    uri: user.userProfile,
-                                  }
-                                : require('../../assets/images/homeMochi.png')
-                            }
-                            resizeMode='contain'
-                            style={{ width: 40, height: 40, borderRadius: 100 }}
-                          />
-                          <Text>{user.userNickname}</Text>
-                          <Text>참가 완료</Text>
+                          <ListItem containerStyle={{ backgroundColor: '#efefef' }}>
+                            <Image
+                              source={
+                                user.userProfile
+                                  ? {
+                                      uri: user.userProfile,
+                                    }
+                                  : require('../../assets/images/homeMochi.png')
+                              }
+                              resizeMode='contain'
+                              style={{ width: 40, height: 40, borderRadius: 100 }}
+                            />
+
+                            <ListItem.Content style={{ flex: 1, flexDirection: 'row' }}>
+                              <ListItem.Title
+                                style={{
+                                  flex: 1,
+                                  color: 'black',
+                                  fontWeight: '900',
+                                  fontSize: 18,
+                                  fontFamily: 'Regular',
+                                }}
+                              >
+                                {user.userNickname}
+                              </ListItem.Title>
+
+                              <ListItem.Title
+                                style={{
+                                  flex: 1,
+                                  textAlign: 'right',
+                                  color: 'green',
+                                  fontWeight: '900',
+                                  fontSize: 18,
+                                  fontFamily: 'Regular',
+                                }}
+                              >
+                                참가 완료
+                              </ListItem.Title>
+                            </ListItem.Content>
+                          </ListItem>
                         </>
                       ))}
                     </ScrollView>
@@ -362,29 +440,60 @@ function ChallengeDetailScreen0({ route, navigation }) {
                   <TabView.Item></TabView.Item>
                 )}
                 {index == 1 ? (
-                  <TabView.Item style={{ backgroundColor: 'blue', width: '100%', height: 200 }}>
-                    <ScrollView style={{ backgroundColor: '#F6F6', marginHorizontal: 10, borderRadius: 20 }}>
+                  <TabView.Item style={{ width: '100%', height: 250, marginTop: 20 }}>
+                    <ScrollView
+                      style={{
+                        paddingVertical: 10,
+                        backgroundColor: '#efefef',
+                        // marginHorizontal: 10,
+                        borderRadius: 10,
+                      }}
+                    >
                       {myfollower.map((myF, index) => (
                         <>
-                          {myF.friend === true &&
-                            usersInfoL.findIndex((e) => e.userId === myF.userId) === -1 && (
-                              <>
-                                <Text>친구:{myF.userName}</Text>
-                                {inviteUsers.findIndex((e) => e.userId === myF.userId) === -1 ? (
-                                  <Text>초대하기</Text>
-                                ) : (
-                                  <Text>취소하기</Text>
-                                )}
+                          <ListItem containerStyle={{ backgroundColor: '#efefef' }}>
+                            <Image
+                              source={
+                                myF.userProfile
+                                  ? {
+                                      uri: myF.userProfile,
+                                    }
+                                  : require('../../assets/images/homeMochi.png')
+                              }
+                              resizeMode='contain'
+                              style={{ width: 40, height: 40, borderRadius: 100 }}
+                            />
 
-                                <Icon
-                                  name='close'
-                                  type='fontisto'
-                                  color='#FFE7BC'
-                                  size={25}
-                                  iconStyle={{ fontSize: 33 }}
-                                />
-                              </>
-                            )}
+                            <ListItem.Content style={{ flex: 1, flexDirection: 'row' }}>
+                              <ListItem.Title
+                                style={{
+                                  flex: 1,
+                                  color: 'black',
+                                  fontWeight: '900',
+                                  fontSize: 18,
+                                  fontFamily: 'Regular',
+                                }}
+                              >
+                                {myF.userName}
+                              </ListItem.Title>
+                              <ListItem.Title
+                                style={{
+                                  flex: 1,
+                                  textAlign: 'right',
+                                  color: 'green',
+                                  fontWeight: '900',
+                                  fontSize: 18,
+                                  fontFamily: 'Regular',
+                                }}
+                              >
+                                {inviteUsers.findIndex((e) => e.userId === myF.userId) === -1 ? (
+                                  <Text onPress={() => doInvite(myF.userId)}>초대하기</Text>
+                                ) : (
+                                  <Text style={{ color: 'red' }}>취소하기</Text>
+                                )}
+                              </ListItem.Title>
+                            </ListItem.Content>
+                          </ListItem>
                         </>
                       ))}
                     </ScrollView>
@@ -395,101 +504,236 @@ function ChallengeDetailScreen0({ route, navigation }) {
               </TabView>
             </Dialog>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 80,
-              padding: 20,
-              marginRight: 60,
-            }}
-          >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              누적 상금확인{myChallenge.challengeRewardPoint} 클릭 설명
-            </Text>
-          </View>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 100,
-              padding: 20,
-              marginRight: 85,
-            }}
-          >
-            <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기프티콘 목록
-            </Text>
-            <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
-
-            <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
-              <Dialog.Title title='챌린지 등록된 기프티콘 목록 ' />
-              <Text
-                onPress={() => toggleAddG()}
-                style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}
-              >
-                기프티콘 등록 버튼
+          {myChallenge.challengeRewardType === 1 ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                height: 80,
+                paddingHorizontal: 20,
+              }}
+            >
+              <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+                누적 상금확인{'  '}:{'  '}
+                {myChallenge.challengeRewardPoint}P
               </Text>
-              <FlatGrid
-                itemDimension={95}
-                data={chGifticons.filter((gifticon) => !gifticon.gifticonUsed)}
-                style={{}}
-                spacing={5}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity style={{ alignItems: 'center' }}>
-                    {/* <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} /> */}
-                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
-                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </Dialog>
+            </View>
+          ) : (
+            <View
+              style={{
+                flexDirection: 'row',
+                height: 100,
+                paddingHorizontal: 20,
+              }}
+            >
+              <Text
+                onPress={() => toggleListG()}
+                style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}
+              >
+                기프티콘 목록
+              </Text>
 
-            <Dialog isVisible={visibleAddG} onBackdropPress={toggleAddG}>
-              <Dialog.Title title='내 기프티콘 목록' />
-              <Text>클릭시 등록하시겠습니까?</Text>
-              <FlatGrid
-                itemDimension={95}
-                data={gifticons.filter((gifticon) => !gifticon.gifticonUsed)}
-                style={{}}
-                spacing={5}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => registerGift(index)}>
-                    <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
-                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
-                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </Dialog>
-            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
-              <Dialog.Title title='기프티콘 설명 가져가는' />
-              <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>
-            </Dialog>
-          </View>
+              <Dialog
+                overlayStyle={{ backgroundColor: '#FFE7BC', borderRadius: 20 }}
+                isVisible={visibleListG}
+                onBackdropPress={toggleListG}
+              >
+                <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular', textAlign: 'center' }}>
+                  등록된 기프티콘 목록
+                </Text>
+                <Icon
+                  onPress={() => toggleAddG()}
+                  name='add'
+                  type='material'
+                  color='#FFA401'
+                  size={25}
+                  iconStyle={{ fontSize: 43 }}
+                />
 
+                <FlatGrid
+                  itemDimension={95}
+                  data={chGifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+                  style={{}}
+                  spacing={5}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity style={{ alignItems: 'center' }}>
+                      {/* <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} /> */}
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </Dialog>
+
+              <Dialog
+                overlayStyle={{ backgroundColor: '#FFE7BC', borderRadius: 20 }}
+                isVisible={visibleAddG}
+                onBackdropPress={toggleAddG}
+              >
+                <Text
+                  style={{
+                    marginBottom: 10,
+                    color: 'black',
+                    fontSize: 25,
+                    fontFamily: 'Regular',
+                    textAlign: 'center',
+                  }}
+                >
+                  나의 기프티콘 목록
+                </Text>
+
+                <FlatGrid
+                  itemDimension={95}
+                  data={gifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+                  style={{}}
+                  spacing={5}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => registerGift(index)}>
+                      <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </Dialog>
+            </View>
+          )}
           <View
             style={{
               flexDirection: 'row',
               height: 80,
-              padding: 20,
-              marginRight: 60,
+              marginTop: 0,
+              paddingHorizontal: 20,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              인증 방법 (모달고정내용 )
+            <Text
+              onPress={() => toggleDialogQ()}
+              style={{ fontSize: 25, color: 'black', fontFamily: 'Regular' }}
+            >
+              인증 방법
             </Text>
           </View>
+          <Dialog
+            isVisible={visibleDialogQ}
+            onBackdropPress={toggleDialogQ}
+            overlayStyle={{ height: 400, backgroundColor: '#FFE7BC', flex: 0.4, borderRadius: 20 }}
+          >
+            <Text
+              style={{
+                color: 'black',
+                fontSize: 25,
+                fontFamily: 'Regular',
+                textAlign: 'center',
+                marginBottom: 10,
+              }}
+            >
+              인증 방법
+            </Text>
+            <View
+              style={{
+                padding: 20,
+                backgroundColor: '#efefef',
+                marginBottom: 10,
+                marginHorizontal: 10,
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                  marginBottom: 5,
+                }}
+              >
+                0. 매일 하루 한번씩 인증하기
+              </Text>
+
+              <Text
+                style={{
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                1. 인증샷은 챌린지 참여자들의
+              </Text>
+
+              <Text
+                style={{
+                  marginBottom: 5,
+                  paddingLeft: 15,
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                과반수 투표로 인증 됩니다.
+              </Text>
+              <Text
+                style={{
+                  marginBottom: 5,
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                2. 도용을 금지 합니다.
+              </Text>
+              <Text
+                style={{
+                  marginBottom: 5,
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                3. 다른 사람 것 만 투표합니다.
+              </Text>
+
+              <Text
+                style={{
+                  marginBottom: 5,
+
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                4. 투표는 취소가 안됩니다.
+              </Text>
+              <Text
+                style={{
+                  marginBottom: 5,
+                  fontWeight: '700',
+                  fontSize: 15,
+                  fontFamily: 'Regular',
+                  color: 'black',
+                }}
+              >
+                5. 사진은 식별 가능하게
+              </Text>
+            </View>
+          </Dialog>
           <View
             style={{
               flexDirection: 'row',
               height: 80,
-              padding: 20,
-              marginRight: 10,
-              marginBottom: 60,
+              paddingHorizontal: 20,
+              marginBottom: 0,
+              marginTop: -10,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              {d} {h} {m} {t} @@@
+            <Text
+              style={{ fontSize: 25, color: 'black', fontFamily: 'Regular', textAlign: 'right', flex: 1 }}
+            >
+              {/* {d} {h} {m} {t} @@@ */}
               {d > 0 ? (
                 <Text>{d ? d : ''}일 후 자동시작</Text>
               ) : h > 0 ? (
@@ -499,8 +743,8 @@ function ChallengeDetailScreen0({ route, navigation }) {
               ) : t > 0 ? (
                 <Text>{t ? t : ''}초 후 자동시작</Text>
               ) : (
-                <Text onPress={goMain}>바로 시작 됩니다. 메인으로 가기</Text>
-              )}{' '}
+                <Text onPress={goMain}>메인으로 가기</Text>
+              )}
             </Text>
           </View>
         </ScrollView>
@@ -511,7 +755,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
           size={25}
           reverse
           reverseColor='#FFA401'
-          onPress={() => goMain()}
+          onPress={() => godelete()}
           iconStyle={{ fontSize: 33 }}
           containerStyle={{ position: 'absolute', top: '85%', left: '5%' }}
         />

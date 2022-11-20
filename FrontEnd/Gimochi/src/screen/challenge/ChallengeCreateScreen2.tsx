@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, ScrollView, View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import {
   BottomSheet,
   Button,
@@ -73,9 +73,10 @@ function ChallengeCreateScreen2({ route, navigation }) {
             reload: String(new Date()),
           }),
         );
-        goMain();
+        Alert.alert('챌린지 목록 화면으로 이동합니다.', '', [{ text: '확인', onPress: () => goMain() }]);
       })
       .catch(function (error) {
+        Alert.alert('모든 항목을 작성해 주세요');
         console.log(error);
       });
   };
@@ -90,6 +91,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
       } else {
         // 숫자아니면 call back function
         console.log('please enter numbers only');
+        Alert.alert('숫자만 입력 할 수 있습니다.');
       }
     }
     setChPoint(chPoint);
@@ -114,6 +116,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
       setVisibleS(false);
     } else {
       console.log('24시간 이전에만 생성가능 합니다');
+      Alert.alert('24시간 이전에만 생성가능 합니다');
       setVisibleS(false);
     }
   };
@@ -128,6 +131,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
       setVisibleE(false);
     } else {
       console.log('챌린지는 최소 3일 이상 해야합니다');
+      Alert.alert('챌린지는 최소 3일 이상 해야합니다');
       setVisibleE(false);
     }
 
@@ -170,30 +174,42 @@ function ChallengeCreateScreen2({ route, navigation }) {
         <View
           style={{
             flexDirection: 'row',
-            height: 100,
+            height: 80,
             padding: 20,
             marginRight: 60,
+            marginTop: 10,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>제목{'  '}:</Text>
-          <Input placeholder='ex> 1일 1커밋' value={chTitle} onChangeText={setChTitle} />
+          <Text style={{ color: 'black', fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
+            제목{'  '}:
+          </Text>
+          <Input
+            style={{ color: 'black' }}
+            placeholder='ex> 1일 1커밋'
+            value={chTitle}
+            onChangeText={setChTitle}
+          />
         </View>
 
         <View
           style={{
             flexDirection: 'row',
-            height: 100,
+            height: 80,
             padding: 20,
             marginRight: 60,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>시작일{'  '}(매일):</Text>
+          <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>시작일(매일){'  '}:</Text>
 
           <View>
             <TouchableOpacity onPress={onPressDateS}>
               <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                 {/* <FontAwesomeIcon icon={faCalendar} size={20} /> */}
-                <Text>{format(new Date(dateS), 'PPP', { locale: ko })}</Text>
+                <Text
+                  style={{ color: 'black', padding: 3, paddingLeft: 25, fontSize: 20, fontFamily: 'Regular' }}
+                >
+                  {format(new Date(dateS), 'PPP', { locale: ko })}
+                </Text>
               </View>
             </TouchableOpacity>
             {visibleS && (
@@ -213,17 +229,27 @@ function ChallengeCreateScreen2({ route, navigation }) {
         <View
           style={{
             flexDirection: 'row',
-            height: 100,
+            height: 80,
             padding: 20,
             marginRight: 60,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>종료일{'  '}:</Text>
+          <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>종료일{'  '}:</Text>
           <View>
             <TouchableOpacity onPress={onPressDateE}>
               <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                 {/* <FontAwesomeIcon icon={faCalendar} size={20} /> */}
-                <Text>{format(new Date(dateE), 'PPP', { locale: ko })}</Text>
+                <Text
+                  style={{
+                    color: 'black',
+                    padding: 3,
+                    paddingLeft: 100,
+                    fontSize: 20,
+                    fontFamily: 'Regular',
+                  }}
+                >
+                  {format(new Date(dateE), 'PPP', { locale: ko })}
+                </Text>
               </View>
             </TouchableOpacity>
             {visibleE && (
@@ -243,19 +269,20 @@ function ChallengeCreateScreen2({ route, navigation }) {
         <View
           style={{
             flexDirection: 'row',
-            height: 100,
+            height: 110,
             padding: 20,
-            marginRight: 85,
+            marginRight: 60,
           }}
         >
-          <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>설명{'  '}:</Text>
+          <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>설명{'  '}:</Text>
 
           <Input
+            style={{ color: 'black' }}
             multiline
             numberOfLines={3}
             editable
             maxLength={300}
-            inputContainerStyle={{ backgroundColor: '#686868', height: 80 }}
+            inputContainerStyle={{ backgroundColor: '#efefef', height: 90 }}
             placeholder='챌린지 내용을 입력하세요'
             onChangeText={setChDescription}
             value={chDescription}
@@ -267,15 +294,19 @@ function ChallengeCreateScreen2({ route, navigation }) {
         {indexOfGP === 1 ? (
           <View
             style={{
+              marginTop: 15,
               flexDirection: 'row',
               height: 100,
               padding: 20,
               marginRight: 85,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>참가비{'  '}:</Text>
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular', paddingTop: 10 }}>
+              참가비{'  '}:
+            </Text>
 
             <Input
+              style={{ color: 'black' }}
               placeholder='참가비를 입력하세요'
               onChangeText={onChanged}
               value={chPoint}
@@ -294,32 +325,21 @@ function ChallengeCreateScreen2({ route, navigation }) {
               }
               rightIconContainerStyle={{ padding: 1 }}
             />
-            <Dialog isVisible={visibleDialogP} onBackdropPress={toggleDialogP}>
-              <Dialog.Title title='포인트설명 가져가는' />
-              <Text>ㄴ이ㅏㅣ나이ㅏㅇ닝니ㅏㅇ니</Text>
+            <Dialog
+              overlayStyle={{ backgroundColor: '#FFE7BC', borderRadius: 20 }}
+              isVisible={visibleDialogP}
+              onBackdropPress={toggleDialogP}
+            >
+              <Text style={{ color: 'black', fontSize: 19, fontFamily: 'Regular', textAlign: 'center' }}>
+                숫자만 입력하세요. 최대 9999P
+              </Text>
             </Dialog>
           </View>
         ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 100,
-              padding: 20,
-              marginRight: 85,
-            }}
-          >
-            <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기프티콘 등록 안내
+          <View style={{ marginTop: 10, flexDirection: 'row', height: 100, padding: 20, marginRight: 60 }}>
+            <Text style={{ color: 'black', fontSize: 25, fontFamily: 'Regular' }}>
+              기프티콘 등록은 대기화면에서!
             </Text>
-            <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
-            <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
-              <Dialog.Title title='기프티콘 등록은 챌린지 대기중 화면에서 진행하세요.' />
-            </Dialog>
-
-            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
-              <Dialog.Title title='기프티콘 설명 가져가는' />
-              <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>
-            </Dialog>
           </View>
         )}
       </ScrollView>
