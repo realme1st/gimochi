@@ -46,10 +46,10 @@ function GifticonMainScreen({ navigation }) {
         console.log(response);
         const newData = [];
         const usedData = [];
-        response.data.data.forEach((gifticon) => {
+        response.data.data.forEach((gifticon, i) => {
           if (gifticon.gifticonUsed) {
             usedData.push(gifticon);
-          } else {
+          } else if (response.data.data[i].challengeRewardList.length === 0) {
             newData.push(gifticon);
           }
         });

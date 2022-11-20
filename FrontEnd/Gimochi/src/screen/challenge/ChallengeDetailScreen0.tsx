@@ -119,10 +119,10 @@ function ChallengeDetailScreen0({ route, navigation }) {
       });
   };
 
-  const registerGift = () => {
+  const registerGift = (index) => {
     Alert.alert('기프티콘을 등록하시겠습니까?', '', [
       { text: '아니오', style: 'cancel' },
-      { text: '네', onPress: () => registerGift2() },
+      { text: '네', onPress: () => registerGift2(index) },
     ]);
   };
 
