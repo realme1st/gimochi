@@ -118,6 +118,7 @@ public class KakaoService {
         } else {
             user.get().changeSocialTokenInfo(token.getAccess_token(), token.getRefresh_token());
             user.get().setUserProfile(profile.getProperties().getThumbnail_image());
+            user.get().setExpiresIn(sf.format(today.getTime() + (long) (21600 * 1000)));
             UserLoginDto userLoginDto = UserLoginDto.builder()
                     .userId(user.get().getUserId())
                     .userProfile(user.get().getUserProfile())

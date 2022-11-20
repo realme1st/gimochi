@@ -116,4 +116,6 @@ public class User {
         this.usedCount = this.usedCount + 1;
     }
 
+    public void setExpiresIn(String expiresIn){ this.expiresIn = expiresIn;}
+
 }
