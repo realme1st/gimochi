@@ -81,6 +81,19 @@ public class UserService {
 	}
 
 	/*
+	 * description : 사용 기프티콘 카운트 다운 메소드
+	 * @param userId : userId
+	 * @return boolean : 성공 여부
+	 * */
+	@Transactional
+	public boolean countDownUsed(Long userId){
+		User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER));
+		user.countDownUsed();
+		userRepository.save(user);
+		return true;
+	}
+
+	/*
 	* description : 팔로우 요청을 처리하는 메소드
 	* @param followReqDto : 팔로우 요청을 위한 Dto
 	* @return boolean : 팔로우 요청 성공 여부

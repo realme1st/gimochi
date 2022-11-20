@@ -41,6 +41,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponseEntity<>(userService.countUpUsed(userId)));
     }
+
+    @GetMapping("/usage/used/down/{userId}")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 증가", notes = "사용자 정보 수정")
+    public ResponseEntity<? extends BasicResponse> countDownUsed(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.countDownUsed(userId)));
+    }
+
     // 팔로우
     @PostMapping("/follow-request")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)에게 친구 요청 전송", notes = "팔로우")
