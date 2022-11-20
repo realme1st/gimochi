@@ -32,10 +32,11 @@ function ChallengeCreateScreen2({ route, navigation }) {
   const [dateE, setDateE] = useState<Date>(new Date());
   const [visibleS, setVisibleS] = useState<boolean>(false); // 달력 모달 노출 여부
   const [visibleE, setVisibleE] = useState<boolean>(false); // 달력 모달 노출 여부
-  const [visibleDialogG, setVisibleDialogG] = useState(false);
   const [visibleDialogP, setVisibleDialogP] = useState(false);
-  const [visibleAddG, setVisibleAddG] = useState(false);
+  const [visibleDialogG, setVisibleDialogG] = useState(false);
+
   const [visibleListG, setVisibleListG] = useState(false);
+
   const dispatch = useAppDispatch();
   const userId = useSelector((state: RootState) => state.user.userId);
   const userNickname = useSelector((state: RootState) => state.user.userNickname);
@@ -158,9 +159,7 @@ function ChallengeCreateScreen2({ route, navigation }) {
   const toggleDialogG = () => {
     setVisibleDialogG(!visibleDialogG);
   };
-  const toggleAddG = () => {
-    setVisibleAddG(!visibleAddG);
-  };
+
   const toggleListG = () => {
     setVisibleListG(!visibleListG);
   };
@@ -310,23 +309,13 @@ function ChallengeCreateScreen2({ route, navigation }) {
             }}
           >
             <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기프티콘 목록
+              기프티콘 등록 안내
             </Text>
             <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
             <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
-              <Dialog.Title title='기프티콘 목록 (여기서 등록)' />
-              <Text
-                onPress={() => toggleAddG()}
-                style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}
-              >
-                기프티콘 등록 버튼
-              </Text>
-              <Text>ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</Text>
+              <Dialog.Title title='기프티콘 등록은 챌린지 대기중 화면에서 진행하세요.' />
             </Dialog>
-            <Dialog isVisible={visibleAddG} onBackdropPress={toggleAddG}>
-              <Dialog.Title title='기프티콘등록 화면(모달에모달)' />
-              <Text>ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ</Text>
-            </Dialog>
+
             <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
               <Dialog.Title title='기프티콘 설명 가져가는' />
               <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>

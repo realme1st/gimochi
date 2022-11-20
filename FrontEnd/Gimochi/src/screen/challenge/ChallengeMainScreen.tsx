@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, ScrollView, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Tab, Icon, TabView, ThemeProvider, createTheme } from '@rneui/themed';
+import { Tab, Icon, TabView, ThemeProvider, createTheme, ListItem } from '@rneui/themed';
 import { useAppDispatch } from '../../store';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -15,7 +15,7 @@ function ChallengeMainScreen({ navigation, route }) {
   const dispatch = useAppDispatch();
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [totalDay, setTotalDay] = useState(0); // 챌린지 정보
   const [myChList, setmyChList] = useState([]);
   const [my0ChList, setmy0ChList] = useState([]);
   const [my1ChList, setmy1ChList] = useState([]);
@@ -35,17 +35,26 @@ function ChallengeMainScreen({ navigation, route }) {
     navigation.navigate('ChallengeCreateScreen1');
   };
 
-  const create012List = (res) => {
-    res.forEach((chall, i) => {
+  const create012List = async (res) => {
+    const wait = [];
+    const ing = [];
+    const end = [];
+    await res.forEach((chall, i) => {
       if (chall.challengeActive === 0) {
-        my0ChList.push(chall);
+        wait.push(chall);
       } else if (chall.challengeActive === 1) {
-        my1ChList.push(chall);
+        ing.push(chall);
       } else if (chall.challengeActive === 2) {
-        my2ChList.push(chall);
+        end.push(chall);
       }
-      console.log(myChList, my0ChList, my1ChList, my2ChList);
     });
+    wait.sort((a, b) => new Date(a.challengeStartDate) - new Date(b.challengeStartDate));
+    ing.sort((a, b) => new Date(a.challengeEndDate) - new Date(b.challengeEndDate));
+    end.sort((a, b) => new Date(b.challengeEndDate) - new Date(a.challengeEndDate));
+    setmy0ChList(wait);
+    setmy1ChList(ing);
+    setmy2ChList(end);
+    console.log(myChList, my0ChList, my1ChList, my2ChList);
   };
   const calSDay = (time) => {
     const t = new Date(time) - new Date() - 32400000;
@@ -74,13 +83,11 @@ function ChallengeMainScreen({ navigation, route }) {
       .get(`${Config.API_URL}/challenge/challengeList/` + userId)
       .then(function (response) {
         console.log(response.data.data);
+        console.log('hi');
         // myChList.push(response.data.data);
         setmyChList(response.data.data);
         create012List(response.data.data);
         // const temp = { ...response1.data.data[i], ...response2.data.data };
-        my0ChList.sort((a, b) => new Date(a.challengeStartDate) - new Date(b.challengeStartDate));
-        my1ChList.sort((a, b) => new Date(a.challengeEndDate) - new Date(b.challengeEndDate));
-        my2ChList.sort((a, b) => new Date(b.challengeEndDate) - new Date(a.challengeEndDate));
         // console.log(myChList, my0ChList, my1ChList, my2ChList);
       })
       .catch(function (error) {
@@ -174,14 +181,25 @@ function ChallengeMainScreen({ navigation, route }) {
               <Text>---진행중(맨위가 종료임박)---</Text>
               {my1ChList.map((Ch, index) => (
                 <TouchableOpacity key={index + 10000} onPress={() => goDetail1(Ch.challengeId)}>
-                  <Text>{Ch.challengeRewardType === 1 ? '포인트' : '기프티콘'}</Text>
-                  <Text>제목:{Ch.challengeTitle}</Text>
-                  <Text>끝나기까지 D-{calEDay(Ch.challengeEndDate)}day</Text>
-                  <Text>게시자:{Ch.challengeLeaderName}</Text>
-                  <Text>참여자수:{Ch.challenger_cnt}명</Text>
-                  <Text>현재 1위{Ch.winnerName}</Text>
-                  {/* <Text>1위 없음</Text> */}
-                  <Text>------------------------</Text>
+                  <ListItem bottomDivider>
+                    {Ch.challengeRewardType === 1 ? (
+                      <Icon name='file-powerpoint-box-outline' type='material-community' />
+                    ) : (
+                      <Icon name='barcode-scan' type='material-community' />
+                    )}
+
+                    <ListItem.Content>
+                      <View style={{ flexDirection: 'row' }}>
+                        <ListItem.Title style={{ color: 'black' }}>{Ch.challengeTitle}</ListItem.Title>
+                        <ListItem.Title right style={{ color: '#FFA401' }}>
+                          D-{calEDay(Ch.challengeEndDate)}day
+                        </ListItem.Title>
+                      </View>
+                      <ListItem.Subtitle>
+                        게시자:{Ch.challengeLeaderName} | 참여자수:{Ch.challenger_cnt}명 | 1위:{Ch.winnerName}
+                      </ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
                 </TouchableOpacity>
               ))}
 
