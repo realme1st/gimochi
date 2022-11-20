@@ -97,6 +97,7 @@ function GifticonUploadScreen({ navigation }) {
       })
       .catch(function (error) {
         console.log(error);
+        Alert.alert('유효한 기프티콘 사진 파일을 업로드해주세요.');
       });
   }, [image, accessToken, userId]);
 
@@ -158,7 +159,7 @@ function GifticonUploadScreen({ navigation }) {
       )}
       {preview && (
         <SubmitButton onPress={postOCR}>
-          <SubmitText>OCR</SubmitText>
+          <SubmitText>업로드</SubmitText>
         </SubmitButton>
       )}
       {isOCR && (

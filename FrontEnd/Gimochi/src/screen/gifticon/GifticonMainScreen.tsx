@@ -43,8 +43,8 @@ function GifticonMainScreen({ navigation }) {
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
         console.log(response);
-        var newData = [];
-        var usedData = [];
+        const newData = [];
+        const usedData = [];
         response.data.data.forEach((gifticon) => {
           if (gifticon.gifticonUsed) {
             usedData.push(gifticon);
@@ -234,7 +234,11 @@ function GifticonMainScreen({ navigation }) {
         onBackdropPress={() => setModal(false)}
       >
         <ModalContainer>
-          <FastImage source={{ uri: path }} style={{ width: 120, height: 180 }} resizeMode='contain' />
+          <FastImage
+            source={{ uri: path }}
+            style={{ width: 150, height: 200, marginBottom: '3%', marginTop: '5%' }}
+            resizeMode='contain'
+          />
           <ModalText>{period}</ModalText>
           <ModalText>{store}</ModalText>
           <ModalButtonContainer>
@@ -278,7 +282,7 @@ const GifticonItemText = styled.Text`
 const ModalContainer = styled.View`
   margin: 15%;
   width: 70%;
-  height: 65%;
+  height: 55%;
   background-color: #ffe7bc;
   border-radius: 15px;
   border: 1px solid #000;

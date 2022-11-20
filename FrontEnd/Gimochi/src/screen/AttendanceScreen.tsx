@@ -22,7 +22,6 @@ function AttendanceScreen() {
   return (
     <View style={{ backgroundColor: '#ffffff', flex: 1 }}>
       <Text style={{ fontFamily: 'Regular', color: '#000000' }}>추후 업데이트 예정입니다</Text>
-      <Calendars />
     </View>
   );
 }

@@ -155,14 +155,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[0 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[0 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[0 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image1Container>
       )}
@@ -171,14 +172,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[1 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[1 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[1 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image2Container>
       )}
@@ -187,14 +189,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[2 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[2 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[2 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image3Container>
       )}
@@ -203,14 +206,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[3 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[3 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[3 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image4Container>
       )}
@@ -219,14 +223,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[4 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[4 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[4 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image5Container>
       )}
@@ -235,14 +240,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[5 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[5 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[5 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image6Container>
       )}
@@ -251,14 +257,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[6 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[6 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[6 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image7Container>
       )}
@@ -267,14 +274,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[7 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[7 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[7 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image8Container>
       )}
@@ -283,14 +291,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[8 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[8 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[8 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image9Container>
       )}
@@ -299,14 +308,15 @@ function RPChristmasScreen({ navigation, route }) {
           <Image
             source={
               messageList[9 + page * 10].messageType === 1
-                ? require('../../assets/images/homeMochi.png')
+                ? require('../../assets/images/christmasItem1.png')
                 : messageList[9 + page * 10].messageType === 2
-                ? require('../../assets/images/attendMochi.png')
+                ? require('../../assets/images/christmasItem2.png')
                 : messageList[9 + page * 10].messageType === 3
-                ? require('../../assets/images/challengeMochi.png')
-                : require('../../assets/images/playMochi.png')
+                ? require('../../assets/images/christmasItem3.png')
+                : require('../../assets/images/christmasItem4.png')
             }
             resizeMode='contain'
+            style={{ width: '100%' }}
           />
         </Image10Container>
       )}

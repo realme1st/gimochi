@@ -53,7 +53,7 @@ function RPMessageWriteScreen({ route, navigation }) {
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
         console.log(response);
-        var gifticonData = [];
+        const gifticonData = [];
         response.data.data.forEach((gifticon) => {
           if (!gifticon.gifticonUsed) {
             gifticonData.push(gifticon);
@@ -88,20 +88,22 @@ function RPMessageWriteScreen({ route, navigation }) {
         console.log(error);
       });
     chiunGifticonCount(userId);
-    await axios
-      .put(`${Config.API_URL}/gifticon/present/${gifticonId}/${userId}/${friendId}`)
-      .then(function (response) {
-        console.log(response);
-        dispatch(
-          reloadSlice.actions.setReload({
-            reload: String(new Date()),
-          }),
-        );
-        navigation.goBack();
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if (gifticonId) {
+      await axios
+        .put(`${Config.API_URL}/gifticon/present/${gifticonId}/${userId}/${friendId}`)
+        .then(function (response) {
+          console.log(response);
+          dispatch(
+            reloadSlice.actions.setReload({
+              reload: String(new Date()),
+            }),
+          );
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    navigation.goBack();
   };
 
   const submitButton = () => {
