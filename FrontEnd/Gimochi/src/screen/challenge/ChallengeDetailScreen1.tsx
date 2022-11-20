@@ -20,6 +20,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
+import { FlatGrid } from 'react-native-super-grid';
+import FastImage from 'react-native-fast-image';
 
 function ChallengeDetailScreen1({ route, navigation }) {
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -29,12 +31,15 @@ function ChallengeDetailScreen1({ route, navigation }) {
   const [visibleDialogQ, setVisibleDialogQ] = useState(false);
   const [visibleDialogF, setVisibleDialogF] = useState(false);
   const [visibleDialogG, setVisibleDialogG] = useState(false);
+  const [visibleListG, setVisibleListG] = useState(false);
+  const [myAuthLists, setMyAuthLists] = useState(false);
+  const [allAuthLists, setAllAuthLists] = useState(false);
   const [loading, setLoading] = useState(true);
   const [myChallenge, setMyChallenge] = useState([]); // 챌린지 정보
-  const [totalDay, setTotalDay] = useState(0); // 챌린지 정보
+  const [totalDay, setTotalDay] = useState(0); // 챌린지 정보 날짜 총
   const [usersInfo, setUsersInfo] = useState([]); // 챌린지 참여 목록
   const [myInfo, setMyInfo] = useState([]); // 챌린지 내 순위 기록
-
+  const [chGifticons, setChGifticons] = useState([]);
   // const challengeId = route.params.challengeId;
   const challengeId = 16;
 
@@ -46,6 +51,9 @@ function ChallengeDetailScreen1({ route, navigation }) {
   };
   const toggleDialogG = () => {
     setVisibleDialogG(!visibleDialogG);
+  };
+  const toggleListG = () => {
+    setVisibleListG(!visibleListG);
   };
 
   const interpolate = (start: number, end: number) => {
@@ -71,6 +79,32 @@ function ChallengeDetailScreen1({ route, navigation }) {
 
   useEffect(() => {
     axios
+      .get(`${Config.API_URL}/challenge/challengeAuth/${challengeId}`)
+      .then(function (response) {
+        setAllAuthLists(response.data.data);
+        let temp = [];
+        for (var i = 0; i < response.data.data.length; i++) {
+          if (response.data.data[i].userId === userId) {
+            temp.push(response.data.data[i]);
+          }
+        }
+        setMyAuthLists(temp);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    axios
+      .get(`${Config.API_URL}/challenge/rewardInfo/${challengeId}}`)
+      .then(function (response) {
+        // console.log('ttt', response.data.data.gifticonList);
+        setChGifticons(response.data.data.gifticonList);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    axios
       .get(`${Config.API_URL}/challenge/challengeInfo/rank/${challengeId}/${userId}`)
       .then(function (response) {
         console.log(response.data.data);
@@ -95,9 +129,14 @@ function ChallengeDetailScreen1({ route, navigation }) {
               new Date(response1.data.data.challengeStartDate);
             const result = parseInt(temp / 86400000);
             setTotalDay(result + 1);
-            // console.log(response2.data.data);
-            // console.log(response2.data.data.sort((a, b) => b.successCnt - a.successCnt));
-            setUsersInfo(response2.data.data);
+            //             var arr = [];
+            // for(var i = 0; i < result + 1; i++) {
+            // 		arr.push(i);
+            // }
+            let temp2 = response2.data.data.sort((a, b) => b.successCnt - a.successCnt);
+            // console.log('ttt', response2.data.data);
+            // console.log(temp2);
+            setUsersInfo(temp2);
           }),
         )
         .catch(function (error) {
@@ -211,8 +250,25 @@ function ChallengeDetailScreen1({ route, navigation }) {
               </View>
               <Text>인증성공 1개| 인증 실패 2개 | 남은 인증 12개</Text>
               <Text>인증샷 기록 나열 or 달력</Text>
+
+              <View>
+                <FlatGrid
+                  itemDimension={95}
+                  data={myAuthLists}
+                  style={{}}
+                  spacing={5}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity style={{ alignItems: 'center' }}>
+                      <FastImage source={{ uri: item.challengePath }} style={{ width: 80, height: 80 }} />
+                      {/* <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text> */}
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+
               <Text style={{ marginVertical: 20 }} onPress={() => toggleDialogG()}>
-                총상금 {myChallenge.challengeRewardPoint} 원 or 기프티콘 누르면 설명
+                총상금 {myChallenge.challengeRewardPoint} 원
               </Text>
               <Dialog
                 isVisible={visibleDialogG}
@@ -222,6 +278,32 @@ function ChallengeDetailScreen1({ route, navigation }) {
                 <Dialog.Title title='기프티콘/ 포인트 총상금 관련' />
                 <Text>두두두둗</Text>
               </Dialog>
+
+              <Text
+                onPress={() => toggleListG()}
+                style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}
+              >
+                기프티콘 등록 목록
+              </Text>
+
+              <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
+                <Dialog.Title title='챌린지 등록된 기프티콘 목록 ' />
+
+                <FlatGrid
+                  itemDimension={95}
+                  data={chGifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+                  style={{}}
+                  spacing={5}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity style={{ alignItems: 'center' }}>
+                      {/* <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} /> */}
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </Dialog>
+
               <Text style={{ marginVertical: 20 }} onPress={() => toggleDialogF()}>
                 {myInfo.myRank} 위 나의 순위 / 모달 랭킹
               </Text>
@@ -301,14 +383,30 @@ function ChallengeDetailScreen1({ route, navigation }) {
                 size={20}
                 // containerStyle={{ bottom: 20, right: 20 }}
               />
-              <Text onPress={() => goCamera(1)}>인증하기</Text>
+              <Text onPress={() => goCamera(challengeId)}>인증하기</Text>
               <Icon name='question' type='octicon' size={20} color='black' onPress={() => toggleDialogQ()} />
 
               <Dialog isVisible={visibleDialogQ} onBackdropPress={toggleDialogQ}>
                 <Dialog.Title title='인증샷 설명' />
                 <Text>두두두둗</Text>
               </Dialog>
-              <Text>가져오기</Text>
+
+              <Text>전체 유저 인증샷 목록</Text>
+              <View>
+                <FlatGrid
+                  itemDimension={95}
+                  data={allAuthLists}
+                  style={{}}
+                  spacing={5}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity style={{ alignItems: 'center' }}>
+                      <FastImage source={{ uri: item.challengePath }} style={{ width: 80, height: 80 }} />
+                      {/* <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                      <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text> */}
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
             </ScrollView>
           </TabView.Item>
         </TabView>

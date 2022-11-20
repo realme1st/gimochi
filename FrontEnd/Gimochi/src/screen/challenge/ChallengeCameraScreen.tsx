@@ -24,6 +24,7 @@ import {
   Dialog,
   Icon,
 } from '@rneui/themed';
+import { format } from 'date-fns';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer';
 import axios from 'axios';
@@ -36,6 +37,7 @@ import reloadSlice from '../../slices/reload';
 function ChallengeCameraScreen({ navigation, route }) {
   const [image, setImage] = useState<{ uri: string; name: string; type: string }>();
   const [preview, setPreview] = useState<{ uri: string }>();
+
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const userId = useSelector((state: RootState) => state.user.userId);
 
@@ -44,42 +46,79 @@ function ChallengeCameraScreen({ navigation, route }) {
 
   console.log(chId);
 
-  // axios
-  // const onComplete = useCallback(async () => {
-  //   if (!image) {
-  //     Alert.alert('알림', '파일을 업로드해주세요.');
-  //     return;
-  //   }
-  //   if (!chId) {
-  //     Alert.alert('알림', '유효하지 않은 주문입니다.');
-  //     return;
-  //   }
-  //   const formData = new FormData();
+  //..깊티임의로 userId : 1
+  const onTempPath = async () => {
+    const formData = new FormData();
+    formData.append('file', image);
+    const jsonData = {
+      gifticonCode: 123456781234,
+      gifticonPeriod: format(new Date(), 'yyyy-MM-dd'),
 
-  //   formData.append('chId', chId);
-  //   formData.append('image', image);
-  //   // 이미지 서버에 트큰이랑 보내줌?
-  //   try {
-  //     await axios.post(`${Config.API_URL}/complete`, formData, {
-  //       headers: {
-  //         authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //     Alert.alert('알림', '완료처리 되었습니다.');
-  //     navigation.goBack(); // 뒤로가기  스택관리
-  //     // navigation.navigate('Settings');
-  //     dispatch(orderSlice.actions.rejectOrder(chId));
-  //   } catch (error) {
-  //     const errorResponse = (error as AxiosError).response;
-  //     if (errorResponse) {
-  //       Alert.alert('알림', errorResponse.data.message);
-  //     }
-  //   }
-  // }, [dispatch, navigation, image, chId, accessToken]);
-
-  const goMain = () => {
-    navigation.navigate('ChallengeMainScreen');
+      gifticonStore: '인증샷',
+      userId: 1,
+    };
+    // console.log(jsonData);
+    await axios
+      .post(`${Config.API_URL}/gifticon/info`, jsonData)
+      .then(function (response) {
+        console.log(111, response.data.data.gifticonId);
+        onTempPath2(response.data.data.gifticonId, formData);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
+
+  const onTempPath2 = async (id: number, formData: FormData) => {
+    await axios
+      .post(`${Config.API_URL}/gifticon/img/${id}`, formData, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then(function (response) {
+        console.log(112, response.data.data.gifticonPath);
+        onComplete(response.data.data.gifticonPath);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const onComplete = async (path) => {
+    if (!image) {
+      Alert.alert('알림', '파일을 업로드해주세요.');
+      return;
+    }
+
+    const jsonData = {
+      challengeDate: format(new Date(), 'yyyy-MM-dd'),
+      challengeId: chId,
+      challengePath: String(path),
+      isConfirm: 0,
+      userId: userId,
+      voteCnt: 0,
+    };
+    // console.log(jsonData);
+    await axios
+      .post(`${Config.API_URL}/challenge/challengeAuth`, jsonData)
+      .then(function (response) {
+        console.log(response);
+        // 실시간 상태관리용, 무지성 복붙할것
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+        // 대기중
+        // 올라갔습니다
+        navigation.goBack();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   // ImageCropPicker에서 crop된 사진을 resizing한 후 객체 형태(경로, 파일이름, 타입)로 이미지 파일 저장하는 메서드
   const onResponse = useCallback(async (response) => {
     console.log(response.width, response.height, response.exif);
@@ -150,23 +189,12 @@ function ChallengeCameraScreen({ navigation, route }) {
           {/* 업로드시 버튼 광클 방지 로직 해보기   | 디스에이블, 로딩*/}
           <Pressable
             style={image ? styles.button : StyleSheet.compose(styles.button, styles.buttonDisabled)}
-            // onPress={onComplete}
+            onPress={onTempPath}
           >
             <Text style={styles.buttonText}>완료</Text>
           </Pressable>
         </View>
       </ScrollView>
-      <Icon
-        name='delete'
-        type='material'
-        color='#FFE7BC'
-        size={25}
-        reverse
-        reverseColor='#FFA401'
-        onPress={() => goMain()}
-        iconStyle={{ fontSize: 33 }}
-        containerStyle={{ position: 'absolute', top: '85%', left: '5%' }}
-      />
     </View>
   );
 }
@@ -178,12 +206,12 @@ const styles = StyleSheet.create({
   preview: {
     marginHorizontal: 10,
     width: Dimensions.get('window').width - 20,
-    height: Dimensions.get('window').height / 3,
+    height: Dimensions.get('window').height / 2,
     backgroundColor: '#D2D2D2',
     marginBottom: 10,
   },
   previewImage: {
-    height: Dimensions.get('window').height / 3,
+    height: Dimensions.get('window').height / 2,
     resizeMode: 'contain',
     // resizeMode: 'cover','center',
   },
