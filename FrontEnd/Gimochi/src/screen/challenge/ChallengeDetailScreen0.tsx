@@ -20,6 +20,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { useAppDispatch } from '../../store';
 import reloadSlice from '../../slices/reload';
+import { FlatGrid } from 'react-native-super-grid';
+import FastImage from 'react-native-fast-image';
 
 function ChallengeDetailScreen0({ route, navigation }) {
   const [time, setTime] = useState(new Date());
@@ -32,6 +34,13 @@ function ChallengeDetailScreen0({ route, navigation }) {
   const [usersInfoL, setUsersInfoL] = useState([]); // 챌린지 참여 종합목록
   const [inviteUsers, setInviteUsers] = useState([]); // 챌린지 초대장 보낸 유저목록
   // const [loadingF, setLoadingF] = useState(true);
+  const [visibleDialogG, setVisibleDialogG] = useState(false);
+  const [visibleAddG, setVisibleAddG] = useState(false);
+  const [visibleListG, setVisibleListG] = useState(false);
+  const [gifticons, setGifticons] = useState([]);
+  const [chGifticons, setChGifticons] = useState([]);
+  const [giftId, setGiftId] = useState('');
+  const [giftPeriod, setGiftPeriod] = useState(new Date());
   const [myfollower, setMyfollower] = useState([]); // 친구목록
   const userId = useSelector((state: RootState) => state.user.userId);
   const reload = useSelector((state: RootState) => state.reload.reload);
@@ -50,7 +59,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
       // console.log(SSTT - new Date() - 32400000);
       setTime(new Date());
       setCalTime(SSTT - new Date() - 32400000);
-    }, 1000);
+    }, 100000);
     // 타이머 컴포넌트가 언마운트 될 때 실행
     return () => clearInterval(interval.current);
   });
@@ -69,8 +78,41 @@ function ChallengeDetailScreen0({ route, navigation }) {
   const t = parseInt(tt / 1000);
   console.log(dd, h, m, t);
 
+  const toggleDialogG = () => {
+    setVisibleDialogG(!visibleDialogG);
+  };
+  const toggleAddG = () => {
+    setVisibleAddG(!visibleAddG);
+  };
+  const toggleListG = () => {
+    setVisibleListG(!visibleListG);
+  };
+
   const goMain = () => {
     navigation.navigate('ChallengeMainScreen');
+  };
+
+  const registerGift = async (index) => {
+    setGiftPeriod(gifticons[index].gifticonPeriod);
+    setGiftId(gifticons[index].gifticonId);
+    // console.log(gifticons[index].gifticonId);
+    await axios
+      .post(`${Config.API_URL}/challenge/rewardInfo`, {
+        challengeId: challengeId,
+        gifticonId: giftId,
+      })
+      .then(function (response) {
+        console.log('등록하기');
+        console.log(response);
+        dispatch(
+          reloadSlice.actions.setReload({
+            reload: String(new Date()),
+          }),
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const myFollow = async () => {
@@ -87,36 +129,61 @@ function ChallengeDetailScreen0({ route, navigation }) {
       .finally(() => toggleDialogF());
   };
 
-  const doInvite = async (id) => {
-    const jsonData = {
-      challengeId: challengeId,
-      userId: id,
-    };
-    console.log(jsonData);
-    await axios
-      .post(`${Config.API_URL}/challenge/challengeInvite`, jsonData)
+  // const doInvite = async (id) => {
+  //   const jsonData = {
+  //     challengeId: challengeId,
+  //     userId: id,
+  //   };
+  //   console.log(jsonData);
+  //   await axios
+  //     .post(`${Config.API_URL}/challenge/challengeInvite`, jsonData)
+  //     .then(function (response) {
+  //       console.log(response);
+  //       // 실시간 상태관리용, 무지성 복붙할것
+  //       dispatch(
+  //         reloadSlice.actions.setReload({
+  //           reload: String(new Date()),
+  //         }),
+  //       );
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
+
+  useEffect(() => {
+    axios
+      .get(`${Config.API_URL}/challenge/rewardInfo/${challengeId}}`)
       .then(function (response) {
-        console.log(response);
-        // 실시간 상태관리용, 무지성 복붙할것
-        dispatch(
-          reloadSlice.actions.setReload({
-            reload: String(new Date()),
-          }),
-        );
+        // console.log('ttt', response.data.data.gifticonList);
+        setChGifticons(response.data.data.gifticonList);
       })
       .catch(function (error) {
         console.log(error);
       });
-  };
 
-  useEffect(() => {
+    axios
+      .get(`${Config.API_URL}/gifticon/uid/${userId}`)
+      .then(function (response) {
+        // console.log('ttat', response.data.data);
+        let temp = [];
+        for (var i = 0; i < response.data.data.length; i++) {
+          if (response.data.data[i].challengeRewardList.length === 0) {
+            temp.push(response.data.data[i]);
+          }
+        }
+        setGifticons(temp);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     axios
       .get(`${Config.API_URL}/challenge/challengeInvite/userList/` + challengeId)
       .then(function (response) {
-        console.log(response.data.data);
+        // console.log('tt', response.data.data);
         setInviteUsers(response.data.data);
       })
-
       .catch(function (error) {
         console.log(error);
       });
@@ -340,18 +407,66 @@ function ChallengeDetailScreen0({ route, navigation }) {
               누적 상금확인{myChallenge.challengeRewardPoint} 클릭 설명
             </Text>
           </View>
+
           <View
             style={{
               flexDirection: 'row',
-              height: 80,
+              height: 100,
               padding: 20,
-              marginRight: 60,
+              marginRight: 85,
             }}
           >
-            <Text style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
-              기프티콘 클릭 확인(모달)
+            <Text onPress={() => toggleListG()} style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}>
+              기프티콘 목록
             </Text>
+            <Icon name='question' type='octicon' size={35} color='black' onPress={() => toggleDialogG()} />
+
+            <Dialog isVisible={visibleListG} onBackdropPress={toggleListG}>
+              <Dialog.Title title='챌린지 등록된 기프티콘 목록 ' />
+              <Text
+                onPress={() => toggleAddG()}
+                style={{ fontSize: 25, marginTop: 5, fontFamily: 'Regular' }}
+              >
+                기프티콘 등록 버튼
+              </Text>
+              <FlatGrid
+                itemDimension={95}
+                data={chGifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+                style={{}}
+                spacing={5}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity style={{ alignItems: 'center' }}>
+                    {/* <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} /> */}
+                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </Dialog>
+
+            <Dialog isVisible={visibleAddG} onBackdropPress={toggleAddG}>
+              <Dialog.Title title='내 기프티콘 목록' />
+              <Text>클릭시 등록하시겠습니까?</Text>
+              <FlatGrid
+                itemDimension={95}
+                data={gifticons.filter((gifticon) => !gifticon.gifticonUsed)}
+                style={{}}
+                spacing={5}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => registerGift(index)}>
+                    <FastImage source={{ uri: item.gifticonPath }} style={{ width: 80, height: 80 }} />
+                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonPeriod}</Text>
+                    <Text style={{ color: 'black', fontFamily: 'Regular' }}>{item.gifticonStore}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </Dialog>
+            <Dialog isVisible={visibleDialogG} onBackdropPress={toggleDialogG}>
+              <Dialog.Title title='기프티콘 설명 가져가는' />
+              <Text>ㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹㄹ</Text>
+            </Dialog>
           </View>
+
           <View
             style={{
               flexDirection: 'row',
