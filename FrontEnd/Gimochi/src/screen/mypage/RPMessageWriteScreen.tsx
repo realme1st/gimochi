@@ -93,16 +93,16 @@ function RPMessageWriteScreen({ route, navigation }) {
         .put(`${Config.API_URL}/gifticon/present/${gifticonId}/${userId}/${friendId}`)
         .then(function (response) {
           console.log(response);
-          dispatch(
-            reloadSlice.actions.setReload({
-              reload: String(new Date()),
-            }),
-          );
         })
         .catch(function (error) {
           console.log(error);
         });
     }
+    dispatch(
+      reloadSlice.actions.setReload({
+        reload: String(new Date()),
+      }),
+    );
     navigation.goBack();
   };
 
@@ -169,32 +169,64 @@ function RPMessageWriteScreen({ route, navigation }) {
         </TitleContainer>
         <ImageContainer>
           <TouchableOpacity onPress={() => setType(1)}>
-            <Image
-              source={require('../../assets/images/homeMochi.png')}
-              resizeMode='contain'
-              style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
-            />
+            {sessionType === 3 ? (
+              <Image
+                source={require('../../assets/images/christmasItem1.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/homeMochi.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(2)}>
-            <Image
-              source={require('../../assets/images/attendMochi.png')}
-              resizeMode='contain'
-              style={type === 2 ? { height: 70 } : { height: 70, opacity: 0.3 }}
-            />
+            {sessionType === 3 ? (
+              <Image
+                source={require('../../assets/images/christmasItem2.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/attendMochi.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(3)}>
-            <Image
-              source={require('../../assets/images/challengeMochi.png')}
-              resizeMode='contain'
-              style={type === 3 ? { height: 70 } : { height: 70, opacity: 0.3 }}
-            />
+            {sessionType === 3 ? (
+              <Image
+                source={require('../../assets/images/christmasItem3.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/challengeMochi.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setType(4)}>
-            <Image
-              source={require('../../assets/images/playMochi.png')}
-              resizeMode='contain'
-              style={type === 4 ? { height: 70 } : { height: 70, opacity: 0.3 }}
-            />
+            {sessionType === 3 ? (
+              <Image
+                source={require('../../assets/images/christmasItem4.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/images/playMochi.png')}
+                resizeMode='contain'
+                style={type === 1 ? { height: 70 } : { height: 70, opacity: 0.3 }}
+              />
+            )}
           </TouchableOpacity>
         </ImageContainer>
       </DismissKeyboardView>

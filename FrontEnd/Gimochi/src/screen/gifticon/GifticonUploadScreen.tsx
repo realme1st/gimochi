@@ -93,7 +93,11 @@ function GifticonUploadScreen({ navigation }) {
         setPeriod(response.data.data.gifticonPeriod);
         setStore(response.data.data.gifticonStore);
         setCode(response.data.data.gifticonCode);
-        setIsOCR(true);
+        if (!response.data.data.gifticonPeriod && !response.data.data.gifticonCode) {
+          Alert.alert('유효한 기프티콘 사진 파일을 업로드해주세요.');
+        } else {
+          setIsOCR(true);
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -105,20 +109,24 @@ function GifticonUploadScreen({ navigation }) {
   const postInfo = async () => {
     const formData = new FormData();
     formData.append('file', image);
-    await axios
-      .post(`${Config.API_URL}/gifticon/info`, {
-        gifticonPeriod: period,
-        gifticonStore: store,
-        gifticonCode: code,
-        userId: userId,
-      })
-      .then(function (response) {
-        console.log(response);
-        postImage(response.data.data.gifticonId, formData);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if (period && store && code) {
+      await axios
+        .post(`${Config.API_URL}/gifticon/info`, {
+          gifticonPeriod: period,
+          gifticonStore: store,
+          gifticonCode: code,
+          userId: userId,
+        })
+        .then(function (response) {
+          console.log(response);
+          postImage(response.data.data.gifticonId, formData);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      Alert.alert('유효한 기프티콘 정보를 입력해주세요.');
+    }
   };
 
   // 이미지 서버에 post
@@ -148,14 +156,19 @@ function GifticonUploadScreen({ navigation }) {
       <UploadContainer>
         <UploadTitle>기프티콘 등록</UploadTitle>
       </UploadContainer>
-      <TouchableOpacity onPress={onChangeFile}>
-        <Text>갤러리 열기</Text>
-      </TouchableOpacity>
+      <SubmitButton onPress={onChangeFile}>
+        <SubmitText>갤러리</SubmitText>
+      </SubmitButton>
       {preview && (
-        <Image
-          style={{ height: Dimensions.get('window').height / 3, resizeMode: 'contain' }}
-          source={preview}
-        />
+        <>
+          <UploadContainer>
+            <UploadTitle>미리보기</UploadTitle>
+          </UploadContainer>
+          <Image
+            style={{ height: Dimensions.get('window').height / 3, resizeMode: 'contain' }}
+            source={preview}
+          />
+        </>
       )}
       {preview && (
         <SubmitButton onPress={postOCR}>
@@ -163,17 +176,26 @@ function GifticonUploadScreen({ navigation }) {
         </SubmitButton>
       )}
       {isOCR && (
-        <FormContainer>
-          <TextInput placeholder='대충 사용처' value={store} onChangeText={setStore}></TextInput>
+        <>
+          <UploadContainer>
+            <UploadTitle>기프티콘 정보 등록</UploadTitle>
+          </UploadContainer>
           <DateButtonContainer>
-            <FontAwesomeIcon icon={faCalendar} size={20} />
-            <DateText>{period}</DateText>
-            <DateText>{code}</DateText>
+            <DateText>사용처 : </DateText>
+            <TextInput
+              placeholder='대충 사용처'
+              value={store}
+              onChangeText={setStore}
+              style={{ fontSize: 20, color: '#000000' }}
+            ></TextInput>
+          </DateButtonContainer>
+          <DateButtonContainer>
+            <DateText>만료일 : {period}</DateText>
           </DateButtonContainer>
           <SubmitButton onPress={postInfo}>
             <SubmitText>등록</SubmitText>
           </SubmitButton>
-        </FormContainer>
+        </>
       )}
     </DismissKeyboardView>
   );
@@ -189,7 +211,7 @@ const UploadTitle = styled.Text`
 `;
 
 const UploadContainer = styled.View`
-  margin: 5% 5% 0;
+  margin: 5% 5% 3%;
   border-bottom-width: 1px;
   border-bottom-color: #ffa401;
 `;
@@ -202,6 +224,7 @@ const DateButtonContainer = styled.View`
 const DateText = styled.Text`
   font-size: 20px;
   font-family: 'Regular';
+  color: #000000;
   margin-left: 5%;
 `;
 
@@ -210,7 +233,7 @@ const SubmitButton = styled.TouchableOpacity`
   border-radius: 10px;
   background-color: #ffa401;
   align-items: center;
-  margin-left: 70%;
+  margin: 2% 10% 0 auto;
 `;
 
 const SubmitText = styled.Text`

@@ -120,10 +120,14 @@ function RPBirthdayScreen({ navigation, route }) {
           onBackdropPress={() => setModal(false)}
         >
           <ModalContainer>
-            <ModalTitleText>{nickname}님이 보낸 선물</ModalTitleText>
-            <ModalGifticonContainer>
-              <ModalText>대충 선물</ModalText>
-            </ModalGifticonContainer>
+            {gifticon !== 'null' && (
+              <>
+                <ModalTitleText>{nickname}님이 보낸 선물</ModalTitleText>
+                <ModalGifticonContainer>
+                  <ModalText>{gifticon}</ModalText>
+                </ModalGifticonContainer>
+              </>
+            )}
             <ModalTitleText>{nickname}님이 보낸 메시지</ModalTitleText>
             <ModalTextContainer>
               <ModalText>{text}</ModalText>

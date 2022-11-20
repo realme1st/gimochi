@@ -27,6 +27,7 @@ export const multiNotification = async (userId: any, type: number) => {
       userId: userId,
       type: type,
     });
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
