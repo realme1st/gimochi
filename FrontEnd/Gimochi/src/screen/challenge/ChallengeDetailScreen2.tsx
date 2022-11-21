@@ -38,8 +38,7 @@ function ChallengeDetailScreen2({ route, navigation }) {
   const dispatch = useAppDispatch();
 
   const userId = useSelector((state: RootState) => state.user.userId);
-  // const challengeId = route.params.challengeId;
-  const challengeId = 16;
+  const challengeId = route.params.challengeId;
 
   const toggleDialogF = () => {
     setVisibleDialogF(!visibleDialogF);
