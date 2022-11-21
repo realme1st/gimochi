@@ -127,13 +127,13 @@ function ChallengeDetailScreen0({ route, navigation }) {
   };
 
   const registerGift2 = async (index) => {
-    setGiftPeriod(gifticons[index].gifticonPeriod);
-    setGiftId(gifticons[index].gifticonId);
+    // setGiftPeriod(gifticons[index].gifticonPeriod);
+    // setGiftId(gifticons[index].gifticonId);
     // console.log(gifticons[index].gifticonId);
     await axios
       .post(`${Config.API_URL}/challenge/rewardInfo`, {
         challengeId: challengeId,
-        gifticonId: giftId,
+        gifticonId: gifticons[index].gifticonId,
       })
       .then(function (response) {
         console.log('등록하기');
@@ -189,7 +189,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
     axios
       .get(`${Config.API_URL}/challenge/rewardInfo/${challengeId}}`)
       .then(function (response) {
-        // console.log('ttt', response.data.data.gifticonList);
+        console.log('ttt1', response.data.data.gifticonList);
         setChGifticons(response.data.data.gifticonList);
       })
       .catch(function (error) {
@@ -199,7 +199,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
     axios
       .get(`${Config.API_URL}/gifticon/uid/${userId}`)
       .then(function (response) {
-        // console.log('ttat', response.data.data);
+        console.log('ttt2', response.data.data);
         let temp = [];
         for (var i = 0; i < response.data.data.length; i++) {
           if (response.data.data[i].challengeRewardList.length === 0) {
@@ -215,7 +215,7 @@ function ChallengeDetailScreen0({ route, navigation }) {
     axios
       .get(`${Config.API_URL}/challenge/challengeInvite/userList/` + challengeId)
       .then(function (response) {
-        // console.log('tt', response.data.data);
+        // console.log('ttt3', response.data.data);
         setInviteUsers(response.data.data);
       })
       .catch(function (error) {
