@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "gimochi",
+  "private_key_id": "cd8bdea6fd58172cd0f752ed83b03edfd4820c3b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQnMyHTlfIhbAY\nbJ9M8Z7AZxNHHi01A2vKJoVWxGbGQv2EY9ct5JInmrFNi6OVhfoSK8uTitKlCkkA\nYXFBqLQoLRlZVYBhPddbNZTuIxCzfhH2dWA/Sq0arsjAoAu6BpVj9v8mOB7sOw0G\nXj9htbuqF6Aif9sLcMhAxkfE59Tjxf4tBYfpiGwu11KB28+T6TdJWYhd0GGaoq0L\nS3qtcyIr2OMkcKuTJy9eMNCxhaClQwevjZuzXaeQn/WrZOA4yQitr0pA02PMD88A\neMllxqPCbNMyqxENsbIOqlDFRmYQbvVTkRBgA0twJzzLcqk1FbrGaux8XA8GqEjL\nzmil+aypAgMBAAECggEAQYn5ccrppkxl6g56L7S7QMxBULcI0d5sx1o5yuwyM7iJ\nKEYrrLXiOwINEQU9U/T+/yV2NDjJe+NS0wVKDSxAyVx92cSUbDh/B586VmR600FY\nyFrQ7aF65+agmG/Pr1ZxKbJIL8wy3tmgem8yr3JmboY0n5IWka4Ro9QHaTPCfPo+\nWqYNFn5ACarmgHb1prQFTOWJNshlSHY2dHCKzehrMCJde5yCaf0djWlENvPkdGBC\nlHSYw8iJyjFWCImWEEQ/Vl2r+BcjWh/K9FHhZtiKLHOGjUQ6IABh6d4ACf29MlQw\nj4bbd54eMVb1R4m6CXOHdecVKBhvVtdSDCJT1e/ttwKBgQDu58E6N+DyjJXqkOYX\n/1A4zsa+NW8gZQQNK+4dvdcx/SaCrrmFj8Xb+npC1FVH2sSxX8E9+qqyCHuIav93\n29agTrWlrfoVAav5JascCrkNXZerbvbV31+tPy8MXyxC6h7Oq2Lda4+pRlgyqW9J\n8bJ+1/97cCn7eSI9ice4LigduwKBgQDfiiS7WdHRLeQT8Spb9LAe0C4jkccKepaj\nEn9iY4FkNhzbJEUNTTXG3ZHxLI6RuIMP/CsRypyrzerrPfOSQOFtrb9k1HWPgPl1\nmvv1TKfhis1Y15gdNptzxTTOvZMejfw2syETVjWOI8ByhlbUyfRvEj15YDn3XNNj\nWZht4hwG6wKBgFOWfsLx3iC/E4z4maj3yYe2wU63v2PkNCCvqCZ7z5lL63d5zqtu\nfFnVL4XGaPg1EPDGggQ/eg3EbgRy+2NiZZu9Lk0DrCZBaXxIs6+iCNEmV/TBZFe8\nSeuB2eJIQmI/K/w/dt3lzmP5ms5O/gMvL7a1uEvmGKpF3bcOR/SnIZ4VAoGAXpgh\nxRpUPJWT35B9YV5hLRjhfXHR7bBEkItiVmtPNO3lNiLaCa/zoszeVlWJm0aeR6Rp\nQWUg+V7xG00jBm/oNTaCOJPjj69/YPINzxb6L+pBzWemWi5iiBIar6XvXM2uviL9\nSyZ/EUA1zwDkO7Wed2Ybl4JN5Uxls7QVWeKGA7MCgYEAzC1f11gyUBOG/ZrLXAQq\nMFfWLklXHoQm/dqaah4CpNHQYcN3ph7DQ/nzK3dbB5sNpFj4jqVsdvD9MZdYLBmp\nMZD2nwiled4EgcrUwcwsl7O0VsVKLHltyVMyxmZT6gkvZYSNTe7qCOwum7EPyStA\n7L33qa8OkElioxOjwG4Xmis=\n-----END PRIVATE KEY-----\n",
+  "client_email": "mochi-557@gimochi.iam.gserviceaccount.com",
+  "client_id": "114843826709118153622",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mochi-557%40gimochi.iam.gserviceaccount.com"
+}
