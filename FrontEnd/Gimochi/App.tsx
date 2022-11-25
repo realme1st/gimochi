@@ -11,7 +11,7 @@ import store from './src/store';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppInner from './AppInner';
 import messaging from '@react-native-firebase/messaging';
-import PushNotification from 'react-native-push-notification';
+import PushNotification, { PushNotificationScheduleObject } from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import CodePush, { CodePushOptions } from 'react-native-code-push';
 
@@ -75,10 +75,10 @@ PushNotification.configure({
 });
 PushNotification.createChannel(
   {
-    channelId: 'challenge', // (required)
+    channelId: '1', // (required)
     channelName: '챌린지', // (required)
     channelDescription: '챌린지 알림', // (optional) default: undefined.
-    soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    soundName: 'gimochi.wav', // (optional) See `soundName` parameter of `localNotification` function
     importance: 4, // (optional) default: 4. Int value of the Android notification importance
     vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
   },
@@ -86,15 +86,32 @@ PushNotification.createChannel(
 );
 PushNotification.createChannel(
   {
-    channelId: 'gifticon', // (required)
+    channelId: '2', // (required)
     channelName: '기프티콘', // (required)
     channelDescription: '기프티콘 만료 알림', // (optional) default: undefined.
-    soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    soundName: 'gimochi.wav', // (optional) See `soundName` parameter of `localNotification` function
     importance: 4, // (optional) default: 4. Int value of the Android notification importance
     vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
   },
   (created: boolean) => console.log(`createChannel gifticon returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
 );
+
+const scheduleObj: PushNotificationScheduleObject = {
+  id: '1',
+  date: new Date(),
+  vibrate: true,
+  ongoing: false,
+  priority: 'max',
+  visibility: 'public',
+  importance: 'max',
+  allowWhileIdle: true,
+  title: 'title',
+  message: 'message',
+  playSound: true,
+  soundName: 'gimochi.wav',
+};
+
+PushNotification.localNotificationSchedule(scheduleObj);
 
 const codePushOptions: CodePushOptions = {
   checkFrequency: CodePush.CheckFrequency.MANUAL,

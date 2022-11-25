@@ -16,7 +16,7 @@
 
 최태순(BE) - ERD 설계, 인프라 구축, 기프티콘 API 개발, S3 파일 업로드, 이미지 OCR
 
-이승훈(FE) - UI/UX 설계, 티콘모아 서비스 구현, 추카포카 서비스 구현
+이승훈(FE) - UI/UX 설계, 친구관리 구현, 티콘모아 서비스 구현, 추카포카 서비스 구현, FCM 알림 기능 구현
 
 전민재(FE) - UI/UX 설계, 챌린지콘 서비스 구현
 
@@ -62,9 +62,11 @@ https://drive.google.com/file/d/1DvO3z3S5Z7NriSjAIwwygY5nwTh_b17f/view?usp=shari
 4. Mysql : 8.0.31
 5. JVM : 11.0.17
 6. NginX : 1.18.0
-8. Jenkins : 2.361.2
-9. Node.js : 16.18.0
-10. Android Studio : Android SDK 30
+7. Jenkins : 2.361.2
+8. Node.js : 16.18.0
+9. Android Studio : Android SDK 30
+10. React : 17.0.2
+11. React Native : 0.66.4
 
 ## ERD
 
@@ -80,5 +82,7 @@ erd 사진
 
 ## 기획 자료(figma)
 
-링크
+https://www.figma.com/file/R3NBkkt9B0aESs0q1y6uCW/%EA%B8%B0%EB%AA%A8%EC%B9%98?node-id=1%3A2
+
+![image-20221125092704315](README.assets/image-20221125092704315.png)
 
