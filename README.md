@@ -40,15 +40,55 @@ https://drive.google.com/file/d/1DvO3z3S5Z7NriSjAIwwygY5nwTh_b17f/view?usp=shari
 
 
 
-### 메인 화면
+## :eyes: 서비스 화면
 
-사진 자리
+### 1. 티콘모아
 
+![기프티콘 등록](README.assets/기프티콘 등록.gif)
 
+<center>기프티콘 등록</center>
 
-### 추카포카 화면
+![기프티콘 사용](README.assets/기프티콘 사용.gif)
 
-사진 자리
+<center>기프티콘 사용</center>
+
+### 2. 추카포카
+
+![세션 생성](README.assets/세션 생성.gif)
+
+<center>추카포카 생성</center>
+
+![세션에 댓글남기기](README.assets/세션에 댓글남기기.gif)
+
+<center>추카포카 댓글남기기</center>
+
+### 3. 홈화면, 하단 내비게이션 바
+
+![홈화면, 하단 커스텀 내비게이션바](README.assets/홈화면, 하단 커스텀 내비게이션바.gif)
+
+### 4. 친구관리
+
+![친구목록](README.assets/친구목록.gif)
+
+<center>친구 목록</center>
+
+![친구신청, 푸시알림](README.assets/친구신청, 푸시알림.gif)
+
+<center>친구 신청, 푸시알림</center>
+
+### 5. 챌린지
+
+![챌린지 생성](README.assets/챌린지 생성.gif)
+
+<center>챌린지 생성</center>
+
+![챌린지 진행](README.assets/챌린지 진행.gif)
+
+<center>챌린지 진행</center>
+
+![챌린지 종료](README.assets/챌린지 종료.gif)
+
+<center>챌린지 종료</center>
 
 
 
