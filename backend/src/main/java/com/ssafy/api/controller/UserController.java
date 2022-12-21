@@ -1,10 +1,9 @@
 package com.ssafy.api.controller;
 
-import com.ssafy.api.dto.FollowReqDto;
+import com.ssafy.api.request.FollowReqDto;
 import com.ssafy.api.service.UserService;
 import com.ssafy.common.response.BasicResponse;
 import com.ssafy.common.response.CommonResponseEntity;
-import com.ssafy.db.repository.FriendsListRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +20,55 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    // 팔로우
-    @PostMapping("/follow")
-    @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우", notes = "팔로우")
-    public ResponseEntity<? extends BasicResponse> follow(@Validated @RequestBody FollowReqDto followReqDto) {
+
+    @GetMapping("/info/{userId}")
+    @ApiOperation(value = "userId로 사용자 정보 조회", notes = "사용자 정보 조회")
+    public ResponseEntity<? extends BasicResponse> getUser(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new CommonResponseEntity<>(userService.follow(followReqDto)));
+                .body(new CommonResponseEntity<>(userService.getUser(userId)));
+    }
+
+    @GetMapping("/usage/{userId}")
+    @ApiOperation(value = "userId로 등록/ 사용 기프티콘 수 조회", notes = "사용자 정보 조회")
+    public ResponseEntity<? extends BasicResponse> getUsageInfo(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.getUsage(userId)));
+    }
+
+    @GetMapping("/usage/used/{userId}")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 증가", notes = "사용자 정보 수정")
+    public ResponseEntity<? extends BasicResponse> countUpUsed(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.countUpUsed(userId)));
+    }
+
+    @GetMapping("/usage/used/down/{userId}")
+    @ApiOperation(value = "userId의 사용 기프티콘 카운트 감소", notes = "사용자 정보 수정")
+    public ResponseEntity<? extends BasicResponse> countDownUsed(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.countDownUsed(userId)));
+    }
+
+    // 팔로우
+    @PostMapping("/follow-request")
+    @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)에게 친구 요청 전송", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> followRequest(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.followRequest(followReqDto)));
+    }
+
+    @PostMapping("/follow-accept")
+    @ApiOperation(value = "followingId(팔로잉)이 followerId(팔로워)의 친구 요청 수락", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> acceptFollow(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.acceptFollow(followReqDto)));
+    }
+
+    @PostMapping("/follow-reject")
+    @ApiOperation(value = "followingId(팔로잉)이 followerId(팔로워)의 친구 요청 거절", notes = "팔로우")
+    public ResponseEntity<? extends BasicResponse> rejectFollow(@Validated @RequestBody FollowReqDto followReqDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.rejectFollow(followReqDto)));
     }
 
     // userId를 기반으로 본인이 팔로우 한 목록 조회
@@ -35,6 +77,13 @@ public class UserController {
     public ResponseEntity<? extends BasicResponse> getFollowingList(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
                     .body(new CommonResponseEntity<>(userService.getFollowingList(userId)));
+    }
+
+    @GetMapping("/following-request/{userId}")
+    @ApiOperation(value = "userId에게 들어온 팔로우 요청 조회", notes = "사용자에게 들어온 팔로우 요청 목록 조회")
+    public ResponseEntity<? extends BasicResponse> getFollowRequestList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponseEntity<>(userService.getFollowRequestList(userId)));
     }
 
     // userId를 기반으로 본인을 팔로우 한 목록 조회
@@ -46,10 +95,10 @@ public class UserController {
     }
 
     // 팔로우 삭제
-    @DeleteMapping("/follow")
+    @DeleteMapping("/follow/{followerUserId}/{followingUserId}")
     @ApiOperation(value = "followerId(팔로워)가 followingId(팔로잉)을 팔로우 취소", notes = "팔로우 취소")
-    public ResponseEntity<? extends BasicResponse> unfollow(@Validated @RequestBody FollowReqDto followReqDto) {
+    public ResponseEntity<? extends BasicResponse> unfollow(@PathVariable Long followerUserId, @PathVariable Long followingUserId) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new CommonResponseEntity<>(userService.unfollow(followReqDto)));
+                .body(new CommonResponseEntity<>(userService.unfollow(followerUserId, followingUserId)));
     }
 }

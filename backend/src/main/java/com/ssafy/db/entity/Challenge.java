@@ -1,11 +1,13 @@
 package com.ssafy.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,23 +23,31 @@ public class Challenge {
     @Column(nullable = false,name="challenge_leader_id")
     private Long challengeLeaderId;
 
+    @Column(nullable=false,name="challenge_leader_name")
+    private String challengeLeaderName;
+
     @Column(nullable = false,name="challenge_title")
     private String challengeTitle;
 
     @Column(nullable = false,name="challenge_description")
     private String challengeDescription;
 
-    @Column(nullable = false,name="challenge_start_time")
-    private String challengeStartTime;
-
-    @Column(nullable = false,name="challenge_end_time")
-    private String challengeEndTime;
+    @Column(nullable = false,name="challenge_start_date")
+    private LocalDate challengeStartDate;
+    @Column(nullable = false,name="challenge_end_date")
+    private LocalDate challengeEndDate;
 
     @Column(nullable = false,name="challenge_reward_type")
     private int challengeRewardType;
 
-    @Column(nullable = false,name="challenge_leader_name")
-    private String challengeLeaderName;
+    @Column(nullable = false,name="challenge_reward_point")
+    private int challengeRewardPoint;
+
+    @Column(nullable = false,name="challenge_participant_point")
+    private int challengeParticipantPoint;
+
+    @Column(nullable = false,name="challenge_active")
+    private int challengeActive;
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInfo> challengeInfoList = new ArrayList<>();
@@ -52,30 +62,35 @@ public class Challenge {
     }
 
     @OneToMany(mappedBy = "challenge")
-    private List<RewardInfo> rewardInfoList = new ArrayList<>();
+    private List<ChallengeReward> challengeRewardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "challenge")
     private List<ChallengeInvite> challengeInviteList = new ArrayList<>();
 
     @Builder
-    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, String challengeStartTime, String challengeEndTime, int challengeRewardType,String challengeLeaderName) {
+    public Challenge(Long challengeLeaderId, String challengeTitle, String challengeDescription, LocalDate challengeStartDate,
+                     LocalDate challengeEndDate, int challengeRewardType,String challengeLeaderName,int challengeRewardPoint,int challengeParticipantPoint
+                     ,int challengeActive) {
         this.challengeLeaderId = challengeLeaderId;
         this.challengeTitle = challengeTitle;
         this.challengeDescription = challengeDescription;
-        this.challengeStartTime = challengeStartTime;
-        this.challengeEndTime = challengeEndTime;
+        this.challengeStartDate = challengeStartDate;
+        this.challengeEndDate = challengeEndDate;
         this.challengeRewardType = challengeRewardType;
         this.challengeLeaderName = challengeLeaderName;
+        this.challengeRewardPoint = challengeRewardPoint;
+        this.challengeParticipantPoint = challengeParticipantPoint;
+        this.challengeActive = challengeActive;
     }
 
 
 
 
-    public void addChallengeReward(RewardInfo rewardInfo){
-        this.rewardInfoList.add(rewardInfo);
+    public void addChallengeReward(ChallengeReward challengeReward){
+        this.challengeRewardList.add(challengeReward);
 
-        if(rewardInfo.getChallenge() !=this) { //무한루프 방지
-            rewardInfo.setChallenge(this);
+        if(challengeReward.getChallenge() !=this) { //무한루프 방지
+            challengeReward.setChallenge(this);
         }
 
     }
@@ -87,4 +102,19 @@ public class Challenge {
         }
 
     }
+
+    public int changeRewardPoint(int challengeRewardPoint){
+        this.challengeRewardPoint=challengeRewardPoint+getChallengeParticipantPoint();
+        return this.challengeRewardPoint;
+    }
+
+    public void changeActive(int challengeActive){
+        this.challengeActive=challengeActive;
+    }
+
+    public void setChallengeId(Long challengeId){
+        this.challengeId = challengeId;
+    }
+
 }
+

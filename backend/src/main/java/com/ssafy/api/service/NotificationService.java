@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
+import com.ssafy.api.dto.FriendDto;
 import com.ssafy.api.dto.MultiMessageReqDto;
 import com.ssafy.api.dto.SingleMessageReqDto;
 import com.ssafy.db.entity.Gifticon;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -56,7 +58,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public User saveToken(String accessToken, String firebaseToken){
+    public User saveToken(String accessToken, String firebaseToken) {
         User user = userRepository.findByUserSocialToken(accessToken).get();
         user.setFirebaseToken(firebaseToken);
         userRepository.save(user);
@@ -66,14 +68,17 @@ public class NotificationService {
 
 
     // 알림 보내기
-    public boolean sendToUserList(MultiMessageReqDto multiMessageReqDto, List<User> userList) {
+    public boolean sendToUserList(MultiMessageReqDto multiMessageReqDto, List<FriendDto> userList) {
 
         List<String> registrationTokens = new ArrayList<>();
         User sender = userRepository.findByUserId(multiMessageReqDto.getUserId()).get();
         int type = multiMessageReqDto.getType();
 
-        for (User user: userList) {
-            registrationTokens.add(user.getUserFbToken());
+        for (FriendDto friend : userList) {
+            Optional<User> user = userRepository.findByUserId(friend.getUserId());
+            if(user.isPresent()){
+                registrationTokens.add(user.get().getUserFbToken());
+            }
         }
 
         String title = setMultiMessageTitle(type);
@@ -109,10 +114,11 @@ public class NotificationService {
             log.info("cannot send to memberList push message. error info : {}");
             log.info(e.getMessage());
 
-            return  false;
+            return false;
         }
         return true;
     }
+
     @Transactional
     public boolean sendToUser(SingleMessageReqDto singleMessageReqDto) {
         User sender = userRepository.findByUserId(singleMessageReqDto.getSenderId()).get();
@@ -123,27 +129,14 @@ public class NotificationService {
         String title = setSingleMessageTitle(type);
         String body = setSingleMessageBody(sender.getUserNickname(), type);
 
-        Message message = Message.builder()
-                .putData("time", LocalDateTime.now().toString())
-                .setNotification(Notification.builder().setTitle(title).setBody(body).build())
-                .setAndroidConfig(AndroidConfig.builder()
-                        .setTtl(3600 * 1000)
-                        .setNotification(AndroidNotification.builder()
-                                .setIcon("gimochi")//안드로이드 내 리소스 폴더 경로?
-                                .setColor("#f45342")
-                                .build())
-                        .build())
-                .setToken(registrationToken)
-                .build();
         try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Successfully sent message: " + response);
-        }catch (FirebaseMessagingException e){
+            sendMessage(title, body, registrationToken);
+            return true;
+        } catch (FirebaseMessagingException e) {
             System.out.println("cannot send to memberList push message. error info : {}");
             System.out.println(e.getMessage());
             return false;
         }
-        return true;
     }
 
     @Transactional
@@ -152,15 +145,20 @@ public class NotificationService {
         String registrationToken = receiver.getUserFbToken();
 
         String title = "곧 사라지는 기프티콘이 있어요!";
-        String body = "";
+        String body = setNotificationMessage(day, isOne, gifticons);
 
-        if(isOne){
-            body = gifticons.get(0).getGifticonStore() + " 기프티콘이 "+day+"일 뒤에 사라져요!";
-        }else{
-            body = gifticons.size() + "개의 기프티콘이 "+day+" 일 뒤에 사라져요!";
+        try {
+            sendMessage(title, body, registrationToken);
+            return true;
+        } catch (FirebaseMessagingException e) {
+            System.out.println("cannot send to memberList push message. error info : {}");
+            System.out.println(e.getMessage());
+            return false;
         }
 
+    }
 
+    public void sendMessage(String title, String body, String registrationToken) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .putData("time", LocalDateTime.now().toString())
                 .setNotification(Notification.builder().setTitle(title).setBody(body).build())
@@ -173,50 +171,59 @@ public class NotificationService {
                         .build())
                 .setToken(registrationToken)
                 .build();
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println("Successfully sent message: " + response);
-        }catch (FirebaseMessagingException e){
-            System.out.println("cannot send to memberList push message. error info : {}");
-            System.out.println(e.getMessage());
-            return false;
-        }
-        return true;
+        String response = FirebaseMessaging.getInstance().send(message);
+        System.out.println("Successfully sent message: " + response);
     }
 
-    public String setMultiMessageTitle(int type){
-        if(type == 1){
+    public String setMultiMessageTitle(int type) {
+        if (type == 1) {
             return "친구가 기념일을 생성했어요!";
-        }else if(type ==2){
+        } else if (type == 2) {
             return "";
-        }else{
+        } else {
             return "";
         }
     }
 
-    public String setMultiMessageBody(String name, int type){
-        if(type == 1){
-            return name+"님에게 추카포카 메세지를 남겨주세요.";
-        }else if(type ==2){
+    public String setMultiMessageBody(String name, int type) {
+        if (type == 1) {
+            return name + "님에게 추카포카 메세지를 남겨주세요.";
+        } else if (type == 2) {
             return "x일 뒤에 사라지는 기프티콘이 x개 있어요!";
-        }else{
+        } else {
             return "";
         }
     }
 
-    public String setSingleMessageTitle(int type){
-        if(type == 1){
+    public String setSingleMessageTitle(int type) {
+        if (type == 1) {
             return "친구가 챌린지에 초대했어요!";
-        }else{
+        }else if(type == 2){
+            return "친구 요청이 왔어요!";
+        }else if(type == 3){
+            return "친구가 요청을 수락했어요!";
+        }else {
             return "";
         }
     }
 
-    public String setSingleMessageBody(String name, int type){
-        if(type == 1){
-            return name+"님이 챌린지에 초대하셨습니다. 수락을 눌러 참여하세요.";
-        }else{
+    public String setSingleMessageBody(String name, int type) {
+        if (type == 1) {
+            return name + "님이 챌린지에 초대하셨습니다. 수락을 눌러 참여하세요.";
+        }else if(type == 2){
+            return name + "님이 친구 요청을 보냈습니다.";
+        }else if(type == 3){
+            return name + "님이 친구 요청을 수락했습니다.";
+        } else {
             return "";
+        }
+    }
+
+    public String setNotificationMessage(int day, boolean isOne, List<Gifticon> gifticons) {
+        if (isOne) {
+            return gifticons.get(0).getGifticonStore() + " 기프티콘이 " + day + "일 뒤에 사라져요!";
+        } else {
+            return gifticons.size() + "개의 기프티콘이 " + day + " 일 뒤에 사라져요!";
         }
     }
 }

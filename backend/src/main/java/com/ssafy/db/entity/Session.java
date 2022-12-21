@@ -1,10 +1,7 @@
 package com.ssafy.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -68,6 +65,9 @@ public class Session {
         }
     }
 
+    public void setSessionId(Long sessionId){
+        this.sessionId = sessionId;
+    }
     @Builder
     public Session(String name, LocalDate expireTime, LocalDate anniversary, User user, Long sessionTypeId) {
         this.name = name;

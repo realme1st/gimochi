@@ -37,6 +37,14 @@ public class ChallengeInfo {
     @ColumnDefault("0")
     private int successCnt;
 
+    @Column(name="my_rank",nullable = false)
+    @ColumnDefault("0")
+    private int myRank;
+
+    @Column(name="winner_name")
+    @ColumnDefault("''")
+    private String winnerName;
+
     @OneToMany(mappedBy = "challengeInfo")
     private List<ChallengeAuth> challengeAuthsList = new ArrayList<>();
 
@@ -68,10 +76,12 @@ public class ChallengeInfo {
     }
 
     @Builder
-    public ChallengeInfo(User user, Challenge challenge, int successCnt) {
+    public ChallengeInfo(User user, Challenge challenge, int successCnt, int myRank,String winnerName) {
         this.user = user;
         this.challenge = challenge;
         this.successCnt = successCnt;
+        this.myRank = myRank;
+        this.winnerName = winnerName;
     }
 
     // 달성 횟수 증가
